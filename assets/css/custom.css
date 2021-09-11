@@ -1,0 +1,546 @@
+.price-prev {
+    color: gray;
+    text-decoration: line-through;
+}
+.btn {
+    background: #e3e3e3;
+}
+.stepper {
+    position: relative;
+    display: inline-block;
+    max-width: 70px;
+    width: 70px;
+    margin-bottom: 15px;
+}
+
+.stepper input[type="number"] {
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+    -moz-appearance: textfield;
+    color: #333;
+    background-color: transparent;
+}
+
+.stepper input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.stepper-arrow {
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    color: #d9d9d9;
+    transition: 0.3s all ease;
+}
+
+.stepper-arrow:hover {
+    color: #23201e;
+}
+
+.stepper-arrow.up {
+    right: 0;
+    text-align: left;
+}
+
+.stepper-arrow.up:before {
+    content: "+";
+}
+
+.stepper-arrow.down {
+    left: 0;
+    text-align: right;
+}
+
+.stepper-arrow.down:before {
+    content: "-";
+}
+
+.stepper.disabled .stepper-arrow {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.stepper-type-1 .stepper {
+    min-width: 150px;
+    max-width: inherit;
+}
+
+.stepper-type-1 .stepper input[type="number"] {
+    border-color: #e5e7e9;
+}
+
+.stepper-type-1 .stepper-arrow {
+    line-height: 20px;
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+}
+
+.stepper-type-1 .stepper-arrow:hover {
+    color: #d1d1d1;
+}
+
+.stepper-type-1 .stepper-arrow.up {
+    right: 30px;
+}
+
+.stepper-type-1 .stepper-arrow.up:before {
+    content: "+";
+}
+
+.stepper-type-1 .stepper-arrow.down {
+    left: 30px;
+}
+
+.stepper-type-1 .stepper-arrow.down:before {
+    content: "-";
+}
+
+.slick-next {
+    width: 30px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    box-shadow: 0 0 4px 0 rgb(0 0 0 / 20%);
+    color: #707070;
+    top: 40%;
+    transition: 0.3s;
+    outline: none;
+    opacity: 0.9;
+    position: absolute;
+    padding-left: 7px;
+    border-radius: 100px 0 0 100px;
+    right: 0;
+    cursor: pointer;
+}
+
+.slick-prev {
+    width: 30px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    box-shadow: 0 0 4px 0 rgb(0 0 0 / 20%);
+    color: #707070;
+    top: 40%;
+    transition: 0.3s;
+    outline: none;
+    opacity: 0.9;
+    position: absolute;
+    padding-right: 7px;
+    border-radius: 0 100px 100px 0;
+    left: 0;
+    z-index: 1;
+    cursor: pointer;
+}
+.slick-slider:hover .slick-next-1,
+.slick-slider:hover .slick-prev-1 {
+    opacity: 1;
+}
+.slick-next-1 {
+    transition: all 1s;
+    opacity: 0;
+    width: 30px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fabec0;
+    color: #ffffff;
+    top: 40%;
+    transition: 0.3s;
+    outline: none;
+    position: absolute;
+    padding-left: 7px;
+    right: 0;
+    z-index: 1;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.slick-prev-1 {
+    transition: all 1s;
+    opacity: 0;
+    width: 30px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fabec0;
+    color: #ffffff;
+    top: 40%;
+    transition: 0.3s;
+    outline: none;
+    position: absolute;
+    padding-right: 7px;
+    left: 0;
+    z-index: 1;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/*LIST-PRODUCT*/
+
+.title-product-list-2 {
+    position: relative;
+    padding: 19px 0;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0 0 20px;
+    color: #fff;
+    font-size: 30px;
+    font-weight: 400;
+}
+
+.floor-1 .title-product-list-2 {
+    background: url(https://www.petcity.vn/media/lib/shopcho.png);
+}
+
+.title-product-list-2 h2 {
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    font-weight: 400;
+    font-size: 18px;
+}
+
+.border-product {
+    padding-bottom: 10px;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.pagination {
+    justify-content: center;
+}
+
+.addCart {
+    display: inline-block;
+    padding: 0 40px;
+    height: 40px;
+    line-height: 45px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 10px;
+    border: solid 0px #e51f28;
+    margin-right: 10px;
+}
+
+#img-large img {
+    display: inline-block;
+}
+
+/*TAB PRO DETAIL*/
+
+#tab-pro-info .title-tab-pro {
+    height: 46px;
+    border-top: solid 1px #ddd;
+    border-bottom: solid 1px #ddd;
+    text-align: center;
+}
+
+#tab-pro-info .title-tab-pro button {
+    float: left;
+    text-decoration: none;
+    height: 45px;
+    line-height: 49px;
+    margin-right: 0;
+    padding: 0 15px;
+    color: #444;
+    text-transform: uppercase;
+    border: 0;
+    font-size: 14px;
+    border-radius: 0;
+}
+
+#tab-pro-info .title-tab-pro button:nth-child(1) {
+}
+
+#tab-pro-info .title-tab-pro button.current,
+#tab-pro-info .title-tab-pro button.active {
+    color: #fff;
+    font-weight: bold;
+    background: #e51f28;
+}
+
+#tab-pro-info {
+}
+
+#tab-pro-info .content-tab-pro {
+    padding: 10px 0;
+}
+
+#tab-pro-info .content-tab-pro * {
+    max-width: 100%;
+}
+/* Tieu DE */
+div.tieude_giua {
+    margin: 15px 0;
+    position: relative;
+    text-align: center;
+}
+
+div.tieude_giua div {
+    font-size: 16px;
+    text-transform: uppercase;
+    text-align: center;
+    font-family: Roboto-Regular;
+    display: inline-block;
+    background: #e50101;
+    padding: 5px 20px;
+    position: relative;
+    border-radius: 5px;
+}
+
+div.tieude_giua div a {
+    text-decoration: none;
+    color: #fff;
+}
+
+div.tieude_giua div::before {
+    content: "";
+    width: 52px;
+    height: 46px;
+    background: url(assets/images/red-tiile.png) top left no-repeat;
+    margin: 0 auto;
+    position: absolute;
+    top: -15px;
+    left: -20px;
+    z-index: 99;
+}
+
+div.tieude_giua div::after {
+    content: "";
+    width: 45px;
+    height: 63px;
+    background: url(assets/images/icon-cho.png) top right no-repeat;
+    margin: 0 auto;
+    position: absolute;
+    top: -11px;
+    right: -25px;
+    z-index: 99;
+}
+
+.tieude_giua ul {
+    list-style: none;
+    display: inline-block;
+    list-style: none;
+    display: inline-block;
+    max-width: 80%;
+    text-align: center;
+}
+
+div.tieude_giua ul li {
+    display: inline-block;
+    vertical-align: top;
+}
+
+div.tieude_giua ul li a {
+    text-decoration: none;
+    color: #696969;
+    padding: 0px 15px;
+    font-size: 14px;
+    border-left: 1px solid #b3b3b3;
+    font-weight: bold;
+    position: relative;
+}
+
+div.tieude_giua ul li a:before {
+    background: #fff;
+    height: 3px;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+}
+
+div.tieude_giua ul li a:hover {
+    color: red;
+}
+
+div.tieude_giua ul li a:hover:before {
+    content: "";
+}
+div.tieude_petfood {
+    margin: 0 auto;
+    text-align: center;
+    font-weight: bold;
+    line-height: 1.5;
+    vertical-align: middle;
+    padding: 10px;
+    border-bottom: 2px solid #f48133;
+}
+
+div.tieude_petfood a {
+    font-size: 30px;
+    color: black;
+}
+#category_product .wrap-category:nth-child(2n - 1) {
+    background: #fff9ee;
+}
+footer {
+    color: white;
+    position: relative;
+    background-image: linear-gradient(21deg, #ff05c969 10%, #fd6a086b 100%);
+    margin-top: 100px;
+}
+footer .header_footer {
+    color: white;
+    font-weight: bold;
+    font-size: 17px;
+    padding: 5px 0 10px;
+    text-transform: uppercase;
+    margin: 10px 0px;
+}
+.bg-footer {
+    position: absolute;
+    width: 100%;
+    top: -84px;
+    left: 30px;
+}
+
+.bg-footer .bg-img {
+    width: 100%;
+    height: 121px;
+    background: url("../images/bg-footer-2.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+@media (max-width: 1201px) {
+    .bg-footer {
+        position: absolute;
+        width: 100%;
+        top: -71px;
+    }
+}
+
+.open-door .open-time {
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
+}
+
+.open-door span {
+    display: block;
+}
+
+.customer {
+}
+
+.customer span {
+    display: block;
+    padding: 3px 0;
+}
+
+.customer .phone {
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
+}
+
+footer .footer-bottom {
+    color: white;
+    border-top: 1px solid #333;
+    padding: 10px 0px;
+}
+footer .bocongthuong img {
+    width: 125px;
+}
+.slick-list,
+.slick-track {
+    height: auto !important;
+}
+/*CART*/
+.form-control-custom {
+    display: block;
+    line-height: 14px;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #f4f4f4;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    position: relative;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    width: 1%;
+    margin-bottom: 0;
+}
+
+.input-group-prepend {
+    margin-right: -1px;
+}
+
+.input-group-prepend,
+.input-group-append {
+    display: -ms-flexbox;
+    display: flex;
+    background-color: #80808045;
+}
+
+.btn-up,
+.btn-down {
+    font-size: 20px;
+    padding: 0px 10px;
+    line-height: 1px;
+}
+
+.order-cart-policy .content-block {
+    text-decoration: none;
+    box-sizing: border-box;
+    list-style: none;
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+ul.content-block li {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px 15px 10px;
+    border: 1px solid #dee2e6;
+    border-top: none;
+}
+
+ul.content-block li:first-child {
+    border-top: 1px solid #dee2e6;
+}
+
+ul.content-block li p {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 0;
+    margin-left: 10px;
+    flex: 1;
+}
+
+ul.content-block li p > span.text-highlight {
+    color: #e62a2b;
+}
+
+ul.content-block li > span {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #e62a2b;
+    background-color: #e62a2b;
+    border-radius: 100%;
+    color: #fff;
+    font-size: 20px;
+}
