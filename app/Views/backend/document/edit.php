@@ -2,7 +2,7 @@
 
 
 <?= $this->section('content') ?>
-<div class="row clearfix">
+<div class="row clearfix mb-5">
     <div class="col-12">
         <form method="POST" action="" id="form-dang-tin">
             <?= csrf_field() ?>
@@ -29,12 +29,10 @@
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Trạng thái:<span class="text-danger">*</span></b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <select class="form-control form-control-sm" name="status" required="">
-                                        <option value="1">Mới tạo</option>
-                                        <option value="2">Đã phê duyệt</option>
-                                        <option value="3">Đã ban hành</option>
-                                        <option value="4">Đã hủy</option>
-                                        <option value="5" disabled>Cho mượn</option>
+                                    <select class="form-control form-control-sm" name="status_id" required="" <?= $tin->status_id == 4 ? "disabled" : "" ?>>
+                                        <?php foreach ($status as $row) : ?>
+                                            <option value="<?= $row->id ?>" <?= $row->no_delete ? "disabled" : "" ?>><?= $row->name ?></option>
+                                        <?php endforeach ?>
                                     </select>
                                 </div>
                             </div>
@@ -128,6 +126,130 @@
     </div>
 </template>
 
+
+<div class="row clearfix">
+    <div class="col-12">
+        <section class="card card-fluid">
+            <h5 class="card-header drag-handle">
+                Danh sách mượn tài liệu
+                <?php if ($tin->status_id != 4) : ?>
+                    <div style="margin-left:auto;">
+                        <a class="btn btn-danger btn-sm" data-target="#loan-modal" data-toggle="modal" href="">Cho mượn</a>
+                    </div>
+                <?php endif ?>
+            </h5>
+            <div class="card-body">
+                <div class="table-responsive-md">
+                    <table id="quanlytin" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Trạng thái</th>
+                                <th>Người cho mượn</th>
+                                <th>Cho ai mượn</th>
+                                <th>Ngày cho mượn</th>
+                                <th>Ghi chú</th>
+                                <th>Người nhận lại</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày trả</th>
+                                <th>Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div aria-hidden="true" aria-labelledby="form-modalLabel" class="modal fade" id="loan-modal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="comment-modalLabel">
+                    Mượn tài liệu
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="main">
+                    <!--<p>Sign up once and watch any of our free demos.</p>-->
+                    <form id="form-modal" action="<?= base_url("admin/document/loan") ?>" method="POST">
+
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="document_id" value="<?= $tin->id ?>" />
+                        <input type="hidden" name="user_id_loan" value="<?= user_id() ?>" />
+                        <div class="form-group">
+                            <b class="form-label">Cho ai mượn</b>
+                            <div class="form-line">
+                                <input type="text" class="form-control" name="user_loan" required="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <b class="form-label">Ngày mượn:<i class="text-danger">*</i></b>
+                            <div class="form-line">
+                                <input class="form-control" type='date' name="date_loan" required="" value="<?= date('Y-m-d') ?>" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <b class="form-label">Ghi chú:</b>
+                            <div class="form-line">
+                                <textarea rows="4" class="form-control" name="note_loan"></textarea>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary waves-effect" type="submit" name="cap_nhat">Cập nhật</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div aria-hidden="true" aria-labelledby="form-modalLabel" class="modal fade" id="receive-modal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="comment-modalLabel">
+                    Nhận tài liệu
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="main">
+                    <!--<p>Sign up once and watch any of our free demos.</p>-->
+                    <form id="form-modal" action="<?= base_url("admin/document/receive") ?>" method="POST">
+
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="id" />
+                        <input type="hidden" name="user_id_receive" value="<?= user_id() ?>" />
+                        <div class="form-group">
+                            <b class="form-label">Trạng thái tài liệu:<i class="text-danger">*</i></b>
+                            <div class="form-line">
+                                <select class="form-control" name="status_id_return" required="">
+                                    <?php foreach ($status as $row) : ?>
+                                        <option value="<?= $row->id ?>" <?= $row->no_delete ? "disabled" : "" ?>><?= $row->name ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <b class="form-label">Ngày trả:<i class="text-danger">*</i></b>
+                            <div class="form-line">
+                                <input class="form-control" type='date' name="date_return" required="" value="<?= date('Y-m-d') ?>" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <b class="form-label">Ghi chú:</b>
+                            <div class="form-line">
+                                <textarea rows="4" class="form-control" name="note_return"></textarea>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary waves-effect" type="submit" name="cap_nhat">Cập nhật</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <?= $this->endSection() ?>
 
 
@@ -142,13 +264,15 @@
 <?= $this->section('script') ?>
 
 
+<script src="<?= base_url('assets/lib/datatables/datatables.min.js') ?>"></script>
+<script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
 <script src="<?= base_url("assets/lib/chosen/chosen.jquery.js") ?>"></script>
 <script src="<?= base_url("assets/lib/mustache/mustache.min.js") ?>"></script>
 <!-- <script src="<?= base_url("assets/lib/image_feature/jquery.image_v2.js") ?>"></script> -->
 
 <!--<script src="https://cdn.ckeditor.com/ckeditor5/12.3.1/classic/ckeditor.js"></script>-->
-<script src="<?= base_url("assets/lib/ckfinder/ckfinder.js") ?>"></script>
-<script src="<?= base_url("assets/lib/ckeditor/ckeditor.js") ?>"></script>
+<!-- <script src="<?= base_url("assets/lib/ckfinder/ckfinder.js") ?>"></script> -->
+<!-- <script src="<?= base_url("assets/lib/ckeditor/ckeditor.js") ?>"></script> -->
 
 <script type='text/javascript'>
     var csrfName = '<?= csrf_token() ?>';
@@ -215,7 +339,44 @@
         })
         $(document).on("click", ".remove_file", function() {
             $(this).parents(".file_box").remove();
-        })
+        });
+
+        let data = {};
+        data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
+        $('#quanlytin').DataTable({
+            "stateSave": true,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": path + "admin/<?= $controller ?>/tableloan",
+                "dataType": "json",
+                "type": "POST",
+                "data": data
+            },
+            "columns": [{
+                    "data": "status_loan"
+                }, {
+                    "data": "user"
+                }, {
+                    "data": "user_loan",
+                },
+                {
+                    "data": "date_loan"
+                },
+                {
+                    "data": "note_loan"
+                }, {
+                    "data": "user_receive"
+                }, {
+                    "data": "status_return"
+                }, {
+                    "data": "date_return"
+                }, {
+                    "data": "note_return"
+                },
+            ]
+
+        });
     });
 
     function add_file(item) {

@@ -29,12 +29,10 @@
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Trạng thái:<span class="text-danger">*</span></b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <select class="form-control form-control-sm" name="status" required="">
-                                        <option value="1">Mới tạo</option>
-                                        <option value="2">Đã phê duyệt</option>
-                                        <option value="3">Đã ban hành</option>
-                                        <option value="4">Đã hủy</option>
-                                        <option value="5" disabled>Cho mượn</option>
+                                    <select class="form-control form-control-sm" name="status_id" required="">
+                                        <?php foreach ($status as $row) : ?>
+                                            <option value="<?= $row->id ?>" <?= $row->no_delete ? "disabled" : "" ?>><?= $row->name ?></option>
+                                        <?php endforeach ?>
                                     </select>
                                 </div>
                             </div>

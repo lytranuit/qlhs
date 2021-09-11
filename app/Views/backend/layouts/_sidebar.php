@@ -51,10 +51,6 @@
                         <i class="metismenu-icon fas fa-file"></i>
                         Tài liệu
                     </a>
-                    <a href="<?= base_url() ?>/admin/documentloan" class="">
-                        <i class="metismenu-icon fab fa-leanpub"></i>
-                        Tài liệu cho mượn
-                    </a>
                 </li>
                 <li class="app-sidebar__heading">Auditrail</li>
                 <li>

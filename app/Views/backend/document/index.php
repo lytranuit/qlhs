@@ -62,7 +62,8 @@
             "columns": [{
                     "data": "code"
                 }, {
-                    "data": "name_vi"
+                    "data": "name_vi",
+                    "width": "500px"
                 },
                 {
                     "data": "status"

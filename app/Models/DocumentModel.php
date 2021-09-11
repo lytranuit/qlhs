@@ -52,6 +52,11 @@ class DocumentModel extends Model
                 $builder = $this->db->table('document_file');
                 $row_a->files = $builder->where('document_id', $document_id)->get()->getResult();
             }
+            if (in_array("status", $relation)) {
+                $status_id = $row_a->status_id;
+                $builder = $this->db->table('document_status');
+                $row_a->status = $builder->where('id', $status_id)->get()->getFirstRow();
+            }
         } else {
             if (in_array("categories", $relation)) {
                 $document_id = $row_a['id'];
@@ -62,6 +67,11 @@ class DocumentModel extends Model
                 $document_id = $row_a['id'];
                 $builder = $this->db->table('document_file');
                 $row_a['files'] = $builder->where('document_id', $document_id)->get()->getResult("array");
+            }
+            if (in_array("status", $relation)) {
+                $status_id = $row_a['status_id'];
+                $builder = $this->db->table('document_status');
+                $row_a['status'] = $builder->where('id', $status_id)->get()->getFirstRow("array");
             }
         }
         return $row_a;

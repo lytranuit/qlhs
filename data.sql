@@ -92,11 +92,11 @@ CREATE TABLE `auth_logins` (
   PRIMARY KEY (`id`),
   KEY `email` (`email`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=139 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=140 DEFAULT CHARSET=utf8;
 
 /*Data for the table `auth_logins` */
 
-insert  into `auth_logins`(`id`,`ip_address`,`email`,`user_id`,`date`,`success`) values (128,'127.0.0.1','daotran@gmail.com',2,'2021-09-08 21:12:04',1),(129,'127.0.0.1','daotran@gmail.com',2,'2021-09-08 22:03:52',1),(130,'127.0.0.1','daotran@gmail.com',2,'2021-09-09 01:32:56',1),(131,'127.0.0.1','daotran@gmail.com',2,'2021-09-09 19:26:31',1),(132,'127.0.0.1','daotran',NULL,'2021-09-10 01:35:41',0),(133,'127.0.0.1','daotran',NULL,'2021-09-10 01:35:58',0),(134,'127.0.0.1','daotran',NULL,'2021-09-10 01:36:04',0),(135,'127.0.0.1','daotran',NULL,'2021-09-10 01:36:31',0),(136,'127.0.0.1','daotran@gmail.com',2,'2021-09-10 01:56:50',1),(137,'127.0.0.1','daotran@gmail.com',2,'2021-09-10 01:57:05',1),(138,'127.0.0.1','daotran@gmail.com',2,'2021-09-10 04:30:24',1);
+insert  into `auth_logins`(`id`,`ip_address`,`email`,`user_id`,`date`,`success`) values (128,'127.0.0.1','daotran@gmail.com',2,'2021-09-08 21:12:04',1),(129,'127.0.0.1','daotran@gmail.com',2,'2021-09-08 22:03:52',1),(130,'127.0.0.1','daotran@gmail.com',2,'2021-09-09 01:32:56',1),(131,'127.0.0.1','daotran@gmail.com',2,'2021-09-09 19:26:31',1),(132,'127.0.0.1','daotran',NULL,'2021-09-10 01:35:41',0),(133,'127.0.0.1','daotran',NULL,'2021-09-10 01:35:58',0),(134,'127.0.0.1','daotran',NULL,'2021-09-10 01:36:04',0),(135,'127.0.0.1','daotran',NULL,'2021-09-10 01:36:31',0),(136,'127.0.0.1','daotran@gmail.com',2,'2021-09-10 01:56:50',1),(137,'127.0.0.1','daotran@gmail.com',2,'2021-09-10 01:57:05',1),(138,'127.0.0.1','daotran@gmail.com',2,'2021-09-10 04:30:24',1),(139,'127.0.0.1','daotran@gmail.com',2,'2021-09-10 19:35:28',1);
 
 /*Table structure for table `auth_permissions` */
 
@@ -231,7 +231,7 @@ CREATE TABLE `document` (
   `description_vi` varchar(500) DEFAULT NULL,
   `date_expire` date DEFAULT NULL,
   `date_effect` date DEFAULT NULL,
-  `status` int(11) DEFAULT NULL,
+  `status_id` int(11) DEFAULT NULL,
   `version` varchar(256) DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -242,7 +242,7 @@ CREATE TABLE `document` (
 
 /*Data for the table `document` */
 
-insert  into `document`(`id`,`code`,`name_vi`,`description_vi`,`date_expire`,`date_effect`,`status`,`version`,`deleted_at`,`updated_at`,`created_at`,`date`) values (1,'test','test','',NULL,NULL,NULL,NULL,'2021-09-10 01:58:33','2021-09-10 01:58:33','2021-09-09 19:26:57',NULL),(2,'test2','ádxzc','zxc','2021-09-16','2021-09-10',5,NULL,NULL,'2021-09-09 20:06:46','2021-09-09 19:35:37',NULL);
+insert  into `document`(`id`,`code`,`name_vi`,`description_vi`,`date_expire`,`date_effect`,`status_id`,`version`,`deleted_at`,`updated_at`,`created_at`,`date`) values (1,'test','test','',NULL,NULL,NULL,NULL,'2021-09-10 01:58:33','2021-09-10 01:58:33','2021-09-09 19:26:57',NULL),(2,'test3','ádxzc','zxc','2021-09-16','2021-09-10',4,NULL,NULL,'2021-09-10 22:28:04','2021-09-09 19:35:37',NULL);
 
 /*Table structure for table `document_category` */
 
@@ -274,11 +274,11 @@ CREATE TABLE `document_file` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
 
 /*Data for the table `document_file` */
 
-insert  into `document_file`(`id`,`document_id`,`name`,`url`,`ext`,`mimeType`,`created_at`,`updated_at`,`deleted_at`) values (48,2,'AUDITRAIL.xlsx','/assets/upload/document/1631235614_c62e58327fea3a4084cc.xlsx','xlsx','application/vnd.openxmlformats-officedocument.spre','2021-09-09 20:00:14','2021-09-09 20:06:46',NULL),(49,2,'Bang cham cong an trua.xls','/assets/upload/document/1631235617_c6d2989de7f2bb85cf43.xls','xls','application/vnd.ms-excel','2021-09-09 20:00:17','2021-09-09 20:06:46',NULL);
+insert  into `document_file`(`id`,`document_id`,`name`,`url`,`ext`,`mimeType`,`created_at`,`updated_at`,`deleted_at`) values (48,2,'AUDITRAIL.xlsx','/assets/upload/document/1631235614_c62e58327fea3a4084cc.xlsx','xlsx','application/vnd.openxmlformats-officedocument.spre','2021-09-09 20:00:14','2021-09-10 22:28:04',NULL),(49,NULL,'Bang cham cong an trua.xls','/assets/upload/document/1631235617_c6d2989de7f2bb85cf43.xls','xls','application/vnd.ms-excel','2021-09-09 20:00:17','2021-09-10 22:28:04',NULL),(50,NULL,'chatrp.tlp','/assets/upload/document/1631330852_b5cf375a661d061c1ed2.csv','tlp','application/octet-stream','2021-09-10 22:27:32','2021-09-10 22:27:32',NULL),(51,NULL,'chattest.tlp','/assets/upload/document/1631330855_1a06b3262a10a377b9a5.csv','tlp','application/octet-stream','2021-09-10 22:27:35','2021-09-10 22:27:35',NULL),(52,NULL,'zone-hokkaido.svg','/assets/upload/document/1631330873_395aea0135fc951fd69a.svg','svg','image/svg+xml','2021-09-10 22:27:53','2021-09-10 22:28:04',NULL);
 
 /*Table structure for table `document_loan` */
 
@@ -289,16 +289,40 @@ CREATE TABLE `document_loan` (
   `document_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `user_loan` varchar(256) DEFAULT NULL,
-  `description` varchar(256) DEFAULT NULL,
+  `status_id_loan` int(11) DEFAULT NULL,
+  `note_loan` varchar(256) DEFAULT NULL,
   `date_loan` date DEFAULT NULL,
+  `user_id_receive` int(11) DEFAULT NULL,
+  `status_id_return` int(11) DEFAULT NULL,
+  `note_return` varchar(256) DEFAULT NULL,
   `date_return` date DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Data for the table `document_loan` */
+
+insert  into `document_loan`(`id`,`document_id`,`user_id`,`user_loan`,`status_id_loan`,`note_loan`,`date_loan`,`user_id_receive`,`status_id_return`,`note_return`,`date_return`,`created_at`,`updated_at`,`deleted_at`) values (1,2,2,'TRANIT',2,'đọc SOP','2021-09-10',NULL,NULL,NULL,NULL,'2021-09-10 21:44:48','2021-09-10 21:44:48',NULL);
+
+/*Table structure for table `document_status` */
+
+DROP TABLE IF EXISTS `document_status`;
+
+CREATE TABLE `document_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(256) DEFAULT NULL,
+  `no_delete` int(11) DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+/*Data for the table `document_status` */
+
+insert  into `document_status`(`id`,`name`,`no_delete`,`deleted_at`,`created_at`,`updated_at`) values (1,'Tạo mới',NULL,NULL,NULL,NULL),(2,'Trong kho',NULL,NULL,NULL,NULL),(3,'Đã mất',NULL,NULL,NULL,NULL),(4,'Cho mượn',1,NULL,NULL,NULL),(5,'Hư hỏng',NULL,NULL,NULL,NULL);
 
 /*Table structure for table `user_audit_trails` */
 

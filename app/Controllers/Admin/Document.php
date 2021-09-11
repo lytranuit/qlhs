@@ -9,6 +9,8 @@ class Document extends BaseController
 
     public function index()
     {
+        // echo date("Y-m-d H:i:s");
+        // die();
         return view($this->data['content'], $this->data);
     }
 
@@ -77,6 +79,7 @@ class Document extends BaseController
         } else {
             $Document_model = model("DocumentModel");
             $category_model = model("CategoryModel");
+            $DocumentStatus_model = model("DocumentStatusModel");
             $Document_category_model = model("DocumentCategoryModel");
             $tin = $Document_model->where(array('id' => $id))->asObject()->first();
             $Document_model->relation($tin, array('files', "categories"));
@@ -105,7 +108,8 @@ class Document extends BaseController
             //die();
             //load_editor($this->data);
             //            load_chossen($this->data);
-
+            $this->data['status'] = $DocumentStatus_model->asObject()->findAll();
+            // print_r($this->data['status']);die();
             $this->data['category'] = $category_model
                 ->orderBy('parent_id', 'ASC')->orderBy('sort', 'ASC')->asArray()->findAll();
             $this->data['category'] = html_product_category_nestable($this->data['category'], 'parent_id', 0);
@@ -158,6 +162,8 @@ class Document extends BaseController
             //load_editor($this->data);
 
             $category_model = model("CategoryModel");
+            $DocumentStatus_model = model("DocumentStatusModel");
+            $this->data['status'] = $DocumentStatus_model->asObject()->findAll();
             $this->data['category'] = $category_model
                 ->orderBy('parent_id', 'ASC')->orderBy('sort', 'ASC')->asArray()->findAll();
             $this->data['category'] = html_product_category_nestable($this->data['category'], 'parent_id', 0);
@@ -231,7 +237,27 @@ class Document extends BaseController
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
+    public function loan()
+    { /////// trang ca nhan
+        if (isset($_POST)) {
+            helper("auth");
+            $Document_model = model("DocumentModel");
+            $DocumentLoanModel = model("DocumentLoanModel");
+            $data = $this->request->getPost();
+            $document_id = $data['document_id'];
+            $tin = $Document_model->where(array('id' => $document_id))->asObject()->first();
+            $data['status_id_loan'] = $tin->status_id;
+            if ($data['status_id_loan'] != 4) {
+                $obj = $DocumentLoanModel->create_object($data);
+                $DocumentLoanModel->save($obj);
 
+                $Document_model->update($tin->id, array('status_id' => 4));
+            }
+
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            exit;
+        }
+    }
     public function table()
     {
         $Document_model = model("DocumentModel");
@@ -259,6 +285,8 @@ class Document extends BaseController
 
         $where = $Document_model;
         $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
+
+        $Document_model->relation($posts, array('files', "status"));
         // echo "<pre>";
         // print_r($posts);
         // die();
@@ -269,7 +297,15 @@ class Document extends BaseController
                 $nestedData['code'] = $post->code;
                 $nestedData['name_vi'] = $post->name_vi;
                 $nestedData['file'] = "";
-                $nestedData['status'] = $post->status;
+                if (isset($post->files)) {
+                    foreach ($post->files as $row) {
+                        $nestedData['file'] .= '<div class="">
+                        <div class="file-icon" data-type="' . $row->ext . '"></div>
+                        <a href="' . $row->url . '" download="' . $row->name . '">' . $row->name . '</a>
+                    </div>';
+                    }
+                }
+                $nestedData['status'] = isset($post->status) ? $post->status->name : $post->status_id;
 
                 $nestedData['action'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '" class="btn btn-warning btn-sm mr-2" title="edit">'
                     . '<i class="fas fa-pencil-alt">'
@@ -278,6 +314,75 @@ class Document extends BaseController
                     . '<i class="fas fa-trash-alt">'
                     . '</i>'
                     . '</a>';
+
+                $data[] = $nestedData;
+            }
+        }
+
+        $json_data = array(
+            "draw" => intval($this->request->getVar('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+
+        echo json_encode($json_data);
+    }
+    public function tableloan()
+    {
+        $DocumentLoanModel = model("DocumentLoanModel");
+        $limit = $this->request->getVar('length');
+        $start = $this->request->getVar('start');
+        $page = ($start / $limit) + 1;
+        $where = $DocumentLoanModel;
+
+        $totalData = $where->countAllResults();
+        //echo "<pre>";
+        //print_r($totalData);
+        //die();
+        $totalFiltered = $totalData;
+        if (empty($this->request->getPost('search')['value'])) {
+            //            $max_page = ceil($totalFiltered / $limit);
+
+            $where = $DocumentLoanModel;
+        } else {
+            // $search = $this->request->getPost('search')['value'];
+            // $sWhere = "(LOWER(code) LIKE LOWER('%$search%') OR name_vi like '%" . $search . "%')";
+            // $where =  $Document_model->where($sWhere);
+            // $totalFiltered = $where->countAllResults();
+            // $where = $Document_model->where($sWhere);
+            $where = $DocumentLoanModel;
+        }
+
+        $where = $DocumentLoanModel;
+        $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
+
+        $DocumentLoanModel->relation($posts, array('user', 'status_loan', 'status_return', 'user_receive'));
+        // echo "<pre>";
+        // print_r($posts);
+        // die();
+        $data = array();
+        if (!empty($posts)) {
+            foreach ($posts as $post) {
+                $nestedData['id'] = $post->id;
+                $nestedData['user'] = isset($post->user) ? $post->user->name : $post->user_id;
+                $nestedData['user_receive'] = isset($post->user_receive) ? $post->user_receive->name : $post->user_id_receive;
+                $nestedData['user_loan'] = $post->user_loan;
+                $nestedData['date_loan'] = $post->date_loan;
+                $nestedData['note_loan'] = $post->note_loan;
+                $nestedData['date_return'] = $post->date_return;
+                $nestedData['note_return'] = $post->date_return;
+
+                $nestedData['status_loan'] = isset($post->status_loan) ? $post->status_loan->name : $post->status_id_loan;
+                $nestedData['status_return'] = isset($post->status_return) ? $post->status_return->name : $post->status_id_return;
+
+                if ($post->user_id_receive < 1) {
+                    $nestedData['user_receive'] = '<a href="" class="btn btn-primary btn-sm mr-2" data-target="#receive-modal" data-toggle="modal">'
+                        . '<i class="fas fa-undo-alt">'
+                        . '</i> Nhận lại tài liệu'
+                        . '</a>';
+                }
+
 
                 $data[] = $nestedData;
             }
