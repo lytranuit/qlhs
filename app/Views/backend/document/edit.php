@@ -76,6 +76,18 @@
                                 <div class="col-12 pt-2 pt-md-0">
                                     <div class="card no-shadow border">
                                         <div class="card-header">
+                                            QR code
+                                        </div>
+                                        <div class="card-body">
+                                            <a href="<?= base_url($tin->image_url) ?>" target="_blank" class="text-center d-block">
+                                                <img src="<?= base_url($tin->image_url) ?>" class="img-fluid w-50" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 pt-2">
+                                    <div class="card no-shadow border">
+                                        <div class="card-header">
                                             Danh mục
                                         </div>
                                         <div class="card-body">
@@ -145,7 +157,6 @@
                             <tr>
                                 <th>Trạng thái</th>
                                 <th>Người cho mượn</th>
-                                <th>Cho ai mượn</th>
                                 <th>Ngày cho mượn</th>
                                 <th>Ghi chú</th>
                                 <th>Người nhận lại</th>
@@ -178,13 +189,7 @@
 
                         <?= csrf_field() ?>
                         <input type="hidden" name="document_id" value="<?= $tin->id ?>" />
-                        <input type="hidden" name="user_id_loan" value="<?= user_id() ?>" />
-                        <div class="form-group">
-                            <b class="form-label">Cho ai mượn</b>
-                            <div class="form-line">
-                                <input type="text" class="form-control" name="user_loan" required="">
-                            </div>
-                        </div>
+                        <input type="hidden" name="user_id" value="<?= user_id() ?>" />
                         <div class="form-group">
                             <b class="form-label">Ngày mượn:<i class="text-danger">*</i></b>
                             <div class="form-line">
@@ -219,7 +224,8 @@
                     <form id="form-modal" action="<?= base_url("admin/document/receive") ?>" method="POST">
 
                         <?= csrf_field() ?>
-                        <input type="hidden" name="id" />
+                        <input type="hidden" name="id" value="0" id="id" />
+                        <input type="hidden" name="document_id" value="<?= $tin->id ?>" />
                         <input type="hidden" name="user_id_receive" value="<?= user_id() ?>" />
                         <div class="form-group">
                             <b class="form-label">Trạng thái tài liệu:<i class="text-danger">*</i></b>
@@ -337,6 +343,10 @@
             }
 
         })
+        $(document).on("click", ".button_receive", function() {
+            let id = $(this).data("id");
+            $("#id").val(id);
+        });
         $(document).on("click", ".remove_file", function() {
             $(this).parents(".file_box").remove();
         });
@@ -348,7 +358,7 @@
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url": path + "admin/<?= $controller ?>/tableloan",
+                "url": path + "admin/<?= $controller ?>/tableloan/" + tin.id,
                 "dataType": "json",
                 "type": "POST",
                 "data": data
@@ -357,8 +367,6 @@
                     "data": "status_loan"
                 }, {
                     "data": "user"
-                }, {
-                    "data": "user_loan",
                 },
                 {
                     "data": "date_loan"

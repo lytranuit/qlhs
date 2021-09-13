@@ -3,35 +3,15 @@
 namespace App\Models;
 
 
-use CodeIgniter\Model;
+use App\Models\BaseModel;
 
-class DocumentCategoryModel extends Model
+class DocumentCategoryModel extends BaseModel
 {
     protected $table      = 'document_category';
     protected $primaryKey = 'id';
 
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
-
-    protected $allowedFields = [];
-    protected $protectFields = false;
-
-    //protected $useTimestamps = false;
-    //protected $createdField  = 'created_at';
-    //protected $updatedField  = 'updated_at';
-    //protected $deletedField  = 'deleted_at';
-
-    //protected $validationRules    = [];
-    //protected $validationMessages = [];
-    //protected $skipValidation     = true;
-    protected function initialize()
-    {
-        $db = $this->db;
-        $array = $db->getFieldNames($this->table);
-        foreach ($array as $key) {
-            $this->allowedFields[] = $key;
-        }
-    }
     public function document_by_category($id)
     {
         $builder = $this->db->table('document_category');

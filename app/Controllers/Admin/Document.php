@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Models\FileModel;
+use App\Libraries\Ciqrcode;
 
 class Document extends BaseController
 {
@@ -128,7 +129,7 @@ class Document extends BaseController
             $data = $this->request->getPost();
 
             $obj = $Document_model->create_object($data);
-            $id = $Document_model->save($obj);
+            $id = $Document_model->insert($obj);
             /* CATEGORY */
             $related_new = array();
             if (isset($data['category_list'])) {
@@ -157,6 +158,32 @@ class Document extends BaseController
                 }
                 // die();
             }
+            //QRCODE
+
+            /* Load QR Code Library */
+            // $this->load->library('ciqrcode');
+            /* Data */
+            $data_qr = base_url("admin/" . $this->data['controller'] . "/edit/$id");
+            $hexocde = bin2hex($data_qr);
+            $dir = FCPATH . "assets/qrcode/";
+            $save_name  = $hexocde . '.png';
+
+            /* QR Code File Directory Initialize */
+            if (!file_exists($dir)) {
+                mkdir($dir, 0775, true);
+            }
+
+            /* QR Configuration  */
+            $ciqrcode = new Ciqrcode();
+
+            /* QR Data  */
+            $params['data']     = $data_qr;
+            $params['level']    = 'L';
+            $params['size']     = 10;
+            $params['savename'] = $dir . $save_name;
+
+            $ciqrcode->generate($params);
+            $Document_model->update($id, array("image_url" => "/assets/qrcode/$save_name"));
             return redirect()->to(base_url('admin/' . $this->data['controller']));
         } else {
             //load_editor($this->data);
@@ -258,6 +285,28 @@ class Document extends BaseController
             exit;
         }
     }
+
+    public function receive()
+    { /////// trang ca nhan
+        if (isset($_POST)) {
+            helper("auth");
+            $Document_model = model("DocumentModel");
+            $DocumentLoanModel = model("DocumentLoanModel");
+            $data = $this->request->getPost();
+            $id = $data['id'];
+            $document_id = $data['document_id'];
+            $document_status = $data['status_id_return'];
+
+            $obj = $DocumentLoanModel->create_object($data);
+            $DocumentLoanModel->update($id, $obj);
+
+            $Document_model->update($document_id, array('status_id' => $document_status));
+
+
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            exit;
+        }
+    }
     public function table()
     {
         $Document_model = model("DocumentModel");
@@ -328,13 +377,13 @@ class Document extends BaseController
 
         echo json_encode($json_data);
     }
-    public function tableloan()
+    public function tableloan($id)
     {
         $DocumentLoanModel = model("DocumentLoanModel");
         $limit = $this->request->getVar('length');
         $start = $this->request->getVar('start');
         $page = ($start / $limit) + 1;
-        $where = $DocumentLoanModel;
+        $where = $DocumentLoanModel->where("document_id", $id);
 
         $totalData = $where->countAllResults();
         //echo "<pre>";
@@ -344,17 +393,17 @@ class Document extends BaseController
         if (empty($this->request->getPost('search')['value'])) {
             //            $max_page = ceil($totalFiltered / $limit);
 
-            $where = $DocumentLoanModel;
+            $where = $DocumentLoanModel->where("document_id", $id);
         } else {
             // $search = $this->request->getPost('search')['value'];
             // $sWhere = "(LOWER(code) LIKE LOWER('%$search%') OR name_vi like '%" . $search . "%')";
             // $where =  $Document_model->where($sWhere);
             // $totalFiltered = $where->countAllResults();
             // $where = $Document_model->where($sWhere);
-            $where = $DocumentLoanModel;
+            $where = $DocumentLoanModel->where("document_id", $id);
         }
 
-        $where = $DocumentLoanModel;
+        $where = $DocumentLoanModel->where("document_id", $id);
         $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
 
         $DocumentLoanModel->relation($posts, array('user', 'status_loan', 'status_return', 'user_receive'));
@@ -377,7 +426,7 @@ class Document extends BaseController
                 $nestedData['status_return'] = isset($post->status_return) ? $post->status_return->name : $post->status_id_return;
 
                 if ($post->user_id_receive < 1) {
-                    $nestedData['user_receive'] = '<a href="" class="btn btn-primary btn-sm mr-2" data-target="#receive-modal" data-toggle="modal">'
+                    $nestedData['user_receive'] = '<a href="" class="btn btn-primary btn-sm mr-2 button_receive" data-target="#receive-modal" data-toggle="modal" data-id="' . $post->id . '">'
                         . '<i class="fas fa-undo-alt">'
                         . '</i> Nhận lại tài liệu'
                         . '</a>';

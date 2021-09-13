@@ -60,12 +60,12 @@
                     </a>
                 </li>
                 <li class="app-sidebar__heading">Cài đặt</li>
-                <li>
+                <!-- <li>
                     <a href="<?= base_url() ?>/admin/settings" class="">
                         <i class="metismenu-icon fas fa-wrench"></i>
                         Cài đặt chung
                     </a>
-                </li>
+                </li> -->
                 <li>
                     <a href="<?= base_url() ?>/admin/user/">
                         <i class="metismenu-icon fa fa-lock"></i>

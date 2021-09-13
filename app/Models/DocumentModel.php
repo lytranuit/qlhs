@@ -3,42 +3,16 @@
 namespace App\Models;
 
 use CodeIgniter\Database\BaseBuilder;
-use CodeIgniter\Model;
+use App\Models\BaseModel;
 use phpDocumentor\Reflection\Types\Null_;
 
-class DocumentModel extends Model
+class DocumentModel extends BaseModel
 {
     protected $table      = 'document';
     protected $primaryKey = 'id';
 
     protected $returnType     = 'App\Entities\Document';
-    protected $useSoftDeletes = true;
-    protected $protectFields = false;
 
-    // protected $allowedFields = ['image_url', 'name_vi', 'name_en', 'name_jp', 'description_vi', 'description_en', 'description_jp', 'version','date','date_effect','date_'];
-
-    protected function initialize()
-    {
-        $db = $this->db;
-        $array = $db->getFieldNames($this->table);
-        foreach ($array as $key) {
-            $this->allowedFields[] = $key;
-        }
-    }
-
-    public function relation(&$data, $relation = array())
-    {
-        $type = gettype($data);
-        if ($type == "array" && !isset($data['id'])) {
-            foreach ($data as &$row) {
-                $row = $this->format_row($row, $relation);
-            }
-        } else {
-            $data = $this->format_row($data, $relation);
-        }
-
-        return $data;
-    }
     function format_row($row_a, $relation)
     {
         if (gettype($row_a) == "object") {
@@ -76,26 +50,4 @@ class DocumentModel extends Model
         }
         return $row_a;
     }
-    function create_object($data)
-    {
-        $db = $this->db;
-        $array = $db->getFieldNames($this->table);
-        $obj = array();
-        foreach ($array as $key) {
-            if (isset($data[$key])) {
-                $obj[$key] = $data[$key];
-            } else
-                continue;
-        }
-
-        return $obj;
-    }
-    protected $useTimestamps = true;
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
-
-    //protected $validationRules    = [];
-    //protected $validationMessages = [];
-    protected $skipValidation     = true;
 }
