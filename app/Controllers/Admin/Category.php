@@ -30,7 +30,7 @@ class Category extends BaseController
             $Category_model = model("CategoryModel");
             $data = $this->request->getPost();
             $obj = $Category_model->create_object($data);
-            $Category_model->save($obj);
+            $Category_model->insert($obj);
             return redirect()->to(base_url('admin/' . $this->data['controller']));
         } else {
             //load_editor($this->data);
@@ -45,9 +45,13 @@ class Category extends BaseController
             $Category_model = model("CategoryModel");
             $data = $this->request->getPost();
 
+            $obj_old = $Category_model->where(array('id' => $id))->asArray()->first();
             $obj = $Category_model->create_object($data);
             // print_r($obj);die();
             $Category_model->update($id, $obj);
+
+            $description = "User " . user()->name . " updated a category";
+            $Category_model->trail(1, 'update', $obj, $obj_old, $description);
             return redirect()->to(base_url('admin/' . $this->data['controller']));
         } else {
             $Category_model = model("CategoryModel");
@@ -98,12 +102,15 @@ class Category extends BaseController
                 $CategoryModel->update($id, $array);
             }
         }
+
+        $description = "User " . user()->name . " reorder categories";
+        $CategoryModel->trail(1, 'reorder', null, null, $description);
     }
 
     public function remove_product($id)
     { /////// trang ca nhan
         $ProductCategoryModel = model("ProductCategoryModel");
-        $ProductCategoryModel->where(array("id" => $id))->delete();
+        $ProductCategoryModel->delete($id);
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }

@@ -62,7 +62,8 @@
                     "data": "name"
                 },
                 {
-                    "data": "description"
+                    "data": "description",
+                    "width":"400px"
                 },
                 {
                     "data": "old_values"

@@ -7,7 +7,6 @@ use App\Libraries\Ciqrcode;
 
 class Document extends BaseController
 {
-
     public function index()
     {
         // echo date("Y-m-d H:i:s");
@@ -29,6 +28,7 @@ class Document extends BaseController
             // echo "<pre>";
             // print_r($data);
             // die();
+            $obj_old = $Document_model->where(array('id' => $id))->asArray()->first();
             $obj = $Document_model->create_object($data);
             $Document_model->update($id, $obj);
             /* CATEGORY */
@@ -76,6 +76,11 @@ class Document extends BaseController
                 }
                 // die();
             }
+
+
+            $description = "User " . user()->name . " updated a document";
+            $Document_model->trail(1, 'update', $obj, $obj_old, $description);
+
             return redirect()->to(base_url('admin/' . $this->data['controller']));
         } else {
             $Document_model = model("DocumentModel");
@@ -232,7 +237,7 @@ class Document extends BaseController
                         'mimeType' => $mimeType
                     );
                     $obj = $DocumentFileModel->create_object($array);
-                    $id = $DocumentFileModel->insert($array);
+                    $id = $DocumentFileModel->insert($obj);
 
                     $item = $DocumentFileModel->where(array('id' => $id))->asArray()->first();
                     // Response
@@ -260,7 +265,7 @@ class Document extends BaseController
     public function remove($id)
     { /////// trang ca nhan
         $DocumentModel = model("DocumentModel");
-        $DocumentModel->where(array("id" => $id))->delete();
+        $DocumentModel->delete($id);
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
@@ -276,9 +281,12 @@ class Document extends BaseController
             $data['status_id_loan'] = $tin->status_id;
             if ($data['status_id_loan'] != 4) {
                 $obj = $DocumentLoanModel->create_object($data);
-                $DocumentLoanModel->save($obj);
+                $DocumentLoanModel->insert($obj);
 
                 $Document_model->update($tin->id, array('status_id' => 4));
+
+                $description = "User " . user()->name . " lent a document";
+                $DocumentLoanModel->trail(1, 'loan', $obj, null, $description);
             }
 
             header('Location: ' . $_SERVER['HTTP_REFERER']);
@@ -301,6 +309,9 @@ class Document extends BaseController
             $DocumentLoanModel->update($id, $obj);
 
             $Document_model->update($document_id, array('status_id' => $document_status));
+
+            $description = "User " . user()->name . " received a document";
+            $DocumentLoanModel->trail(1, 'receive', $obj, null, $description);
 
 
             header('Location: ' . $_SERVER['HTTP_REFERER']);

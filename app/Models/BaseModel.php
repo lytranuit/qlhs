@@ -14,7 +14,9 @@ class BaseModel extends Model
     protected $allowedFields = [];
 
     protected $protectFields = false;
+    protected $afterInsert = ['insertTrail'];
 
+    protected $afterDelete = ['deleteTrail'];
     public function relation(&$data, $relation = array())
     {
         $type = gettype($data);
@@ -43,9 +45,42 @@ class BaseModel extends Model
 
         return $obj;
     }
-    public function trail($status, $event, $table = NULL, $set = NULL, $previous_values = NULL, $description = null)
+    public function insertTrail($params)
     {
-        if ($table == NULL) $table = $this->table;
+        $id = $params['id'];
+        $data = $params['data'];
+        $this->trail($id, 'insert', $data, null, null);
+    }
+
+    public function deleteTrail($params)
+    {
+        // echo "<pre>";
+        // print_r($params);
+        // die();
+
+        $list_id = $params['id'];
+        $result = $params['result'];
+        if (empty($list_id)) return;
+        if ($result != 1) return;
+        foreach ($list_id as $id) {
+            $this->trail($id, 'delete', null, $id, null);
+        }
+        return $params;
+    }
+    // public function updateTrail($params)
+    // {
+    //     $id = $params['id'];
+    //     $data = $params['data'];
+    //     // $object = $this->find()
+    //     echo "<pre>";
+    //     print_r($params);
+    //     die();
+    //     // $this->trail($id, 'update', null, $data, null, null);
+    // }
+
+    public function trail($status, $event, $set = NULL, $previous_values = NULL, $description = null)
+    {
+        $table = $this->table;
         if (!$status) return 1;  // event not performed
         if ($event == 'update') {
             $this->diff_on_update($previous_values, $set);
@@ -60,13 +95,14 @@ class BaseModel extends Model
 
         if (is_null($description)) {
             if ($event === 'insert') {
-                $description =   "USER '" . $this->session->userdata('username') . "' added a $this->name";
+                $description =   "USER '" . user()->name . "' added a $this->table";
             } elseif ($event == "update") {
-                $description =   "USER '" . $this->session->userdata('username') . "' edited a $this->name";
+                $description =   "USER '" . user()->name . "' edited a $this->table";
             } elseif ($event == "delete") {
-                $description = "USER '" . $this->session->userdata('username') . "' removed a $this->name";
+                $description = "USER '" . user()->name . "' removed a $this->table";
             }
         }
+        $request = \Config\Services::request();
         return $this->db->table('user_audit_trails')->insert(
             array(
                 'user_id' => user_id(),
@@ -75,9 +111,9 @@ class BaseModel extends Model
                 'table_name' => $table,
                 'old_values' => $old_value,
                 'new_values' => $new_value,
-                'url' => $this->request->getPath(),
-                'ip_address' => $this->request->getIPAddress(),
-                'user_agent' => $this->request->getUserAgent(),
+                'url' => $request->getPath(),
+                'ip_address' => $request->getIPAddress(),
+                'user_agent' => $request->getUserAgent(),
                 'description' => $description,
                 'created_at' => date('Y-m-d H:i:s'),
             )

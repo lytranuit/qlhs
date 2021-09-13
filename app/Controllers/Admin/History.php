@@ -48,8 +48,8 @@ class History extends BaseController
                 $nestedData['created_at'] = $post->created_at;
                 $nestedData['description'] = $post->description;
                 $nestedData['name'] = $post->name;
-                $nestedData['old_values'] = $post->old_values;
-                $nestedData['new_values'] = $post->new_values;
+                $nestedData['old_values'] = "<div style='word-break:break-all;'>$post->old_values</div>";
+                $nestedData['new_values'] =  "<div style='word-break:break-all;'>$post->new_values</div>";
                 $nestedData['action'] = '';
                 $data[] = $nestedData;
             }
