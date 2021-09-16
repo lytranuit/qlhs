@@ -47,9 +47,8 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        let data = {};
-        data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
-        $('#quanlytin').DataTable({
+        let list_status = <?= json_encode($status) ?>;
+        let table = $('#quanlytin').DataTable({
             "stateSave": true,
             "processing": true,
             "serverSide": true,
@@ -57,7 +56,15 @@
                 "url": path + "admin/<?= $controller ?>/table",
                 "dataType": "json",
                 "type": "POST",
-                "data": data
+                'data': function(data) {
+                    // Read values
+                    let search_type = localStorage.getItem('SEARCH_TYPE') || "code";
+                    let search_status = localStorage.getItem('SEARCH_STATUS') || "0";
+                    data['search_type'] = search_type;
+                    data['search_status'] = search_status;
+
+                    data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
+                }
             },
             "columns": [{
                     "data": "code"
@@ -74,8 +81,48 @@
                 {
                     "data": "action"
                 }
-            ]
+            ],
+            initComplete: function() {
+                $(".dataTables_filter label").prepend("<select style='margin-right: 0.5em;display: inline-block;width: auto;' class='form-control form-control-sm search_type'><option value='code'>Mã tài liệu</option><option value='name_vi'>Tên tài liệu</option><option value='status'>Trạng thái</option></select>");
+                $(".dataTables_filter label").append("<select style='margin-left: 0.5em;display: inline-block;width: auto;' class='form-control form-control-sm search_status d-none'></select>");
+                let html = "";
+                for (let status of list_status) {
+                    html += "<option value='" + status.id + "'>" + status.name + "</option>";
+                }
+                $(".search_status").append(html);
 
+                let search_type = localStorage.getItem('SEARCH_TYPE') || "code";
+                $(".search_type").val(search_type);
+
+                if (search_type == "status") {
+                    $(".search_status").removeClass("d-none");
+                    $(".dataTables_filter label input").addClass("d-none");
+                } else {
+                    $(".search_status").addClass("d-none");
+                    $(".dataTables_filter label input").removeClass("d-none");
+                }
+                let search_status = localStorage.getItem('SEARCH_STATUS') || "0";
+                $(".search_status").val(search_status);
+            }
+        });
+
+        $(document).on("change", ".search_type", function() {
+            let search_type = $(this).val();
+            localStorage.setItem('SEARCH_TYPE', search_type);
+            if (search_type == "status") {
+                $(".search_status").removeClass("d-none");
+                $(".dataTables_filter label input").addClass("d-none");
+            } else {
+                $(".search_status").addClass("d-none");
+                $(".dataTables_filter label input").removeClass("d-none");
+            }
+            table.ajax.reload();
+        });
+
+        $(document).on("change", ".search_status", function() {
+            let search_status = $(this).val();
+            localStorage.setItem('SEARCH_STATUS', search_status);
+            table.ajax.reload();
         });
     });
 </script>

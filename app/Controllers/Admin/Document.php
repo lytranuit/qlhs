@@ -11,6 +11,9 @@ class Document extends BaseController
     {
         // echo date("Y-m-d H:i:s");
         // die();
+
+        $DocumentStatus_model = model("DocumentStatusModel");
+        $this->data['status'] = $DocumentStatus_model->asObject()->findAll();
         return view($this->data['content'], $this->data);
     }
 
@@ -331,16 +334,27 @@ class Document extends BaseController
         //print_r($totalData);
         //die();
         $totalFiltered = $totalData;
-        if (empty($this->request->getPost('search')['value'])) {
-            //            $max_page = ceil($totalFiltered / $limit);
+
+        $search = $this->request->getPost('search')['value'];
+        $search_type = $this->request->getPost('search_type');
+        $search_status = $this->request->getPost('search_status');
+
+        if ($search_type == "status" && $search_status != "") {
+            $where = $Document_model;
+            $where->where("status_id", $search_status);
+            $totalFiltered = $where->countAllResults();
+
 
             $where = $Document_model;
+            $where->where("status_id", $search_status);
+        } elseif (empty($search)) {
+            $where = $Document_model;
         } else {
-            $search = $this->request->getPost('search')['value'];
-            $sWhere = "(LOWER(code) LIKE LOWER('%$search%') OR name_vi like '%" . $search . "%')";
-            $where =  $Document_model->where($sWhere);
+            $where = $Document_model;
+            $where->like($search_type, $search);
             $totalFiltered = $where->countAllResults();
-            $where = $Document_model->where($sWhere);
+            $where = $Document_model;
+            $where->like($search_type, $search);
         }
 
         $where = $Document_model;
@@ -402,7 +416,6 @@ class Document extends BaseController
         //die();
         $totalFiltered = $totalData;
         if (empty($this->request->getPost('search')['value'])) {
-            //            $max_page = ceil($totalFiltered / $limit);
 
             $where = $DocumentLoanModel->where("document_id", $id);
         } else {
@@ -431,7 +444,7 @@ class Document extends BaseController
                 $nestedData['date_loan'] = $post->date_loan;
                 $nestedData['note_loan'] = $post->note_loan;
                 $nestedData['date_return'] = $post->date_return;
-                $nestedData['note_return'] = $post->date_return;
+                $nestedData['note_return'] = $post->note_return;
 
                 $nestedData['status_loan'] = isset($post->status_loan) ? $post->status_loan->name : $post->status_id_loan;
                 $nestedData['status_return'] = isset($post->status_return) ? $post->status_return->name : $post->status_id_return;

@@ -52,13 +52,13 @@
                         Tài liệu
                     </a>
                 </li>
-                <li class="app-sidebar__heading">Auditrail</li>
+                <!-- <li class="app-sidebar__heading">Auditrail</li>
                 <li>
                     <a href="<?= base_url() ?>/admin/history" class="">
                         <i class="metismenu-icon fas fa-history"></i>
                         Auditrail
                     </a>
-                </li>
+                </li> -->
                 <li class="app-sidebar__heading">Cài đặt</li>
                 <!-- <li>
                     <a href="<?= base_url() ?>/admin/settings" class="">

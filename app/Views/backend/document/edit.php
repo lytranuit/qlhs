@@ -350,7 +350,13 @@
         $(document).on("click", ".remove_file", function() {
             $(this).parents(".file_box").remove();
         });
-
+        $("[name='category_list[]']").change(function() {
+            if ($(this).is(":checked")) {
+                $(this).parents("li").find("> .custom-checkbox > [name='category_list[]']").prop("checked", true);
+            } else {
+                $(this).closest("li").find("[name='category_list[]']").prop("checked", false);
+            }
+        })
         let data = {};
         data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
         $('#quanlytin').DataTable({
