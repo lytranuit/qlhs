@@ -134,21 +134,37 @@
         });
         scanner.addListener('scan', function(content) {
             console.log(content);
+            alert("content");
         });
         $("#scan").click(function() {
-            Instascan.Camera.getCameras().then(function(cameras) {
-                console.log(cameras);
-                if (cameras.length > 0) {
-                    scanner.start(cameras[cameras.length - 1]);
-                } else {
-                    alert('Không tìm thấy camera.');
-                    console.log('No cameras found.');
+            let select_cam = 0;
+            if ($("#select_cam").length > 0) {
+                select_cam = $("#select_cam").val();
+            }
+            if (cameras.length > 0) {
+                scanner.start(cameras[select_cam]);
+            } else {
+                alert('Không tìm thấy camera.');
+                console.log('No cameras found.');
+            }
+        });
+        var cameras = [];
+        Instascan.Camera.getCameras().then(function(c) {
+            cameras = c;
+            console.log(cameras);
+            if (cameras.length > 1) {
+                let html = "<select class='form-control form-control-sm' id='select_cam'>";
+                for (let k in cameras) {
+                    let cam = cameras[k];
+                    html += "<option value='" + k + "'>" + cam.name + "</option>";
                 }
-            }).catch(function(e) {
-                alert(e);
-            });
-        })
-
+                html += "</select>";
+                $("#scan").before(html);
+                $("#select_cam").val(cameras.length - 1);
+            }
+        }).catch(function(e) {
+            console.log(e);
+        });
     });
 </script>
 
