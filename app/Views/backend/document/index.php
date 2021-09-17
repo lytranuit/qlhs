@@ -133,6 +133,7 @@
             console.log(content);
         });
         Instascan.Camera.getCameras().then(function(cameras) {
+            console.log(cameras);
             if (cameras.length > 0) {
                 scanner.start(cameras[0]);
             } else {
