@@ -44,7 +44,7 @@
 
 <script src="<?= base_url('assets/lib/datatables/datatables.min.js') ?>"></script>
 <script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
-<script type="text/javascript" src="<?= base_url('assets/lib/camera/instascan.min.js') ?>"></script>
+<script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
 <video id="preview"></video>
 
 <script type="text/javascript">
