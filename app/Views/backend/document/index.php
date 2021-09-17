@@ -56,6 +56,16 @@
         justify-content: center;
     }
 
+    #preview {
+        width: 100%;
+    }
+
+    .change_cam {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+
     @-webkit-keyframes scanner {
         0% {
             bottom: 90%;
@@ -113,7 +123,6 @@
     }
 
     .custom-scanner {
-        width: 270px;
         height: 2px;
         background: #4CAF50;
         position: absolute;
@@ -125,7 +134,6 @@
         -o-animation: scanner 3s infinite linear;
         animation: scanner 3s infinite linear;
         box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.4);
-        display: none;
         left: -10px;
         right: 0;
         margin: auto;
@@ -142,6 +150,7 @@
 <div id="div_video" class="d-none">
     <video id="preview"></video>
     <div class="custom-scanner"></div>
+    <button class="btn btn-sm btn-secondary change_cam"><i class="fas fa-sync-alt"></i></button>
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
@@ -229,11 +238,14 @@
             console.log(content);
             location.href = content;
         });
+        var select_cam = 0;
+        $(".change_cam").click(function() {
+            select_cam++;
+            if (select_cam > cameras.length)
+                select_cam = 0;
+            $("#scan").trigger("click");
+        })
         $("#scan").click(function() {
-            let select_cam = 0;
-            if ($("#select_cam").length > 0) {
-                select_cam = $("#select_cam").val();
-            }
             if (cameras.length > 0) {
                 let cam = cameras[select_cam];
                 if (cam.name.indexOf("back") != -1) {
@@ -243,6 +255,9 @@
                 }
                 scanner.start(cam);
                 $("#div_video").removeClass("d-none");
+                if (cameras.length == 1) {
+                    $(".change_cam").addClass("d-none");
+                }
             } else {
                 alert('Không tìm thấy camera.');
                 console.log('No cameras found.');
@@ -251,17 +266,20 @@
         var cameras = [];
         Instascan.Camera.getCameras().then(function(c) {
             cameras = c;
-            console.log(cameras);
             if (cameras.length > 1) {
-                let html = "<select class='form-control form-control-sm' id='select_cam'>";
-                for (let k in cameras) {
-                    let cam = cameras[k];
-                    html += "<option value='" + k + "'>" + cam.name + "</option>";
-                }
-                html += "</select>";
-                $("#scan").before(html);
-                $("#select_cam").val(cameras.length - 1);
+                select_cam = cameras.length - 1;
             }
+            // console.log(cameras);
+            // if (cameras.length > 1) {
+            //     let html = "<select class='form-control form-control-sm d-none' id='select_cam'>";
+            //     for (let k in cameras) {
+            //         let cam = cameras[k];
+            //         html += "<option value='" + k + "'>" + cam.name + "</option>";
+            //     }
+            //     html += "</select>";
+            //     $("#scan").before(html);
+            //     $("#select_cam").val(cameras.length - 1);
+            // }
         }).catch(function(e) {
             console.log(e);
         });
