@@ -55,6 +55,81 @@
         align-items: center;
         justify-content: center;
     }
+
+    @-webkit-keyframes scanner {
+        0% {
+            bottom: 90%;
+        }
+
+        50% {
+            bottom: 10%;
+        }
+
+        100% {
+            bottom: 90%;
+        }
+    }
+
+    @-moz-keyframes scanner {
+        0% {
+            bottom: 90%;
+        }
+
+        50% {
+            bottom: 10%;
+        }
+
+        100% {
+            bottom: 90%;
+        }
+    }
+
+    @-o-keyframes scanner {
+        0% {
+            bottom: 90%;
+        }
+
+        50% {
+            bottom: 10%;
+        }
+
+        100% {
+            bottom: 90%;
+        }
+    }
+
+    @keyframes scanner {
+        0% {
+            bottom: 90%;
+        }
+
+        50% {
+            bottom: 10%;
+        }
+
+        100% {
+            bottom: 90%;
+        }
+    }
+
+    .custom-scanner {
+        width: 270px;
+        height: 2px;
+        background: #4CAF50;
+        position: absolute;
+        -webkit-transition: all 200ms linear;
+        -moz-transition: all 200ms linear;
+        transition: all 200ms linear;
+        -webkit-animation: scanner 3s infinite linear;
+        -moz-animation: scanner 3s infinite linear;
+        -o-animation: scanner 3s infinite linear;
+        animation: scanner 3s infinite linear;
+        box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.4);
+        display: none;
+        left: -10px;
+        right: 0;
+        margin: auto;
+    }
 </style>
 <?= $this->endSection() ?>
 
@@ -66,6 +141,7 @@
 <script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
 <div id="div_video" class="d-none">
     <video id="preview"></video>
+    <div class="custom-scanner"></div>
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
