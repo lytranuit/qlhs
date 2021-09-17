@@ -10,6 +10,9 @@
         <section class="card card-fluid">
             <h5 class="card-header drag-handle">
                 <a class="btn btn-success btn-sm" href="<?= base_url("admin/$controller/add") ?>">Thêm</a>
+                <div style="margin-left:auto;">
+                    <a class="btn btn-sm btn-success" id='scan' href="#"><i class="fas fa-qrcode"></i> Quét QR</a>
+                </div>
             </h5>
             <div class="card-body">
                 <div class="table-responsive-md">
@@ -132,16 +135,20 @@
         scanner.addListener('scan', function(content) {
             console.log(content);
         });
-        Instascan.Camera.getCameras().then(function(cameras) {
-            console.log(cameras);
-            if (cameras.length > 0) {
-                scanner.start(cameras[0]);
-            } else {
-                console.error('No cameras found.');
-            }
-        }).catch(function(e) {
-            console.log(e);
-        });
+        $("#scan").click(function() {
+            Instascan.Camera.getCameras().then(function(cameras) {
+                console.log(cameras);
+                if (cameras.length > 0) {
+                    scanner.start(cameras[cameras.length - 1]);
+                } else {
+                    alert('Không tìm thấy camera.');
+                    console.log('No cameras found.');
+                }
+            }).catch(function(e) {
+                alert(e);
+            });
+        })
+
     });
 </script>
 
