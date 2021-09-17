@@ -129,19 +129,20 @@
             localStorage.setItem('SEARCH_STATUS', search_status);
             table.ajax.reload();
         });
-        let scanner = new Instascan.Scanner({
-            video: document.getElementById('preview')
-        });
-        scanner.addListener('scan', function(content) {
-            console.log(content);
-            alert("content");
-        });
+
         $("#scan").click(function() {
             let select_cam = 0;
             if ($("#select_cam").length > 0) {
                 select_cam = $("#select_cam").val();
             }
             if (cameras.length > 0) {
+                let scanner = new Instascan.Scanner({
+                    video: document.getElementById('preview')
+                });
+                scanner.addListener('scan', function(content) {
+                    console.log(content);
+                    alert(content);
+                });
                 scanner.start(cameras[select_cam]);
             } else {
                 alert('Không tìm thấy camera.');
