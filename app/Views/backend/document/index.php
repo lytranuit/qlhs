@@ -64,7 +64,7 @@
 <script src="<?= base_url('assets/lib/datatables/datatables.min.js') ?>"></script>
 <script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
 <script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
-<div id="div_video">
+<div id="div_video" class="d-none">
     <video id="preview"></video>
 </div>
 <script type="text/javascript">
@@ -166,7 +166,7 @@
                     scanner.mirror = true
                 }
                 scanner.start(cam);
-                $("#div_video").show();
+                $("#div_video").removeClass("d-none");
             } else {
                 alert('Không tìm thấy camera.');
                 console.log('No cameras found.');
