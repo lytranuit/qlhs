@@ -56,9 +56,6 @@
         justify-content: center;
     }
 
-    #preview {
-        width: 100%;
-    }
 
     .change_cam {
         position: absolute;

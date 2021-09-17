@@ -367,8 +367,8 @@ class Document extends BaseController
         $data = array();
         if (!empty($posts)) {
             foreach ($posts as $post) {
-                $nestedData['id'] = $post->id;
-                $nestedData['code'] = $post->code;
+                $nestedData['id'] =  $post->id;
+                $nestedData['code'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->code . '</a>';
                 $nestedData['name_vi'] = $post->name_vi;
                 $nestedData['file'] = "";
                 if (isset($post->files)) {
@@ -381,10 +381,7 @@ class Document extends BaseController
                 }
                 $nestedData['status'] = isset($post->status) ? $post->status->name : $post->status_id;
 
-                $nestedData['action'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '" class="btn btn-warning btn-sm mr-2" title="edit">'
-                    . '<i class="fas fa-pencil-alt">'
-                    . '</i>'
-                    . '</a><a href="' . base_url("admin/" . $this->data['controller'] . "/remove/" . $post->id) . '" class="btn btn-danger btn-sm mr-2" title="remove" data-type="confirm">'
+                $nestedData['action'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/remove/" . $post->id) . '" class="btn btn-danger btn-sm mr-2" title="remove" data-type="confirm">'
                     . '<i class="fas fa-trash-alt">'
                     . '</i>'
                     . '</a>';
