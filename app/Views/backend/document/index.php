@@ -40,6 +40,22 @@
 <?= $this->section("style") ?>
 
 <link rel="stylesheet" href="<?= base_url("assets/lib/datatables/datatables.min.css") ?> " ?>
+<style rel="stylesheet" type="text/css">
+    #div_video {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        background: #8080808c;
+        z-index: 11;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
 <?= $this->endSection() ?>
 
 <!-- Script --->
@@ -48,8 +64,9 @@
 <script src="<?= base_url('assets/lib/datatables/datatables.min.js') ?>"></script>
 <script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
 <script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
-<video id="preview"></video>
-
+<div id="div_video">
+    <video id="preview"></video>
+</div>
 <script type="text/javascript">
     $(document).ready(function() {
         let list_status = <?= json_encode($status) ?>;
@@ -129,21 +146,27 @@
             localStorage.setItem('SEARCH_STATUS', search_status);
             table.ajax.reload();
         });
-
+        let scanner = new Instascan.Scanner({
+            video: document.getElementById('preview')
+        });
+        scanner.addListener('scan', function(content) {
+            console.log(content);
+            location.href = content;
+        });
         $("#scan").click(function() {
             let select_cam = 0;
             if ($("#select_cam").length > 0) {
                 select_cam = $("#select_cam").val();
             }
             if (cameras.length > 0) {
-                let scanner = new Instascan.Scanner({
-                    video: document.getElementById('preview')
-                });
-                scanner.addListener('scan', function(content) {
-                    console.log(content);
-                    alert(content);
-                });
-                scanner.start(cameras[select_cam]);
+                let cam = cameras[select_cam];
+                if (cam.name.indexOf("back") != -1) {
+                    scanner.mirror = false
+                } else {
+                    scanner.mirror = true
+                }
+                scanner.start(cam);
+                $("#div_video").show();
             } else {
                 alert('Không tìm thấy camera.');
                 console.log('No cameras found.');
