@@ -217,6 +217,13 @@
                 return false;
             }
         });
+        $("[name='category_list[]']").change(function() {
+            if ($(this).is(":checked")) {
+                $(this).parents("li").find("> .custom-checkbox > [name='category_list[]']").prop("checked", true);
+            } else {
+                $(this).closest("li").find("[name='category_list[]']").prop("checked", false);
+            }
+        })
     });
 
     function add_file(item) {
