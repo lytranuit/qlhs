@@ -26,4 +26,8 @@ class OptionModel extends BaseModel
         }
         return $return;
     }
+    
+    protected $useTimestamps = false;
+
+    protected $skipValidation     = true;
 }

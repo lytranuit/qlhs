@@ -2,17 +2,18 @@
 
 namespace Myth\Auth\Models;
 
-use CodeIgniter\Model;
 use Myth\Auth\Authorization\GroupModel;
 use Myth\Auth\Entities\User;
+use App\Models\BaseModel;
 
-class UserModel extends Model
+class UserModel extends BaseModel
 {
     protected $table = 'auth_users';
     protected $primaryKey = 'id';
 
     protected $returnType = User::class;
     protected $useSoftDeletes = true;
+    protected $protectFields = false;
 
     protected $allowedFields = [
         'email', 'username', 'password_hash', 'reset_hash', 'reset_at', 'reset_expires', 'activate_hash',
@@ -23,8 +24,8 @@ class UserModel extends Model
     protected $useTimestamps = true;
 
     protected $validationRules = [
-        'email'         => 'valid_email|is_unique[users.email,id,{id}]',
-        'username'      => 'required|alpha_numeric_punct|min_length[3]|is_unique[users.username,id,{id}]',
+        'email'         => 'valid_email|is_unique[auth_users.email,id,{id}]',
+        'username'      => 'required|alpha_numeric_punct|min_length[3]|is_unique[auth_users.username,id,{id}]',
         'password_hash' => 'required',
     ];
     protected $validationMessages = [];
@@ -190,6 +191,7 @@ class UserModel extends Model
         }
         return $data;
     }
+
     public function setAssignGroup($group_id)
     {
         $this->assignGroup = $group_id;

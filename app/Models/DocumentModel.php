@@ -31,6 +31,11 @@ class DocumentModel extends BaseModel
                 $builder = $this->db->table('document_status');
                 $row_a->status = $builder->where('id', $status_id)->get()->getFirstRow();
             }
+            if (in_array("samecode", $relation)) {
+                $code = $row_a->code;
+                $builder = $this->db->table('document');
+                $row_a->samecode = $builder->where("deleted_at", NULL)->where('code', $code)->get()->getResult();
+            }
         } else {
             if (in_array("categories", $relation)) {
                 $document_id = $row_a['id'];
@@ -47,7 +52,18 @@ class DocumentModel extends BaseModel
                 $builder = $this->db->table('document_status');
                 $row_a['status'] = $builder->where('id', $status_id)->get()->getFirstRow("array");
             }
+
+            if (in_array("samecode", $relation)) {
+                $code = $row_a['code'];
+                $builder = $this->db->table('document');
+                $row_a['samecode'] = $builder->where("deleted_at", NULL)->where('code', $code)->get()->getResult("array");
+            }
         }
         return $row_a;
+    }
+    function set_value_active()
+    {
+        $this->where("is_active", 1);
+        return $this;
     }
 }

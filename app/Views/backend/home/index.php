@@ -25,7 +25,6 @@
                 </div>
                 <span class="badge badge-light text-warning">Tài liệu trong kho</span>
                 <h3 class="my-3"><?= $num_doc_in_inventory ?></h3>
-
             </div>
             <!--end card-body-->
         </div>

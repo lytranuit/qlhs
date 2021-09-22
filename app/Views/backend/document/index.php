@@ -164,9 +164,10 @@
                     // Read values
                     let search_type = localStorage.getItem('SEARCH_TYPE') || "code";
                     let search_status = localStorage.getItem('SEARCH_STATUS') || "0";
+                    let filter = localStorage.getItem('SEARCH_FILTER') || "0";
                     data['search_type'] = search_type;
                     data['search_status'] = search_status;
-
+                    data['filter'] = filter;
                     data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
                 }
             },
@@ -189,6 +190,7 @@
             initComplete: function() {
                 $(".dataTables_filter label").prepend("<select style='margin-right: 0.5em;display: inline-block;width: auto;' class='form-control form-control-sm search_type'><option value='code'>Mã tài liệu</option><option value='name_vi'>Tên tài liệu</option><option value='status'>Trạng thái</option></select>");
                 $(".dataTables_filter label").append("<select style='margin-left: 0.5em;display: inline-block;width: auto;' class='form-control form-control-sm search_status d-none'></select>");
+                $(".dataTables_length label").prepend("<select style='margin-right: 0.5em;display: inline-block;width: auto;' class='form-control form-control-sm filter'><option value='0'>Tất cả</option><option value='1'>Tài liệu hiện hành</option></select>");
                 let html = "";
                 for (let status of list_status) {
                     html += "<option value='" + status.id + "'>" + status.name + "</option>";
@@ -207,9 +209,17 @@
                 }
                 let search_status = localStorage.getItem('SEARCH_STATUS') || "0";
                 $(".search_status").val(search_status);
+
+                let filter = localStorage.getItem('SEARCH_FILTER') || "0";
+                $(".filter").val(filter);
             }
         });
 
+        $(document).on("change", ".filter", function() {
+            let filter = $(this).val();
+            localStorage.setItem('SEARCH_FILTER', filter);
+            table.ajax.reload();
+        });
         $(document).on("change", ".search_type", function() {
             let search_type = $(this).val();
             localStorage.setItem('SEARCH_TYPE', search_type);

@@ -117,28 +117,42 @@
                 </div>
             </div>
             <div class="card-body">
-
-                <?php if (!empty($documents)) : ?>
-                    <div class="dd" id="nestable2">
-                        <ol class="dd-list ui-sortable" id="nestable">
+                <div class="table-responsive-md">
+                    <table id="quanlytin" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Mã</th>
+                                <th>Tiêu đề</th>
+                                <th>Trạng thái</th>
+                                <th>Đính kèm</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             <?php foreach ($documents as $row) : ?>
-                                <li class="dd-item ui-sortable-handle" id="menuItem_<?= $row->pc_id ?>" data-id="<?= $row->pc_id ?>">
-                                    <div class="dd-handle">
-                                        <div><?= $row->code ?> - <?= $row->name_vi ?></div>
-                                        <div class="dd-nodrag btn-group ml-auto">
-                                            <a class="btn btn-sm btn-outline-light" href="<?= base_url() ?>/admin/document/up/<?= $row->document_id ?>">Up</a>
-                                            <a class="btn btn-sm btn-outline-light" href="<?= base_url() ?>/admin/document/edit/<?= $row->document_id ?>">Edit</a>
-                                            <a class="btn btn-sm btn-outline-light" href="<?= base_url() ?>/admin/<?= $controller ?>/remove_document/<?= $row->pc_id ?>" data-type="confirm" title="Xóa ra khỏi dạnh mục">
-                                                <i class="far fa-trash-alt"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <ol class="dd-list"></ol>
-                                </li>
+                                <tr>
+                                    <td>
+                                        <a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->document_id ?>"><?= $row->code ?></a>
+                                    </td>
+                                    <td>
+                                        <a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->document_id ?>"><?= $row->name_vi ?></a>
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+
                             <?php endforeach ?>
-                        </ol>
-                    </div>
-                <?php endif ?>
+                        </tbody>
+                    </table>
+                </div>
+               
             </div>
         </div>
     </div>

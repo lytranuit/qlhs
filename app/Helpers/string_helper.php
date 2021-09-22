@@ -193,7 +193,7 @@ if (!function_exists('html_nestable')) {
             $html .= '<li class="dd-item" id="menuItem_' . $row['id'] . '" data-id="' . $row['id'] . '">
                             <div class="dd-handle">
                              ' . $sub_html . '
-                                <div>' . $row['name_vi'] . '</div>
+                                <div><a href="' . base_url("admin/$controller/edit/" . $row['id']) . '">' . $row['name_vi'] . '</a></div>
                                 <div class="dd-nodrag btn-group ml-auto">
                                     <a class="btn btn-sm btn-outline-light" href="' . base_url("admin/$controller/edit/" . $row['id']) . '">Edit</a> 
                                     ' . $delete_html . '

@@ -17,7 +17,6 @@ class Document extends BaseController
         return view($this->data['content'], $this->data);
     }
 
-
     public function edit($id)
     { /////// trang ca nhan
         if (isset($_POST['dangtin'])) {
@@ -33,7 +32,13 @@ class Document extends BaseController
             // die();
             $obj_old = $Document_model->where(array('id' => $id))->asArray()->first();
             $obj = $Document_model->create_object($data);
+            ///Check hiện hành
+            if (isset($obj['is_active']) && $obj['is_active']) {
+                $Document_model->where("code", $obj['code'])->set("is_active", 0)->update();
+            }
+            ///UPDATE
             $Document_model->update($id, $obj);
+
             /* CATEGORY */
             $related_new = array();
             if (isset($data['category_list'])) {
@@ -137,6 +142,12 @@ class Document extends BaseController
             $data = $this->request->getPost();
 
             $obj = $Document_model->create_object($data);
+
+            ///Check hiện hành
+            if (isset($obj['is_active']) && $obj['is_active']) {
+                $Document_model->where("code", $obj['code'])->set("is_active", 0)->update();
+            }
+            //INSERT
             $id = $Document_model->insert($obj);
             /* CATEGORY */
             $related_new = array();
@@ -206,6 +217,95 @@ class Document extends BaseController
             return view($this->data['content'], $this->data);
         }
     }
+
+    public function upversion($id)
+    { /////// trang ca nhan
+        if (isset($_POST['dangtin'])) {
+            helper("auth");
+            $Document_model = model("DocumentModel");
+            $Document_category_model = model("DocumentCategoryModel");
+            $DocumentFile_model = model("DocumentFileModel");
+            $data = $this->request->getPost();
+
+            $obj = $Document_model->create_object($data);
+
+            ///Check hiện hành
+            if (isset($obj['is_active']) && $obj['is_active']) {
+                $Document_model->where("code", $obj['code'])->set("is_active", 0)->update();
+            }
+            //INSERT
+            $id = $Document_model->insert($obj);
+            /* CATEGORY */
+            $related_new = array();
+            if (isset($data['category_list'])) {
+                $related_new = array_merge($related_new, $data['category_list']);
+                unset($data['category_list']);
+            }
+            foreach ($related_new as $row) {
+                $array = array(
+                    'category_id' => $row,
+                    'document_id' => $id
+                );
+                $Document_category_model->insert($array);
+            }
+
+            /*
+             * File
+             */
+            // print_r($data['image_other']);
+            // die();
+            if (isset($data['files'])) {
+                foreach ($data['files'] as $row) {
+                    $array = array(
+                        'document_id' => $id,
+                    );
+                    $DocumentFile_model->update($row, $array);
+                }
+                // die();
+            }
+            //QRCODE
+
+            /* Load QR Code Library */
+            // $this->load->library('ciqrcode');
+            /* Data */
+            $data_qr = base_url("admin/" . $this->data['controller'] . "/edit/$id");
+            $hexocde = bin2hex($data_qr);
+            $dir = FCPATH . "assets/qrcode/";
+            $save_name  = $hexocde . '.png';
+
+            /* QR Code File Directory Initialize */
+            if (!file_exists($dir)) {
+                mkdir($dir, 0775, true);
+            }
+
+            /* QR Configuration  */
+            $ciqrcode = new Ciqrcode();
+
+            /* QR Data  */
+            $params['data']     = $data_qr;
+            $params['level']    = 'L';
+            $params['size']     = 10;
+            $params['savename'] = $dir . $save_name;
+
+            $ciqrcode->generate($params);
+            $Document_model->update($id, array("image_url" => "/assets/qrcode/$save_name"));
+            return redirect()->to(base_url('admin/' . $this->data['controller']));
+        } else {
+            //load_editor($this->data);
+            $Document_model = model("DocumentModel");
+            $tin = $Document_model->where(array('id' => $id))->asObject()->first();
+            $tin->version = $tin->version + 1;
+            $this->data['tin'] = $tin;
+            $category_model = model("CategoryModel");
+            $DocumentStatus_model = model("DocumentStatusModel");
+            $this->data['status'] = $DocumentStatus_model->asObject()->findAll();
+            $this->data['category'] = $category_model
+                ->orderBy('parent_id', 'ASC')->orderBy('sort', 'ASC')->asArray()->findAll();
+            $this->data['category'] = html_product_category_nestable($this->data['category'], 'parent_id', 0);
+            return view($this->data['content'], $this->data);
+        }
+    }
+
     public function fileupload()
     {
 
@@ -323,41 +423,39 @@ class Document extends BaseController
     }
     public function table()
     {
-        $Document_model = model("DocumentModel");
+        $Document_model = model("DocumentModel", false);
         $limit = $this->request->getVar('length');
         $start = $this->request->getVar('start');
+        $search = $this->request->getPost('search')['value'];
+        $search_type = $this->request->getPost('search_type');
+        $search_status = $this->request->getPost('search_status');
+        $filter = $this->request->getPost('filter');
         $page = ($start / $limit) + 1;
         $where = $Document_model;
+        if ($filter == "1")
+            $where->where("is_active", 1);
+        // echo "<pre>";
+        // print_r($swhere);
+        $totalData = $where->countAllResults(false);
 
-        $totalData = $where->countAllResults();
         //echo "<pre>";
         //print_r($totalData);
         //die();
         $totalFiltered = $totalData;
 
-        $search = $this->request->getPost('search')['value'];
-        $search_type = $this->request->getPost('search_type');
-        $search_status = $this->request->getPost('search_status');
 
         if ($search_type == "status" && $search_status != "") {
-            $where = $Document_model;
             $where->where("status_id", $search_status);
-            $totalFiltered = $where->countAllResults();
-
-
-            $where = $Document_model;
-            $where->where("status_id", $search_status);
+            $totalFiltered = $where->countAllResults(false);
         } elseif (empty($search)) {
-            $where = $Document_model;
+            // $where = $Document_model;
+            // echo "1";die();
         } else {
-            $where = $Document_model;
             $where->like($search_type, $search);
-            $totalFiltered = $where->countAllResults();
-            $where = $Document_model;
-            $where->like($search_type, $search);
+            $totalFiltered = $where->countAllResults(false);
         }
 
-        $where = $Document_model;
+        // $where = $Document_model;
         $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
 
         $Document_model->relation($posts, array('files', "status"));
@@ -368,8 +466,9 @@ class Document extends BaseController
         if (!empty($posts)) {
             foreach ($posts as $post) {
                 $nestedData['id'] =  $post->id;
-                $nestedData['code'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->code . '</a>';
+                $nestedData['code'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->code . "." . ($post->version < 10 ? "0" . $post->version : $post->version) . '</a>';
                 $nestedData['name_vi'] = $post->name_vi;
+                $nestedData['version'] = $post->version;
                 $nestedData['file'] = "";
                 if (isset($post->files)) {
                     foreach ($post->files as $row) {
@@ -379,9 +478,20 @@ class Document extends BaseController
                     </div>';
                     }
                 }
+                // if (isset($post->samecode)) {
+                //     $nestedData['version'] = "";
+                //     foreach ($post->samecode as $row) {
+                //         $nestedData['version'] .= '<div class="">'
+                //             . '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $row->id) . '">' . $row->code . "." . $row->version . '</a>'
+                //             . '</div>';
+                //     }
+                // }
                 $nestedData['status'] = isset($post->status) ? $post->status->name : $post->status_id;
 
-                $nestedData['action'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/remove/" . $post->id) . '" class="btn btn-danger btn-sm mr-2" title="remove" data-type="confirm">'
+                $nestedData['action'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/upversion/" . $post->id) . '" class="btn btn-warning btn-sm mr-2" title="Lên ấn bản?" data-type="confirm">'
+                    . '<i class="fas fa-arrow-alt-circle-up">'
+                    . '</i>'
+                    . '</a><a href="' . base_url("admin/" . $this->data['controller'] . "/remove/" . $post->id) . '" class="btn btn-danger btn-sm mr-2" title="Xóa tài liệu?" data-type="confirm">'
                     . '<i class="fas fa-trash-alt">'
                     . '</i>'
                     . '</a>';

@@ -53,9 +53,10 @@ class User extends BaseController
 
             $User_model = model("UserModel");
             $data = $this->request->getPost();
-            $obj = $User_model->find($id);
-            $obj->fill($data);
-            $User_model->save($obj);
+
+            $obj_old = $User_model->asArray()->find($id);
+            $obj = $User_model->create_object($data);
+            $User_model->update($id, $obj);
 
             if (isset($data['groups'])) {
                 $groupModel = model(GroupModel::class);
@@ -64,6 +65,8 @@ class User extends BaseController
                     $groupModel->addUserToGroup($id, $row);
                 }
             }
+
+            $User_model->trail(1, 'update', $obj, $obj_old, null);
             return redirect()->to(base_url('admin/user'));
         } else {
             $User_model = model("UserModel");
