@@ -16,21 +16,14 @@ class User extends BaseController
             helper("auth");
 
             $User_model = model(UserModel::class);
-            $config =  config('Auth');
-            $allowedPostFields = array_merge(['password'], $config->validFields, $config->personalFields);
-
             $data = $this->request->getPost();
             $data['email'] = time() . "@gmail.com";
             //print_r($data);
             //die();
-            $user = new \Myth\Auth\Entities\User($data);
+            $user = $User_model->create_object($data);
             //print_r($user);
             //die();
-            if (!$User_model->save($user)) {
-                print_r($User_model->errors());
-                die();
-            }
-            $id = $User_model->getInsertID();
+            $id = $User_model->insert($user);
 
             if (isset($data['groups'])) {
                 $groupModel = model(GroupModel::class);
