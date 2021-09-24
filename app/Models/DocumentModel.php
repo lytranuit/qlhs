@@ -11,7 +11,7 @@ class DocumentModel extends BaseModel
     protected $table      = 'document';
     protected $primaryKey = 'id';
 
-    protected $returnType     = 'App\Entities\Document';
+    protected $returnType     = 'object';
 
     function format_row($row_a, $relation)
     {

@@ -26,7 +26,18 @@ class OptionModel extends BaseModel
         }
         return $return;
     }
-    
+
+    function get_options_group($group)
+    {
+        $builder = $this->db->table('options');
+        $rows = $builder->where('group', $group)->get()->getResult("array");
+        $return = array();
+        foreach ($rows as $row) {
+            $return[$row['key']] = $row['value'];
+        }
+        return $return;
+    }
+
     protected $useTimestamps = false;
 
     protected $skipValidation     = true;

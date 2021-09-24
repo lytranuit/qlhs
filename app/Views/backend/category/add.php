@@ -106,20 +106,9 @@
 <!-- Script --->
 <?= $this->section('script') ?>
 
-<script src="<?= base_url("assets/lib/mustache/mustache.min.js") ?>"></script>
-<script src="<?= base_url("assets/lib/image_feature/jquery.image_v2.js") ?>"></script>
-<script src="<?= base_url("assets/lib/ckfinder/ckfinder.js") ?>"></script>
-<script src="<?= base_url("assets/lib/ckeditor/ckeditor.js") ?>"></script>
-
 <script type='text/javascript'>
-    var allEditors = document.querySelectorAll('.edit');
-    for (var i = 0; i < allEditors.length; ++i) {
-        CKEDITOR.replace(allEditors[i], {
-            height: '300px'
-        });
-    }
     $(document).ready(function() {
-        $(".image_ft").imageFeature();
+        // $(".image_ft").imageFeature();
         //$('.edit').froalaEditor({
         //    heightMin: 200,
         //    heightMax: 500, // Set the image upload URL.

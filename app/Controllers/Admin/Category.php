@@ -63,14 +63,15 @@ class Category extends BaseController
             //print_r($tin);
             //die();   
             $this->data['documents'] = $Document_category_model->document_by_category($id);
+            $Document_model->relation($this->data['documents'], array('files', "status"));
             // echo "<pre>";
             // print_r($this->data['products']);
             // die();
-            $this->data['documents_add'] = $Document_model->asObject()->findAll();
+            // $this->data['documents_add'] = $Document_model->asObject()->findAll();
 
-            $this->data['documents_disable'] = array_map(function ($item) {
-                return $item->document_id;
-            }, (array) $this->data['documents']);
+            // $this->data['documents_disable'] = array_map(function ($item) {
+            //     return $item->document_id;
+            // }, (array) $this->data['documents']);
             // echo "<pre>";
             // print_r($this->data['products_disable']);
             // die();

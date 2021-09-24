@@ -36,6 +36,14 @@ class Document extends BaseController
             if (isset($obj['is_active']) && $obj['is_active']) {
                 $Document_model->where("code", $obj['code'])->set("is_active", 0)->update();
             }
+            ///UPDATE SEND REVIEW & EXPIRE
+            if (isset($obj['date_review']) && $obj_old['date_review'] != $obj['date_review']) {
+                $obj['time_send_review'] = NULL;
+            }
+            ///UPDATE SEND REVIEW & EXPIRE
+            if (isset($obj['date_expire']) && $obj_old['date_expire'] != $obj['date_expire']) {
+                $obj['time_send_expire'] = NULL;
+            }
             ///UPDATE
             $Document_model->update($id, $obj);
 
@@ -183,9 +191,9 @@ class Document extends BaseController
             // $this->load->library('ciqrcode');
             /* Data */
             $data_qr = base_url("admin/" . $this->data['controller'] . "/edit/$id");
-            $hexocde = bin2hex($data_qr);
             $dir = FCPATH . "assets/qrcode/";
-            $save_name  = $hexocde . '.png';
+            $code1 =  $obj['code'] . "." . ($obj['version'] < 10 ? "0" . $obj['version'] : $obj['version']);
+            $save_name  = $id . "_" . $code1  . '.png';
 
             /* QR Code File Directory Initialize */
             if (!file_exists($dir)) {
@@ -467,7 +475,7 @@ class Document extends BaseController
             foreach ($posts as $post) {
                 $nestedData['id'] =  $post->id;
                 $nestedData['code'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->code . "." . ($post->version < 10 ? "0" . $post->version : $post->version) . '</a>';
-                $nestedData['name_vi'] = $post->name_vi;
+                $nestedData['name_vi'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '">' . $post->name_vi . '</a>';
                 $nestedData['version'] = $post->version;
                 $nestedData['file'] = "";
                 if (isset($post->files)) {
@@ -488,13 +496,13 @@ class Document extends BaseController
                 // }
                 $nestedData['status'] = isset($post->status) ? $post->status->name : $post->status_id;
 
-                $nestedData['action'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/upversion/" . $post->id) . '" class="btn btn-warning btn-sm mr-2" title="Lên ấn bản?" data-type="confirm">'
+                $nestedData['action'] = '<div class="btn-group"><a href="' . base_url("admin/" . $this->data['controller'] . "/upversion/" . $post->id) . '" class="btn btn-warning btn-sm" title="Lên ấn bản?" data-type="confirm">'
                     . '<i class="fas fa-arrow-alt-circle-up">'
                     . '</i>'
-                    . '</a><a href="' . base_url("admin/" . $this->data['controller'] . "/remove/" . $post->id) . '" class="btn btn-danger btn-sm mr-2" title="Xóa tài liệu?" data-type="confirm">'
+                    . '</a><a href="' . base_url("admin/" . $this->data['controller'] . "/remove/" . $post->id) . '" class="btn btn-danger btn-sm" title="Xóa tài liệu?" data-type="confirm">'
                     . '<i class="fas fa-trash-alt">'
                     . '</i>'
-                    . '</a>';
+                    . '</a></div>';
 
                 $data[] = $nestedData;
             }

@@ -29,9 +29,11 @@
                             </div>
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Tiêu đề:<span class="text-danger">*</span></b>
-                                <div class="col-12 col-lg-4 pt-1">
+                                <div class="col-12 col-lg-10 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="name_vi" required="" placeholder="Tiêu đề" />
                                 </div>
+                            </div>
+                            <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Trạng thái:<span class="text-danger">*</span></b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <select class="form-control form-control-sm" name="status_id" required="" <?= $tin->status_id == 4 ? "disabled" : "" ?>>
@@ -40,9 +42,6 @@
                                         <?php endforeach ?>
                                     </select>
                                 </div>
-
-                            </div>
-                            <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Hiện hành:</b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <div class="switch-button switch-button-xs switch-button-success">
@@ -61,7 +60,7 @@
                                 </div>
                                 <b class="col-12 col-lg-2 col-form-label">Ngày rà soát:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='date' name="date_expire" />
+                                    <input class="form-control form-control-sm" type='date' name="date_review" />
                                 </div>
                             </div>
 

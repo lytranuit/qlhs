@@ -41,15 +41,22 @@
                 </li>
                 </li>
 
-                <li class="app-sidebar__heading">Tài liệu</li>
+                <li class="app-sidebar__heading">Danh mục</li>
                 <li>
                     <a href="<?= base_url() ?>/admin/category" class="">
                         <i class="metismenu-icon fas fa-bars"></i>
                         Danh mục
                     </a>
+                </li>
+                <li class="app-sidebar__heading">Tài liệu</li>
+                <li>
                     <a href="<?= base_url() ?>/admin/document" class="">
                         <i class="metismenu-icon fas fa-file"></i>
                         Tài liệu
+                    </a>
+                    <a href="<?= base_url() ?>/admin/status" class="">
+                        <i class="metismenu-icon fas fa-info-circle"></i>
+                        Trạng thái
                     </a>
                 </li>
                 <!-- <li class="app-sidebar__heading">Auditrail</li>
@@ -60,12 +67,12 @@
                     </a>
                 </li> -->
                 <li class="app-sidebar__heading">Cài đặt</li>
-                <!-- <li>
+                <li>
                     <a href="<?= base_url() ?>/admin/settings" class="">
                         <i class="metismenu-icon fas fa-wrench"></i>
                         Cài đặt chung
                     </a>
-                </li> -->
+                </li>
                 <li>
                     <a href="<?= base_url() ?>/admin/user/">
                         <i class="metismenu-icon fa fa-lock"></i>

@@ -39,6 +39,8 @@ class BaseModel extends Model
         foreach ($array as $key) {
             if (isset($data[$key])) {
                 $obj[$key] = $data[$key];
+                if (($key == "date_expire" || $key == "date_effect" || $key == "date_review") && $data[$key] == "")
+                    $obj[$key] = null;
             } else
                 continue;
         }

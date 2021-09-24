@@ -103,18 +103,6 @@
         <div class="card card-fluid">
             <div class="card-header">
                 Doument
-                <div class="ml-auto">
-                    <select class="form-control document_add" multiple>
-                        <?php foreach ($documents_add as $row) : ?>
-                            <option value="<?= $row->id ?>" <?= in_array($row->id, $documents_disable) ? "disabled" : "" ?>>
-                                <?= $row->code ?> - <?= $row->name_vi ?>
-                            </option>
-                        <?php endforeach ?>
-                    </select>
-                    <button class="btn btn-success add_document">
-                        Add
-                    </button>
-                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive-md">
@@ -125,7 +113,6 @@
                                 <th>Tiêu đề</th>
                                 <th>Trạng thái</th>
                                 <th>Đính kèm</th>
-                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -138,13 +125,15 @@
                                         <a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->document_id ?>"><?= $row->name_vi ?></a>
                                     </td>
                                     <td>
-
+                                        <?= isset($row->status->name) ? $row->status->name : $row->status_id; ?>
                                     </td>
                                     <td>
-
-                                    </td>
-                                    <td>
-
+                                        <?php foreach ($row->files as $file) : ?>
+                                            <div class="">
+                                                <div class="file-icon" data-type="<?= $file->ext ?>"></div>
+                                                <a href="<?= $file->url ?>" download="<?= $file->name ?>"><?= $file->name ?></a>
+                                            </div>
+                                        <?php endforeach ?>
                                     </td>
                                 </tr>
 
@@ -152,7 +141,7 @@
                         </tbody>
                     </table>
                 </div>
-               
+
             </div>
         </div>
     </div>
@@ -164,36 +153,23 @@
 
 <!-- Style --->
 <?= $this->section("style") ?>
-
-<link rel="stylesheet" href="<?= base_url("assets/lib/sortable/sortable.css") ?> " ?>
-<link rel="stylesheet" href="<?= base_url("assets/lib/chosen/chosen.min.css") ?> " ?>
+<link rel="stylesheet" href="<?= base_url("assets/lib/datatables/datatables.min.css") ?> " ?>
 <?= $this->endSection() ?>
 
 <!-- Script --->
 <?= $this->section('script') ?>
 
-<script src="<?= base_url("assets/lib/mustache/mustache.min.js") ?>"></script>
-<script src="<?= base_url("assets/lib/image_feature/jquery.image_v2.js") ?>"></script>
-
-<script src="<?= base_url("assets/lib/chosen/chosen.jquery.js") ?>"></script>
-<script src="<?= base_url("assets/lib/sortable/jquery.mjs.nestedSortable.js") ?>"></script>
-<script src="<?= base_url("assets/lib/ckfinder/ckfinder.js") ?>"></script>
-<script src="<?= base_url("assets/lib/ckeditor/ckeditor.js") ?>"></script>
-
-
+<script src="<?= base_url('assets/lib/datatables/datatables.min.js') ?>"></script>
+<script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
 <script type='text/javascript'>
     var tin = <?= json_encode($tin) ?>;
     var controller = '<?= $controller ?>';
     fillForm($("#form-dang-tin"), tin);
-    var allEditors = document.querySelectorAll('.edit');
-    for (var i = 0; i < allEditors.length; ++i) {
-        CKEDITOR.replace(allEditors[i]);
-    }
     $(document).ready(function() {
 
-        $("select[multiple]").chosen();
-        $(".image_ft").imageFeature();
-
+        // $("select[multiple]").chosen();
+        // $(".image_ft").imageFeature();
+        $('#quanlytin').DataTable();
         //$('.edit').froalaEditor({
         //    heightMin: 200,
         //    heightMax: 500, // Set the image upload URL.
@@ -210,13 +186,6 @@
             debug: true,
             success: "valid"
         });
-
-        if (tin.image_url) {
-            $("#image_url").imageFeature("set_image", tin.image_url);
-        }
-        if (tin.banner_img) {
-            $("#banner_img").imageFeature("set_image", tin.banner_img);
-        }
         $("#form-dang-tin").validate({
             highlight: function(input) {
                 $(input).parents('.form-line').addClass('error');
@@ -232,30 +201,30 @@
                 return false;
             }
         });
-        $('#nestable').nestedSortable({
-            forcePlaceholderSize: true,
-            items: 'li',
-            opacity: .6,
-            maxLevels: 1,
-            placeholder: 'dd-placeholder',
-        });
-        $(".add_document").click(function() {
+        // $('#nestable').nestedSortable({
+        //     forcePlaceholderSize: true,
+        //     items: 'li',
+        //     opacity: .6,
+        //     maxLevels: 1,
+        //     placeholder: 'dd-placeholder',
+        // });
+        // $(".add_document").click(function() {
 
-            let document = $(".document_add").val();
-            let category_id = tin['id'];
-            $.ajax({
-                type: "POST",
-                data: {
-                    data: JSON.stringify(document),
-                    category_id: category_id,
-                },
-                url: path + "admin/" + controller + "/adddocumentcategory",
-                success: function(msg) {
-                    // alert("Success!");
-                    location.reload();
-                }
-            })
-        });
+        //     let document = $(".document_add").val();
+        //     let category_id = tin['id'];
+        //     $.ajax({
+        //         type: "POST",
+        //         data: {
+        //             data: JSON.stringify(document),
+        //             category_id: category_id,
+        //         },
+        //         url: path + "admin/" + controller + "/adddocumentcategory",
+        //         success: function(msg) {
+        //             // alert("Success!");
+        //             location.reload();
+        //         }
+        //     })
+        // });
     });
 </script>
 

@@ -62,6 +62,81 @@
     </div>
     <!--end col-->
 </div>
+<div class="row">
+    <div class="col-md-6 mt-3">
+        <div class="card card-fluid">
+            <div class="card-header">
+                Tài liệu cần rà soát
+            </div>
+            <div class="card-body">
+                <div class="table-responsive-md">
+                    <table id="quanlyreview" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Tài liệu</th>
+                                <th>Ngày rà soát</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($documents_review as $row) : ?>
+                                <tr>
+                                    <td><a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->id ?>"><?= $row->code ?>.<?= $row->version < 10 ? "0" . $row->version : $row->version ?> - <?= $row->name_vi ?></a></td>
+                                    <td><?= $row->date_review ?></td>
+                                </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mt-3">
+        <div class="card card-fluid">
+            <div class="card-header">
+                Tài liệu hết hiệu lực
+            </div>
+            <div class="card-body">
+                <div class="table-responsive-md">
+                    <table id="quanlyexpire" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Tài liệu</th>
+                                <th>Ngày hết hạn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($documents_expire as $row) : ?>
+                                <tr>
+                                    <td><a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->id ?>"><?= $row->code ?>.<?= $row->version < 10 ? "0" . $row->version : $row->version ?> - <?= $row->name_vi ?></a></td>
+                                    <td><?= $row->date_expire ?></td>
+                                </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?= $this->endSection() ?>
+
+<!-- Style --->
+<?= $this->section("style") ?>
+<link rel="stylesheet" href="<?= base_url("assets/lib/datatables/datatables.min.css") ?> " ?>
+<?= $this->endSection() ?>
 
 
+<!-- Script --->
+<?= $this->section('script') ?>
+
+<script src="<?= base_url('assets/lib/datatables/datatables.min.js') ?>"></script>
+<script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
+<script type='text/javascript'>
+    $(document).ready(function() {
+
+        $('#quanlyreview').DataTable();
+        $('#quanlyexpire').DataTable();
+    });
+</script>
 <?= $this->endSection() ?>
