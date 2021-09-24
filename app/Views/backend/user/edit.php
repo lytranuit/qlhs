@@ -20,7 +20,7 @@
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Username:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type="text" name="username" required="" placeholder="Username" aria-required="true">
+                                    <input class="form-control form-control-sm" type="text" name="username" readonly="" disabled placeholder="Username" aria-required="true">
                                 </div>
 
                                 <b class="col-12 col-lg-2 col-form-label">Tên:<i class="text-danger">*</i></b>

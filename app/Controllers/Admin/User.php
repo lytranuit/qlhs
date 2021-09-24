@@ -20,18 +20,27 @@ class User extends BaseController
             $data['email'] = time() . "@gmail.com";
             //print_r($data);
             //die();
-            $user = $User_model->create_object($data);
-            //print_r($user);
-            //die();
-            $id = $User_model->insert($user);
-
-            if (isset($data['groups'])) {
-                $groupModel = model(GroupModel::class);
-                foreach ($data['groups'] as $row) {
-                    $groupModel->addUserToGroup($id, $row);
+            $user = new \Myth\Auth\Entities\User($data);
+            $data['password_hash'] = $user->password_hash;
+            $obj = $User_model->create_object($data);
+            // echo "<pre>";
+            // print_r($obj);
+            // die();
+            $id = $User_model->insert($obj);
+            if ($id > 0) {
+                if (isset($data['groups'])) {
+                    $groupModel = model(GroupModel::class);
+                    foreach ($data['groups'] as $row) {
+                        $groupModel->addUserToGroup($id, $row);
+                    }
                 }
+                return redirect()->to(base_url('admin/user'));
+            } else {
+                print_r($User_model->errors());
             }
-            return redirect()->to(base_url('admin/user'));
+            // print_r($User_model->errors());
+            // print_r($id);
+            // die();
         } else {
 
             $group_model = model("GroupModel");
@@ -51,6 +60,8 @@ class User extends BaseController
             $obj = $User_model->create_object($data);
             $User_model->update($id, $obj);
 
+            // print_r($User_model->errors());
+            // die();
             if (isset($data['groups'])) {
                 $groupModel = model(GroupModel::class);
                 $groupModel->removeUserFromAllGroups($id);
