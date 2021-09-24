@@ -78,12 +78,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($documents_review as $row) : ?>
-                                <tr>
-                                    <td><a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->id ?>"><?= $row->code ?>.<?= $row->version < 10 ? "0" . $row->version : $row->version ?> - <?= $row->name_vi ?></a></td>
-                                    <td><?= $row->date_review ?></td>
-                                </tr>
-                            <?php endforeach ?>
                         </tbody>
                     </table>
                 </div>
@@ -105,12 +99,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($documents_expire as $row) : ?>
-                                <tr>
-                                    <td><a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->id ?>"><?= $row->code ?>.<?= $row->version < 10 ? "0" . $row->version : $row->version ?> - <?= $row->name_vi ?></a></td>
-                                    <td><?= $row->date_expire ?></td>
-                                </tr>
-                            <?php endforeach ?>
                         </tbody>
                     </table>
                 </div>
@@ -135,8 +123,44 @@
 <script type='text/javascript'>
     $(document).ready(function() {
 
-        $('#quanlyreview').DataTable();
-        $('#quanlyexpire').DataTable();
+        $('#quanlyreview').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": path + "admin/<?= $controller ?>/tablereview",
+                "dataType": "json",
+                "type": "POST",
+                'data': function(data) {
+                    data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
+                }
+            },
+            "columns": [{
+                    "data": "name"
+                },
+                {
+                    "data": "date"
+                }
+            ],
+        });
+        $('#quanlyexpire').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": path + "admin/<?= $controller ?>/tableexpire",
+                "dataType": "json",
+                "type": "POST",
+                'data': function(data) {
+                    data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
+                }
+            },
+            "columns": [{
+                    "data": "name"
+                },
+                {
+                    "data": "date"
+                }
+            ],
+        });
     });
 </script>
 <?= $this->endSection() ?>
