@@ -54,13 +54,14 @@ class Home extends BaseController
                 // die();
                 if (!$email->send()) {
                     // Will only print the email headers, excluding the message subject and body
+                    echo $email->printDebugger();
+                    file_put_contents(FCPATH . "writable/logs/email_review_" . time() . ".txt", $email->printDebugger());
                 } else {
                     $ids = array_map(function ($item) {
                         return $item->id;
                     }, $documents);
                     $document_model->update($ids, array('time_send_review' => date("Y-m-d H:i:s")));
                 }
-                echo $email->printDebugger();
             }
         }
 
@@ -102,13 +103,14 @@ class Home extends BaseController
                 // die();
                 if (!$email->send()) {
                     // Will only print the email headers, excluding the message subject and body
+                    echo $email->printDebugger();
+                    file_put_contents(FCPATH . "writable/logs/email_expire_" . time() . ".txt", $email->printDebugger());
                 } else {
                     $ids = array_map(function ($item) {
                         return $item->id;
                     }, $documents);
                     $document_model->update($ids, array('time_send_expire' => date("Y-m-d H:i:s")));
                 }
-                echo $email->printDebugger();
             }
         }
     }
