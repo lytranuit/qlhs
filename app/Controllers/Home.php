@@ -22,7 +22,7 @@ class Home extends BaseController
             $where = $document_model->where("date_review !=", "0000-00-00")->where("date_review <", date("Y-m-d", strtotime("+$before_send day")));
             if ($mail_review['type_send'] == 1)
                 $where->where("time_send_review", NULL);
-            $documents = $where->findAll();
+            $documents = $where->orderby("date_review", "DESC")->findAll();
             // echo "<pre>";
             // print_r($documents);
             // die();
@@ -67,10 +67,10 @@ class Home extends BaseController
         $mail_expire = $option_model->get_options_group("mail_expire");
         if ($mail_expire['is_send']) {
             $before_send = $mail_expire['before_send'];
-            $where = $document_model->where("date_expire!=", "0000-00-00")->where("date_expire <", date("Y-m-d", strtotime("+$before_send day")));
+            $where = $document_model->where("date_expire !=", "0000-00-00")->where("date_expire <", date("Y-m-d", strtotime("+$before_send day")));
             if ($mail_expire['type_send'] == 1)
                 $where->where("time_send_expire", NULL);
-            $documents = $where->findAll();
+            $documents = $where->orderby("date_expire", "DESC")->findAll();
             // echo "<pre>";
             // print_r($documents);
             // die();
