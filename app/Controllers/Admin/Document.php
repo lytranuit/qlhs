@@ -458,6 +458,9 @@ class Document extends BaseController
         } elseif (empty($search)) {
             // $where = $Document_model;
             // echo "1";die();
+        } elseif ($search_type == "code") {
+            $where->like("code", $search, "after");
+            $totalFiltered = $where->countAllResults(false);
         } else {
             $where->like($search_type, $search);
             $totalFiltered = $where->countAllResults(false);

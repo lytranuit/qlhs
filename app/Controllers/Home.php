@@ -55,12 +55,19 @@ class Home extends BaseController
                 if (!$email->send()) {
                     // Will only print the email headers, excluding the message subject and body
                     echo $email->printDebugger();
-                    file_put_contents(FCPATH . "writable/logs/email_review_" . time() . ".txt", $email->printDebugger());
+                    file_put_contents(FCPATH . "writable/logs/email_review_error_" . time() . ".txt", $email->printDebugger());
                 } else {
                     $ids = array_map(function ($item) {
                         return $item->id;
                     }, $documents);
                     $document_model->update($ids, array('time_send_review' => date("Y-m-d H:i:s")));
+                    $content = implode(",", $ids) . "\r\n";
+                    $content .= $mail_review['email_to'];
+
+                    $dir = FCPATH . "writable/logs/" . date("Y-m-d");
+                    if (!is_dir($dir))
+                        mkdir($dir, 0777, true);
+                    file_put_contents($dir . "/email_review_" . time() . ".txt", $content);
                 }
             }
         }
@@ -104,12 +111,19 @@ class Home extends BaseController
                 if (!$email->send()) {
                     // Will only print the email headers, excluding the message subject and body
                     echo $email->printDebugger();
-                    file_put_contents(FCPATH . "writable/logs/email_expire_" . time() . ".txt", $email->printDebugger());
+                    file_put_contents(FCPATH . "writable/logs/email_expire_error_" . time() . ".txt", $email->printDebugger());
                 } else {
                     $ids = array_map(function ($item) {
                         return $item->id;
                     }, $documents);
                     $document_model->update($ids, array('time_send_expire' => date("Y-m-d H:i:s")));
+
+                    $content = implode(",", $ids) . "\r\n";
+                    $content .= $mail_expire['email_to'];
+                    $dir = FCPATH . "writable/logs/" . date("Y-m-d");
+                    if (!is_dir($dir))
+                        mkdir($dir, 0777, true);
+                    file_put_contents($dir . "/email_expire_" . time() . ".txt", $content);
                 }
             }
         }

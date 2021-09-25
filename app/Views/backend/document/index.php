@@ -156,6 +156,7 @@
             "stateSave": true,
             "processing": true,
             "serverSide": true,
+            "ordering": false,
             "ajax": {
                 "url": path + "admin/<?= $controller ?>/table",
                 "dataType": "json",

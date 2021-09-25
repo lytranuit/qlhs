@@ -119,7 +119,7 @@
                             <?php foreach ($documents as $row) : ?>
                                 <tr>
                                     <td>
-                                        <a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->document_id ?>"><?= $row->code ?></a>
+                                        <a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->document_id ?>"><?= $row->code . "." . ($row->version < 10 ? "0" . $row->version : $row->version) ?></a>
                                     </td>
                                     <td>
                                         <a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->document_id ?>"><?= $row->name_vi ?></a>
