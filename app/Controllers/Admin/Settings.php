@@ -5,6 +5,13 @@ namespace App\Controllers\Admin;
 
 class Settings extends BaseController
 {
+
+    public function __construct()
+    {
+        if (!in_groups(array('admin'))) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+        }
+    }
     public function index()
     {
         if (isset($_POST['post'])) {

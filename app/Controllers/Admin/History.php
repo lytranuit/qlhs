@@ -5,6 +5,13 @@ namespace App\Controllers\Admin;
 
 class History extends BaseController
 {
+
+    public function __construct()
+    {
+        if (!in_groups(array('admin'))) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+        }
+    }
     public function index()
     {
         return view($this->data['content'], $this->data);

@@ -80,7 +80,6 @@ class Home extends BaseController
 
         echo json_encode($json_data);
     }
-
     public function tableexpire()
     {
         $Document_model = model("DocumentModel", false);

@@ -8,9 +8,11 @@
             <?= csrf_field() ?>
             <section class="card card-fluid">
                 <h5 class="card-header">
-                    <div class="d-inline-block w-100">
-                        <button type="submit" name="dangtin" class="btn btn-sm btn-primary float-right">Save</button>
-                    </div>
+                    <?php if (in_groups(array("admin", "editor"))) : ?>
+                        <div class="d-inline-block w-100">
+                            <button type="submit" name="dangtin" class="btn btn-sm btn-primary float-right">Save</button>
+                        </div>
+                    <?php endif ?>
                 </h5>
                 <div class="card-body">
                     <div class="row">
@@ -129,7 +131,9 @@
                                         <div class="card-header">
                                             Đính kèm
                                             <div style="margin-left:auto;">
-                                                <a class="btn btn-sm btn-success text-white float-right button_file">Thêm</a>
+                                                <?php if (in_groups(array("admin", "editor"))) : ?>
+                                                    <a class="btn btn-sm btn-success text-white float-right button_file">Thêm</a>
+                                                <?php endif ?>
                                                 <input type="file" class="d-none file_document" multiple>
                                             </div>
                                         </div>
@@ -145,9 +149,11 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <div class="d-inline-block w-100">
-                        <button type="submit" name="dangtin" class="btn btn-sm btn-primary float-right">Save</button>
-                    </div>
+                    <?php if (in_groups(array("admin", "editor"))) : ?>
+                        <div class="d-inline-block w-100">
+                            <button type="submit" name="dangtin" class="btn btn-sm btn-primary float-right">Save</button>
+                        </div>
+                    <?php endif ?>
                 </div>
             </section>
         </form>
@@ -168,7 +174,7 @@
         <section class="card card-fluid">
             <h5 class="card-header drag-handle">
                 Danh sách mượn tài liệu
-                <?php if ($tin->status_id != 4) : ?>
+                <?php if ($tin->status_id != 4 && in_groups(array("admin", "editor"))) : ?>
                     <div style="margin-left:auto;">
                         <a class="btn btn-danger btn-sm" data-target="#loan-modal" data-toggle="modal" href="">Cho mượn</a>
                     </div>

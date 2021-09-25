@@ -185,7 +185,7 @@ if (!function_exists('html_nestable')) {
                 $is_deleted = false;
             }
             $delete_html = "";
-            if ($is_deleted) {
+            if ($is_deleted && in_groups(array("admin", "editor"))) {
                 $delete_html = '<button class="btn btn-sm btn-outline-light dd-item-delete">
                 <i class="far fa-trash-alt"></i>
             </button>';
@@ -195,7 +195,6 @@ if (!function_exists('html_nestable')) {
                              ' . $sub_html . '
                                 <div><a href="' . base_url("admin/$controller/edit/" . $row['id']) . '">' . $row['name_vi'] . '</a></div>
                                 <div class="dd-nodrag btn-group ml-auto">
-                                    <a class="btn btn-sm btn-outline-light" href="' . base_url("admin/$controller/edit/" . $row['id']) . '">Edit</a> 
                                     ' . $delete_html . '
                                 </div>
                             </div>';

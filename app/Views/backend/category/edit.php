@@ -7,9 +7,11 @@
             <?= csrf_field() ?>
             <section class="card card-fluid">
                 <h5 class="card-header">
-                    <div class="d-inline-block w-100">
-                        <button type="submit" name="dangtin" class="btn btn-sm btn-primary float-right">Save</button>
-                    </div>
+                    <?php if (in_groups(array("admin", "editor"))) : ?>
+                        <div class="d-inline-block w-100">
+                            <button type="submit" name="dangtin" class="btn btn-sm btn-primary float-right">Save</button>
+                        </div>
+                    <?php endif ?>
                 </h5>
                 <div class="card-body">
                     <div class="row">

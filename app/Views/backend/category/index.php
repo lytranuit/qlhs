@@ -6,10 +6,13 @@
     <div class="col-12">
         <section class="card card-fluid">
             <h5 class="card-header drag-handle">
-                <a class="btn btn-success btn-sm" href="<?= base_url("admin/$controller/add") ?>">Thêm</a>
-                <div style="margin-left:auto;">
-                    <a class="btn btn-sm btn-primary" id='save' href="#">Save</a>
-                </div>
+                <?php if (in_groups(array("admin", "editor"))) : ?>
+                    <a class="btn btn-success btn-sm" href="<?= base_url("admin/$controller/add") ?>">Thêm</a>
+
+                    <div style="margin-left:auto;">
+                        <a class="btn btn-sm btn-primary" id='save' href="#">Save</a>
+                    </div>
+                <?php endif ?>
             </h5>
             <div class="card-body">
                 <div class="dd" id="nestable2">

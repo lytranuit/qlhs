@@ -16,7 +16,9 @@ class Status extends BaseController
     public function add()
     { /////// trang ca nhan
         if (isset($_POST['dangtin'])) {
-            helper("auth");
+            if (!in_groups(array('admin', 'editor'))) {
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+            }
             $DocumentStatusModel = model("DocumentStatusModel");
             $data = $this->request->getPost();
             $obj = $DocumentStatusModel->create_object($data);
@@ -94,12 +96,12 @@ class Status extends BaseController
             foreach ($posts as $post) {
                 $nestedData['id'] =  '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
                 $nestedData['name'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '">' . $post->name . '</a>';
-                if ($post->no_delete != "1")
+                $nestedData['action'] = "";
+                if ($post->no_delete != "1" && in_groups(array('admin', 'editor')))
                     $nestedData['action'] = '<div class="btn-group"><a href="' . base_url("admin/" . $this->data['controller'] . "/remove/" . $post->id) . '" class="btn btn-danger btn-sm" title="Xóa tài liệu?" data-type="confirm">'
                         . '<i class="fas fa-trash-alt">'
                         . '</i>'
                         . '</a></div>';
-                else $nestedData['action'] = "";
                 $data[] = $nestedData;
             }
         }

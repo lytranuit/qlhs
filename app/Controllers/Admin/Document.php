@@ -20,7 +20,9 @@ class Document extends BaseController
     public function edit($id)
     { /////// trang ca nhan
         if (isset($_POST['dangtin'])) {
-
+            if (!in_groups(array('admin', 'editor'))) {
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+            }
             $Document_model = model("DocumentModel");
             $Document_category_model = model("DocumentCategoryModel");
             $DocumentFile_model = model("DocumentFileModel");
@@ -143,7 +145,9 @@ class Document extends BaseController
     public function add()
     { /////// trang ca nhan
         if (isset($_POST['dangtin'])) {
-            helper("auth");
+            if (!in_groups(array('admin', 'editor'))) {
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+            }
             $Document_model = model("DocumentModel");
             $Document_category_model = model("DocumentCategoryModel");
             $DocumentFile_model = model("DocumentFileModel");
@@ -229,7 +233,9 @@ class Document extends BaseController
     public function upversion($id)
     { /////// trang ca nhan
         if (isset($_POST['dangtin'])) {
-            helper("auth");
+            if (!in_groups(array('admin', 'editor'))) {
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+            }
             $Document_model = model("DocumentModel");
             $Document_category_model = model("DocumentCategoryModel");
             $DocumentFile_model = model("DocumentFileModel");
@@ -316,7 +322,9 @@ class Document extends BaseController
 
     public function fileupload()
     {
-
+        if (!in_groups(array('admin', 'editor'))) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+        }
         $DocumentFileModel = model("DocumentFileModel");
         $data = array();
 
@@ -365,6 +373,9 @@ class Document extends BaseController
     }
     public function up($id)
     { /////// trang ca nhan
+        if (!in_groups(array('admin', 'editor'))) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+        }
         $Document_model = model("DocumentModel");
         $data['date'] = date("Y-m-d H:i:s");
         $obj = $Document_model->create_object($data);
@@ -375,6 +386,9 @@ class Document extends BaseController
 
     public function remove($id)
     { /////// trang ca nhan
+        if (!in_groups(array('admin', 'editor'))) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+        }
         $DocumentModel = model("DocumentModel");
         $DocumentModel->delete($id);
         header('Location: ' . $_SERVER['HTTP_REFERER']);
@@ -383,7 +397,10 @@ class Document extends BaseController
     public function loan()
     { /////// trang ca nhan
         if (isset($_POST)) {
-            helper("auth");
+
+            if (!in_groups(array('admin', 'editor'))) {
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+            }
             $Document_model = model("DocumentModel");
             $DocumentLoanModel = model("DocumentLoanModel");
             $data = $this->request->getPost();
@@ -408,7 +425,9 @@ class Document extends BaseController
     public function receive()
     { /////// trang ca nhan
         if (isset($_POST)) {
-            helper("auth");
+            if (!in_groups(array('admin', 'editor'))) {
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+            }
             $Document_model = model("DocumentModel");
             $DocumentLoanModel = model("DocumentLoanModel");
             $data = $this->request->getPost();
@@ -498,14 +517,15 @@ class Document extends BaseController
                 //     }
                 // }
                 $nestedData['status'] = isset($post->status) ? $post->status->name : $post->status_id;
-
-                $nestedData['action'] = '<div class="btn-group"><a href="' . base_url("admin/" . $this->data['controller'] . "/upversion/" . $post->id) . '" class="btn btn-warning btn-sm" title="Lên ấn bản?" data-type="confirm">'
-                    . '<i class="fas fa-arrow-alt-circle-up">'
-                    . '</i>'
-                    . '</a><a href="' . base_url("admin/" . $this->data['controller'] . "/remove/" . $post->id) . '" class="btn btn-danger btn-sm" title="Xóa tài liệu?" data-type="confirm">'
-                    . '<i class="fas fa-trash-alt">'
-                    . '</i>'
-                    . '</a></div>';
+                $nestedData['action'] = "";
+                if (in_groups(array('admin', 'editor')))
+                    $nestedData['action'] = '<div class="btn-group"><a href="' . base_url("admin/" . $this->data['controller'] . "/upversion/" . $post->id) . '" class="btn btn-warning btn-sm" title="Lên ấn bản?" data-type="confirm">'
+                        . '<i class="fas fa-arrow-alt-circle-up">'
+                        . '</i>'
+                        . '</a><a href="' . base_url("admin/" . $this->data['controller'] . "/remove/" . $post->id) . '" class="btn btn-danger btn-sm" title="Xóa tài liệu?" data-type="confirm">'
+                        . '<i class="fas fa-trash-alt">'
+                        . '</i>'
+                        . '</a></div>';
 
                 $data[] = $nestedData;
             }
@@ -567,7 +587,7 @@ class Document extends BaseController
                 $nestedData['status_loan'] = isset($post->status_loan) ? $post->status_loan->name : $post->status_id_loan;
                 $nestedData['status_return'] = isset($post->status_return) ? $post->status_return->name : $post->status_id_return;
 
-                if ($post->user_id_receive < 1) {
+                if ($post->user_id_receive < 1 && in_groups(array('admin', 'editor'))) {
                     $nestedData['user_receive'] = '<a href="" class="btn btn-primary btn-sm mr-2 button_receive" data-target="#receive-modal" data-toggle="modal" data-id="' . $post->id . '">'
                         . '<i class="fas fa-undo-alt">'
                         . '</i> Nhận lại tài liệu'

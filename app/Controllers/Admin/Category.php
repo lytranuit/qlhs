@@ -27,6 +27,9 @@ class Category extends BaseController
     { /////// trang ca nhan
         if (isset($_POST['dangtin'])) {
             helper("auth");
+            if (!in_groups(array('admin', 'editor'))) {
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+            }
             $Category_model = model("CategoryModel");
             $data = $this->request->getPost();
             $obj = $Category_model->create_object($data);
@@ -41,7 +44,9 @@ class Category extends BaseController
     public function edit($id)
     { /////// trang ca nhan
         if (isset($_POST['dangtin'])) {
-
+            if (!in_groups(array('admin', 'editor'))) {
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+            }
             $Category_model = model("CategoryModel");
             $data = $this->request->getPost();
 
@@ -83,6 +88,10 @@ class Category extends BaseController
 
     public function deletemenu()
     {
+        if (!in_groups(array('admin', 'editor'))) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+        }
+
         $id = $this->request->getPost('id');
         $CategoryModel = model("CategoryModel");
         $CategoryModel->delete($id);
@@ -90,6 +99,10 @@ class Category extends BaseController
 
     public function saveorder()
     {
+
+        if (!in_groups(array('admin', 'editor'))) {
+            return redirect('login');
+        }
         $CategoryModel = model("CategoryModel");
         $data = json_decode($this->request->getPost('data'), true);
         foreach ($data as $key => $row) {
@@ -110,6 +123,10 @@ class Category extends BaseController
 
     public function remove_product($id)
     { /////// trang ca nhan
+
+        if (!in_groups(array('admin', 'editor'))) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+        }
         $ProductCategoryModel = model("ProductCategoryModel");
         $ProductCategoryModel->delete($id);
         header('Location: ' . $_SERVER['HTTP_REFERER']);
@@ -119,6 +136,10 @@ class Category extends BaseController
 
     public function addproductcategory()
     {
+
+        if (!in_groups(array('admin', 'editor'))) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+        }
         $ProductCategoryModel = model("ProductCategoryModel");
         $data = json_decode($this->request->getVar('data'), true);
         $category_id = $this->request->getVar('category_id');

@@ -66,19 +66,21 @@
                         Auditrail
                     </a>
                 </li> -->
-                <li class="app-sidebar__heading">Cài đặt</li>
-                <li>
-                    <a href="<?= base_url() ?>/admin/settings" class="">
-                        <i class="metismenu-icon fas fa-wrench"></i>
-                        Cài đặt chung
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= base_url() ?>/admin/user/">
-                        <i class="metismenu-icon fa fa-lock"></i>
-                        Tài khoản
-                    </a>
-                </li>
+                <?php if (in_groups("admin")) : ?>
+                    <li class="app-sidebar__heading">Cài đặt</li>
+                    <li>
+                        <a href="<?= base_url() ?>/admin/settings" class="">
+                            <i class="metismenu-icon fas fa-wrench"></i>
+                            Cài đặt chung
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= base_url() ?>/admin/user/">
+                            <i class="metismenu-icon fa fa-lock"></i>
+                            Tài khoản
+                        </a>
+                    </li>
+                <?php endif ?>
             </ul>
         </div>
     </div>

@@ -4,6 +4,12 @@ namespace App\Controllers\Admin;
 
 class User extends BaseController
 {
+    public function __construct()
+    {
+        if (!in_groups(array('admin'))) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+        }
+    }
 
     public function index()
     {
@@ -13,9 +19,7 @@ class User extends BaseController
     public function add()
     { /////// trang ca nhan
         if (isset($_POST['username'])) {
-            helper("auth");
-
-            $User_model = model(UserModel::class);
+            $User_model = model('Myth\Auth\Authorization\UserModel');
             $data = $this->request->getPost();
             $data['email'] = time() . "@gmail.com";
             //print_r($data);
@@ -29,9 +33,9 @@ class User extends BaseController
             $id = $User_model->insert($obj);
             if ($id > 0) {
                 if (isset($data['groups'])) {
-                    $groupModel = model(GroupModel::class);
+                    $group_model = model("Myth\Auth\Authorization\GroupModel");
                     foreach ($data['groups'] as $row) {
-                        $groupModel->addUserToGroup($id, $row);
+                        $group_model->addUserToGroup($id, $row);
                     }
                 }
                 return redirect()->to(base_url('admin/user'));
@@ -43,7 +47,7 @@ class User extends BaseController
             // die();
         } else {
 
-            $group_model = model("GroupModel");
+            $group_model = model("Myth\Auth\Authorization\GroupModel");
             $this->data['groups'] = $group_model->asArray()->findAll();
             return view($this->data['content'], $this->data);
         }
@@ -53,7 +57,7 @@ class User extends BaseController
     { /////// trang ca nhan
         if (isset($_POST['dangtin'])) {
 
-            $User_model = model("UserModel");
+            $User_model = model("Myth\Auth\Authorization\UserModel");
             $data = $this->request->getPost();
 
             $obj_old = $User_model->asArray()->find($id);
@@ -63,17 +67,19 @@ class User extends BaseController
             // print_r($User_model->errors());
             // die();
             if (isset($data['groups'])) {
-                $groupModel = model(GroupModel::class);
-                $groupModel->removeUserFromAllGroups($id);
+                $group_model = model("Myth\Auth\Authorization\GroupModel");
+                // print_r($Myth\Auth\Authorization\GroupModel);
+                // die();
+                $group_model->removeUserFromAllGroups($id);
                 foreach ($data['groups'] as $row) {
-                    $groupModel->addUserToGroup($id, $row);
+                    $group_model->addUserToGroup($id, $row);
                 }
             }
 
             $User_model->trail(1, 'update', $obj, $obj_old, null);
             return redirect()->to(base_url('admin/user'));
         } else {
-            $User_model = model("UserModel");
+            $User_model = model("Myth\Auth\Authorization\UserModel");
             $tin = $User_model->where(array('id' => $id))->asObject()->first();
             $User_model->relation($tin, array("groups"));
             $tin->groups = array_map(function ($item) {
@@ -83,7 +89,7 @@ class User extends BaseController
             //print_r($tin);
             //die();
 
-            $group_model = model("GroupModel");
+            $group_model = model("Myth\Auth\Authorization\GroupModel");
             $this->data['groups'] = $group_model->asArray()->findAll();
             $this->data['tin'] = $tin;
             return view($this->data['content'], $this->data);
@@ -92,7 +98,7 @@ class User extends BaseController
 
     public function remove($id)
     { /////// trang ca nhan
-        $User_model = model("UserModel");
+        $User_model = model("Myth\Auth\Authorization\UserModel");
         $User_model->delete($id);
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
@@ -100,7 +106,7 @@ class User extends BaseController
 
     public function table()
     {
-        $User_model = model(UserModel::class);
+        $User_model = model('Myth\Auth\Authorization\UserModel');
         $limit = $this->request->getVar('length');
         $start = $this->request->getVar('start');
         $page = ($start / $limit) + 1;
@@ -157,7 +163,7 @@ class User extends BaseController
     public function checkusername()
     {
         $username = $this->request->getVar('username');
-        $user_model = model("UserModel");
+        $user_model = model("Myth\Auth\Authorization\UserModel");
         $check = $user_model->where(array("username" => $username))->asArray()->findAll();
         if (!$check) {
             echo json_encode(array('success' => 1));

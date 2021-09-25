@@ -6,6 +6,12 @@ use App\Libraries\Ciqrcode;
 
 class Import extends BaseController
 {
+    public function __construct()
+    {
+        if (!in_groups(array('admin'))) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+        }
+    }
     public function index()
     {
         return view($this->data['content'], $this->data);
