@@ -43,7 +43,7 @@
             <tr style="    border: 1px solid #8e8e8e;">
                 <td style="padding: .75rem; border: 1px solid #8e8e8e;"><?= $row->code . "." . ($row->version < 10 ? "0" . $row->version : $row->version) ?></td>
                 <td style="padding: .75rem; border: 1px solid #8e8e8e;"><?= $row->name_vi ?></td>
-                <td style="padding: .75rem; border: 1px solid #8e8e8e;"><?= $row->date_expire ?> (<?= date_diff(date_create(), date_create($row->date_expire))->format("còn %a ngày") ?>)</td>
+                <td style="padding: .75rem; border: 1px solid #8e8e8e;"><?= $row->date_expire ?> (<?= date_diff(date_create(), date_create($row->date_expire))->format("%R%a ngày") ?>)</td>
             </tr>
         <?php endforeach ?>
     </tbody>
