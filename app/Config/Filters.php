@@ -22,7 +22,7 @@ class Filters extends BaseConfig
     public $globals = [
         'before' => [
             //'honeypot'
-            'csrf',
+            // 'csrf',
         ],
         'after'  => [
             'toolbar',
@@ -34,7 +34,8 @@ class Filters extends BaseConfig
     // (GET, POST, etc) as BEFORE filters only
     //     like: 'post' => ['CSRF', 'throttle'],
     public $methods = [
-        // 'post' => ['csrf']
+        'post' => ['csrf'],
+        // 'get'=>[]
     ];
 
     // List filter aliases and any before/after uri patterns
