@@ -12,11 +12,9 @@
     <!------ Include the above in your HEAD tag ---------->
     <style>
         .login-block {
-            background: #DE6262;
-            /* fallback for old browsers */
-            background: -webkit-linear-gradient(to bottom, #FFB88C, #DE6262);
-            /* Chrome 10-25, Safari 5.1-6 */
-            background: linear-gradient(to bottom, #FFB88C, #DE6262);
+            background-image: url(/assets/images/bg.jpg);
+            background-size: cover;
+            background-position: center center;
             width: 100%;
             height: 100vh;
         }
@@ -29,7 +27,7 @@
         .box_login {
             background: #fff;
             border-radius: 10px;
-            box-shadow: 15px 20px 0px rgba(0, 0, 0, 0.1);
+            box-shadow: 15px 20px 0px rgb(148 108 108 / 10%)
         }
 
         .carousel-inner {
