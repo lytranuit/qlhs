@@ -11,8 +11,6 @@
     <title>Đăng nhập</title>
     <!------ Include the above in your HEAD tag ---------->
     <style>
-        @import url("//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css");
-
         .login-block {
             background: #DE6262;
             /* fallback for old browsers */
@@ -26,7 +24,6 @@
         .banner-sec {
             background-size: cover;
             border-radius: 0 10px 10px 0;
-            padding: 0;
         }
 
         .box_login {
@@ -122,54 +119,56 @@
     <section class="login-block">
         <div class="container">
             <div class="row align-items-start" style="height: 100vh;">
-                <div class="col-md-12 box_login my-auto">
-                    <div class="row">
-                        <div class="col-md-4 login-sec">
-                            <h2 class="text-center"><?= lang('Custom.login') ?></h2>
-                            <?= view('Myth\Auth\Views\_message_block') ?>
-                            <form action="<?= route_to('login') ?>" method="post">
-                                <?= csrf_field() ?>
-                                <div class="form-group">
-                                    <input class="form-control" id="username" name="login" type="text" placeholder="<?= lang('Custom.login_identity_label') ?>" autocomplete="off">
-                                </div>
-                                <div class="form-group">
-                                    <input class="form-control" id="password" name="password" type="password" placeholder="<?= lang('Custom.login_password_label') ?>">
-                                </div>
-
-
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" class="form-check-input" name="remember" value="1">
-                                        <small><?= lang('Custom.remember_me') ?></small>
-                                    </label>
-                                    <button type="submit" class="btn btn-login float-right"><?= lang('Custom.login') ?></button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="col-md-8 banner-sec">
-                            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                                <ol class="carousel-indicators">
-                                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                                </ol>
-                                <div class="carousel-inner" role="listbox">
-                                    <div class="carousel-item active">
-                                        <img class="d-block img-fluid" src="<?= base_url("assets/images/nhamay2.jpg") ?>" alt="First slide">
-                                        <div class="carousel-caption d-none d-md-block">
-                                            <div class="banner-text">
-                                            </div>
-                                        </div>
+                <div class="col-md-12  my-auto">
+                    <div class="box_login">
+                        <div class="row">
+                            <div class="col-md-4 login-sec">
+                                <h2 class="text-center"><?= lang('Custom.login') ?></h2>
+                                <?= view('Myth\Auth\Views\_message_block') ?>
+                                <form action="<?= route_to('login') ?>" method="post">
+                                    <?= csrf_field() ?>
+                                    <div class="form-group">
+                                        <input class="form-control" id="username" name="login" type="text" placeholder="<?= lang('Custom.login_identity_label') ?>" autocomplete="off">
                                     </div>
-                                    <div class="carousel-item">
-                                        <img class="d-block img-fluid" src="<?= base_url("assets/images/hinh-nha-may-hoang-van-thu.jpg") ?>" alt="First slide">
-                                        <div class="carousel-caption d-none d-md-block">
-                                            <div class="banner-text">
-                                            </div>
-                                        </div>
+                                    <div class="form-group">
+                                        <input class="form-control" id="password" name="password" type="password" placeholder="<?= lang('Custom.login_password_label') ?>">
                                     </div>
 
-                                </div>
 
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" name="remember" value="1">
+                                            <small><?= lang('Custom.remember_me') ?></small>
+                                        </label>
+                                        <button type="submit" class="btn btn-login float-right"><?= lang('Custom.login') ?></button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-8 banner-sec">
+                                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                                    <ol class="carousel-indicators">
+                                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                                    </ol>
+                                    <div class="carousel-inner" role="listbox">
+                                        <div class="carousel-item active">
+                                            <img class="d-block img-fluid" src="<?= base_url("assets/images/nhamay2.jpg") ?>" alt="First slide">
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <div class="banner-text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img class="d-block img-fluid" src="<?= base_url("assets/images/hinh-nha-may-hoang-van-thu.jpg") ?>" alt="First slide">
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <div class="banner-text">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
