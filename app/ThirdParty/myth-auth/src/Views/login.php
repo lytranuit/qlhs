@@ -126,10 +126,10 @@
                                 <form action="<?= route_to('login') ?>" method="post">
                                     <?= csrf_field() ?>
                                     <div class="form-group">
-                                        <input class="form-control" id="username" name="login" type="text" placeholder="<?= lang('Custom.login_identity_label') ?>" autocomplete="off">
+                                        <input class="form-control form-control-sm" id="username" name="login" type="text" placeholder="<?= lang('Custom.login_identity_label') ?>" autocomplete="off">
                                     </div>
                                     <div class="form-group">
-                                        <input class="form-control" id="password" name="password" type="password" placeholder="<?= lang('Custom.login_password_label') ?>">
+                                        <input class="form-control form-control-sm" id="password" name="password" type="password" placeholder="<?= lang('Custom.login_password_label') ?>">
                                     </div>
 
 
