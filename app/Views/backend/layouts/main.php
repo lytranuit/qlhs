@@ -15,9 +15,9 @@
     <title>
         <?= $title ?>
     </title>
-    <link rel="stylesheet" href="<?= base_url("assets/admin/css/main.css") ?>" ?>
+    <link rel="stylesheet" href="<?= base_url("assets/admin/css/main.css?v=1") ?>" ?>
     <link rel="stylesheet" href="<?= base_url("assets/admin/css/fileicon.css") ?>" ?>
-    <link rel="stylesheet" href="<?= base_url("assets/admin/css/custom.css") ?>" ?>
+    <link rel="stylesheet" href="<?= base_url("assets/admin/css/custom.css?v=1") ?>" ?>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 
     <?php if (!empty($stylesheet_tag)) : ?>
@@ -67,7 +67,7 @@
     <script src="<?= base_url('assets/lib/jquery-validation/jquery.validate.js') ?>"></script>
     <script src="<?= base_url('assets/lib/inputmask/js/jquery.inputmask.bundle.js') ?>"></script>
     <script src="<?= base_url('assets/lib/moment/js/moment.js') ?>"></script>
-    <script src="<?= base_url('assets/admin/js/admin.js?ver=1') ?>"></script>
+    <script src="<?= base_url('assets/admin/js/admin.js?v=1') ?>"></script>
     <?php if (!empty($javascript_tag)) : ?>
         <?php foreach ($javascript_tag as $url) : ?>
             <script src="<?= $url ?>" type="text/javascript"></script>
