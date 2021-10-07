@@ -18,6 +18,7 @@ return array(
     'Psr\\Http\\Client\\' => array($vendorDir . '/psr/http-client/src'),
     'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src/Prophecy'),
     'Predis\\' => array($vendorDir . '/predis/predis/src'),
+    'PhpOffice\\PhpWord\\' => array($vendorDir . '/phpoffice/phpword/src/PhpWord'),
     'PhpOffice\\PhpSpreadsheet\\' => array($vendorDir . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet'),
     'OrmExtension\\' => array($vendorDir . '/4spacesdk/ci4ormextension'),
     'MyCLabs\\Enum\\' => array($vendorDir . '/myclabs/php-enum/src'),

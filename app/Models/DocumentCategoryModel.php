@@ -18,7 +18,7 @@ class DocumentCategoryModel extends BaseModel
         $builder->select('*,document_category.id as pc_id');
         return $builder->where(array('category_id' => $id))->orderby('document.date', "DESC")->join('document', 'document.id = document_category.document_id')->get()->getResult();
     }
-    
+
     protected $useTimestamps = false;
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';

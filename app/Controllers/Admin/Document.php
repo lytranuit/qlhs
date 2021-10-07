@@ -7,6 +7,11 @@ use App\Libraries\Ciqrcode;
 
 class Document extends BaseController
 {
+    private $type_id = 1;
+    function __construct()
+    {
+        $this->type_id = isset($_GET['type_id']) ? $_GET['type_id'] : 1;
+    }
     public function index()
     {
         // echo date("Y-m-d H:i:s");
@@ -14,6 +19,7 @@ class Document extends BaseController
 
         $DocumentStatus_model = model("DocumentStatusModel");
         $this->data['status'] = $DocumentStatus_model->asObject()->findAll();
+        $this->data['type_id'] =  $this->type_id;
         return view($this->data['content'], $this->data);
     }
 
@@ -36,7 +42,7 @@ class Document extends BaseController
             $obj = $Document_model->create_object($data);
             ///Check hiện hành
             if (isset($obj['is_active']) && $obj['is_active']) {
-                $Document_model->where("code", $obj['code'])->set("is_active", 0)->update();
+                $Document_model->where("code", $obj['code'])->set(["is_active" => 0, "date_review" => null])->update();
             }
             ///UPDATE SEND REVIEW & EXPIRE
             if (isset($obj['date_review']) && $obj_old['date_review'] != $obj['date_review']) {
@@ -104,6 +110,7 @@ class Document extends BaseController
             $Document_model = model("DocumentModel");
             $category_model = model("CategoryModel");
             $DocumentStatus_model = model("DocumentStatusModel");
+            $DocumentType_model = model("DocumentTypeModel");
             $Document_category_model = model("DocumentCategoryModel");
             $tin = $Document_model->where(array('id' => $id))->asObject()->first();
             $Document_model->relation($tin, array('files', "categories"));
@@ -133,6 +140,7 @@ class Document extends BaseController
             //load_editor($this->data);
             //            load_chossen($this->data);
             $this->data['status'] = $DocumentStatus_model->asObject()->findAll();
+            $this->data['types'] = $DocumentType_model->asObject()->findAll();
             // print_r($this->data['status']);die();
             $this->data['category'] = $category_model
                 ->orderBy('parent_id', 'ASC')->orderBy('sort', 'ASC')->asArray()->findAll();
@@ -157,7 +165,7 @@ class Document extends BaseController
 
             ///Check hiện hành
             if (isset($obj['is_active']) && $obj['is_active']) {
-                $Document_model->where("code", $obj['code'])->set("is_active", 0)->update();
+                $Document_model->where("code", $obj['code'])->set(["is_active" => 0, "date_review" => null])->update();
             }
             //INSERT
             $id = $Document_model->insert($obj);
@@ -221,6 +229,8 @@ class Document extends BaseController
 
             $category_model = model("CategoryModel");
             $DocumentStatus_model = model("DocumentStatusModel");
+            $DocumentType_model = model("DocumentTypeModel");
+            $this->data['types'] = $DocumentType_model->asObject()->findAll();
             $this->data['status'] = $DocumentStatus_model->asObject()->findAll();
             $this->data['category'] = $category_model
                 ->orderBy('parent_id', 'ASC')->orderBy('sort', 'ASC')->asArray()->findAll();
@@ -245,7 +255,7 @@ class Document extends BaseController
 
             ///Check hiện hành
             if (isset($obj['is_active']) && $obj['is_active']) {
-                $Document_model->where("code", $obj['code'])->set("is_active", 0)->update();
+                $Document_model->where("code", $obj['code'])->set(["is_active" => 0, "date_review" => null])->update();
             }
             //INSERT
             $id = $Document_model->insert($obj);
@@ -283,9 +293,9 @@ class Document extends BaseController
             // $this->load->library('ciqrcode');
             /* Data */
             $data_qr = base_url("admin/" . $this->data['controller'] . "/edit/$id");
-            $hexocde = bin2hex($data_qr);
             $dir = FCPATH . "assets/qrcode/";
-            $save_name  = $hexocde . '.png';
+            $code1 =  $obj['code'] . "." . ($obj['version'] < 10 ? "0" . $obj['version'] : $obj['version']);
+            $save_name  = $id . "_" . $code1  . '.png';
 
             /* QR Code File Directory Initialize */
             if (!file_exists($dir)) {
@@ -312,6 +322,8 @@ class Document extends BaseController
             $this->data['tin'] = $tin;
             $category_model = model("CategoryModel");
             $DocumentStatus_model = model("DocumentStatusModel");
+            $DocumentType_model = model("DocumentTypeModel");
+            $this->data['types'] = $DocumentType_model->asObject()->findAll();
             $this->data['status'] = $DocumentStatus_model->asObject()->findAll();
             $this->data['category'] = $category_model
                 ->orderBy('parent_id', 'ASC')->orderBy('sort', 'ASC')->asArray()->findAll();
@@ -451,16 +463,33 @@ class Document extends BaseController
     public function table()
     {
         $Document_model = model("DocumentModel", false);
+        $option_model = model("OptionModel");
         $limit = $this->request->getVar('length');
         $start = $this->request->getVar('start');
+        $orders = $this->request->getVar('order');
         $search = $this->request->getPost('search')['value'];
         $search_type = $this->request->getPost('search_type');
         $search_status = $this->request->getPost('search_status');
         $filter = $this->request->getPost('filter');
+        $type_id = $this->request->getPost('type_id');
         $page = ($start / $limit) + 1;
         $where = $Document_model;
         if ($filter == "1")
             $where->where("is_active", 1);
+        elseif ($filter == "6") {
+            $where->where("date_review <", date("Y-m-d"));
+        } elseif ($filter == "5") {
+            $mail_review = $option_model->get_options_group("mail_review");
+            $before_send_review = $mail_review['before_send'];
+            $where->where("date_review <", date("Y-m-d", strtotime("+$before_send_review day")));
+        } elseif ($filter == "4") {
+            $mail_expire = $option_model->get_options_group("mail_expire");
+            $before_send_expire = $mail_expire['before_send'];
+            $where->where("date_expire <", date("Y-m-d", strtotime("+$before_send_expire day")));
+        }
+        if ($type_id > 0) {
+            $where->where('type_id', $type_id);
+        }
         // echo "<pre>";
         // print_r($swhere);
         $totalData = $where->countAllResults(false);
@@ -485,18 +514,36 @@ class Document extends BaseController
             $totalFiltered = $where->countAllResults(false);
         }
 
+        if (isset($orders)) {
+            foreach ($orders as $order) {
+                $data = $order['data'];
+                $dir = $order['dir'];
+                switch ($data) {
+                    default:
+                        $where->orderby($data, $dir);
+                        break;
+                    case 'status':
+                        $where->orderby('status_id', $dir);
+                        break;
+                    case 'type':
+                        $where->orderby('type_id', $dir);
+                        break;
+                }
+            }
+        }
         // $where = $Document_model;
-        $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
+        $posts = $where->orderby("id", "DESC")->asObject()->paginate($limit, '', $page);
 
-        $Document_model->relation($posts, array('files', "status"));
+
+        $Document_model->relation($posts, array('files', "status", "type"));
         // echo "<pre>";
         // print_r($posts);
         // die();
         $data = array();
         if (!empty($posts)) {
             foreach ($posts as $post) {
-                $nestedData['id'] =  $post->id;
-                $nestedData['code'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->code . "." . ($post->version < 10 ? "0" . $post->version : $post->version) . '</a>';
+                $nestedData['id'] =  '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
+                $nestedData['code'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '">' . $post->code . "." . ($post->version < 10 ? "0" . $post->version : $post->version) . '</a>';
                 $nestedData['name_vi'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '">' . $post->name_vi . '</a>';
                 $nestedData['version'] = $post->version;
                 $nestedData['file'] = "";
@@ -517,6 +564,7 @@ class Document extends BaseController
                 //     }
                 // }
                 $nestedData['status'] = isset($post->status) ? $post->status->name : $post->status_id;
+                $nestedData['type'] = isset($post->type) ? $post->type->name : $post->type_id;
                 $nestedData['action'] = "";
                 if (in_groups(array('admin', 'editor')))
                     $nestedData['action'] = '<div class="btn-group"><a href="' . base_url("admin/" . $this->data['controller'] . "/upversion/" . $post->id) . '" class="btn btn-warning btn-sm" title="Lên ấn bản?" data-type="confirm">'
@@ -607,5 +655,53 @@ class Document extends BaseController
         );
 
         echo json_encode($json_data);
+    }
+    public function listqrcode()
+    {
+
+        $Document_model = model("DocumentModel");
+        $documents = $Document_model->findAll();
+
+        // Creating the new document...
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+
+        /* Note: any element you append to a document must reside inside of a Section. */
+
+        // Adding an empty Section to the document...
+        $section = $phpWord->addSection();
+
+        $styleCell =
+            [
+                'borderColor' => 'ffffff',
+                'borderSize' => 6,
+            ];
+        $table = $section->addTable(array('borderSize' => 0, 'cellMargin'  => 80, 'width' => 100 * 50, 'unit' => \PhpOffice\PhpWord\Style\Table::WIDTH_PERCENT, 'valign' => 'center'));
+
+        $count = 0;
+        foreach ($documents as $row) {
+            $count++;
+            if ($count > 6)
+                $count = 1;
+            if ($count == 1)
+                $table->addRow(null, []);
+            $cell = $table->addCell(null, $styleCell);
+            $cell->addImage(
+                APPPATH . '..' . $row->image_url,
+                array(
+                    'align' => 'center',
+                    'width'         => 70,
+                    'height'        => 70,
+                    'marginTop'     => -1,
+                    'marginLeft'    => -1,
+                    'wrappingStyle' => 'behind'
+                )
+            );
+            $name = basename($row->image_url);
+            $cell->addText($name, array('size' => 8), array('align' => 'center'));
+        }
+
+        // Saving the document as OOXML file...
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter->save(time() . '.docx');
     }
 }

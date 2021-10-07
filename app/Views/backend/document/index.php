@@ -21,9 +21,11 @@
                     <table id="quanlytin" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Mã</th>
                                 <th>Tiêu đề</th>
                                 <th>Trạng thái</th>
+                                <th>Loại tài liệu</th>
                                 <th>Đính kèm</th>
                                 <th>Hành động</th>
                             </tr>
@@ -154,40 +156,56 @@
 <script type="text/javascript">
     $(document).ready(function() {
         let list_status = <?= json_encode($status) ?>;
+        let type_id = <?= $type_id ?>;
         let table = $('#quanlytin').DataTable({
             "stateSave": true,
             "processing": true,
             "serverSide": true,
-            "ordering": false,
+            // "ordering": false,
             "ajax": {
                 "url": path + "admin/<?= $controller ?>/table",
                 "dataType": "json",
                 "type": "POST",
                 'data': function(data) {
                     // Read values
+                    let orders = data['order'];
+                    for (let i in orders) {
+                        let order = orders[i];
+                        let column = order['column'];
+                        orders[i]['data'] = data['columns'][column]['data'];
+                    }
                     let search_type = localStorage.getItem('SEARCH_TYPE') || "code";
                     let search_status = localStorage.getItem('SEARCH_STATUS') || "0";
                     let filter = localStorage.getItem('SEARCH_FILTER') || "0";
                     data['search_type'] = search_type;
                     data['search_status'] = search_status;
+                    data['type_id'] = type_id;
                     data['filter'] = filter;
                     data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
                 }
             },
             "columns": [{
-                    "data": "code"
+                    "data": "id",
+                }, {
+                    "data": "code",
                 }, {
                     "data": "name_vi",
-                    "width": "500px"
+                    "width": "500px",
+                    "orderable": false
                 },
                 {
                     "data": "status"
                 },
                 {
-                    "data": "file"
+                    "data": "type"
                 },
                 {
-                    "data": "action"
+                    "data": "file",
+                    "orderable": false
+                },
+                {
+                    "data": "action",
+                    "orderable": false
                 }
             ],
             initComplete: function() {
@@ -241,6 +259,9 @@
             localStorage.setItem('SEARCH_STATUS', search_status);
             table.ajax.reload();
         });
+
+
+
         let scanner = new Instascan.Scanner({
             video: document.getElementById('preview')
         });

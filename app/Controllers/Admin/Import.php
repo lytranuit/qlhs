@@ -18,7 +18,7 @@ class Import extends BaseController
     }
     public function sop()
     {
-
+        die();
         $ciqrcode = new Ciqrcode();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/SOP.xlsx';
@@ -97,8 +97,8 @@ class Import extends BaseController
             }
 
 
-            // echo "<pre>";
-            // echo $sheet_name . "<br>";
+            echo "<pre>";
+            echo $sheet_name . "<br>";
             // print_r($data);
             // die();
             $document_model = model("DocumentModel");
@@ -110,6 +110,11 @@ class Import extends BaseController
                 $version = $explode[1];
                 $code = $explode[0];
                 $name = $row[3];
+                $array = preg_split("/\r\n|\n|\r/", $name);
+                $name_vi = isset($array[0]) ? $array[0] : "";
+                $name_en = isset($array[1]) ? $array[1] : "";
+                // print_r($array);
+                // die();
                 $date_effect_row = explode(".", $row[4]);
                 $date_review_row = explode(".", $row[5]);
                 if (count($date_effect_row) < 3) {
@@ -134,7 +139,8 @@ class Import extends BaseController
                     'version' => $version,
                     'date_effect' => $date_effect,
                     'date_review' => $date_review,
-                    'name_vi' => $name,
+                    'name_vi' => $name_vi,
+                    'name_en' => $name_en,
                     'status_id' => 1,
                     'is_active' => 1,
                 );
@@ -191,6 +197,26 @@ class Import extends BaseController
 
             $ciqrcode->generate($params);
             // $document_model->update($id, array("image_url" => "/assets/qrcode/$save_name"));
+        }
+    }
+
+    function updateen()
+    {
+        $document_model = model("DocumentModel");
+        $documents = $document_model->asArray()->findAll();
+        foreach ($documents as $row) {
+            $id = $row['id'];
+            $name = $row['name_vi'];
+            $array = preg_split("/\r\n|\n|\r/", $name);
+            // if($id == 1){
+            //     print_r($array);
+            //     die();
+            // }
+            $name_vi = isset($array[0]) ? $array[0] : null;
+            $name_en = isset($array[1]) ? $array[1] : null;
+            $document_model = model("DocumentModel");
+            $document_model->where('id', $id)
+                ->set(["name_vi" => $name_vi, 'name_en' => $name_en])->update();
         }
     }
 }

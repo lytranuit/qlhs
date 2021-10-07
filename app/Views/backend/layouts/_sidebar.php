@@ -49,14 +49,33 @@
                     </a>
                 </li>
                 <li class="app-sidebar__heading">Tài liệu</li>
-                <li>
+                <li class="mm-active">
                     <a href="<?= base_url() ?>/admin/document" class="">
                         <i class="metismenu-icon fas fa-file"></i>
                         Tài liệu
+                        <i class="metismenu-state-icon fas fa-chevron-down caret-left" style="font-size: 12px;"></i>
                     </a>
+                    <ul class="mm-collapse mm-show">
+                        <?php foreach ($types_list as $row) : ?>
+                            <li>
+                                <a href="<?= base_url("/admin/document?type_id=$row->id") ?>" class="">
+                                    <?= $row->name ?>
+                                </a>
+                            </li>
+                        <?php endforeach ?>
+                    </ul>
+
+                </li>
+                <li>
                     <a href="<?= base_url() ?>/admin/status" class="">
                         <i class="metismenu-icon fas fa-info-circle"></i>
                         Trạng thái
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= base_url() ?>/admin/type" class="">
+                        <i class="metismenu-icon fas fa-info-circle"></i>
+                        Loại tài liệu
                     </a>
                 </li>
                 <!-- <li class="app-sidebar__heading">Auditrail</li>

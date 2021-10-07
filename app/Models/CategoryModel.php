@@ -26,7 +26,19 @@ class CategoryModel extends BaseModel
         }
         return $row_a;
     }
-
+    function get_category_parents($category_id)
+    {
+        $list = array();
+        $builder = $this->db->table('category');
+        $category = $builder->where('id', $category_id)->get()->getFirstRow();
+        $parent_id = $category->parent_id;
+        
+        if ($parent_id > 0) {
+            $list = $this->get_category_parents($parent_id);
+            $list[] = $parent_id;
+        }
+        return $list;
+    }
     // protected $useTimestamps = true;
     // protected $createdField  = 'created_at';
     // protected $updatedField  = 'updated_at';

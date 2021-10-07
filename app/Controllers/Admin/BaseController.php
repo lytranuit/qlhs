@@ -66,5 +66,8 @@ class BaseController extends Controller
         $this->data['content'] = $content;
         $this->data['template'] = "main";
         $this->data['title'] = "Admin";
+        
+        $DocumentType_model = model("DocumentTypeModel");
+        $this->data['types_list'] = $DocumentType_model->asObject()->findAll();
     }
 }

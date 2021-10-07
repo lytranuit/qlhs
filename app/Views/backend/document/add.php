@@ -28,9 +28,12 @@
 
                             </div>
                             <div class="form-group row">
-                                <b class="col-12 col-lg-2 col-form-label">Tiêu đề:<span class="text-danger">*</span></b>
-                                <div class="col-12 col-lg-10 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="name_vi" required="" placeholder="Tiêu đề" />
+                            <b class="col-12 col-lg-2 col-form-label">Tiêu đề:<span class="text-danger">*</span></b>
+                                <div class="col-12 col-lg-5 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="name_vi" required="" placeholder="Tiếng việt" />
+                                </div>
+                                <div class="col-12 col-lg-5 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="name_en" placeholder="Tiếng anh" />
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -42,15 +45,13 @@
                                         <?php endforeach ?>
                                     </select>
                                 </div>
-                                <b class="col-12 col-lg-2 col-form-label">Hiện hành:</b>
+                                <b class="col-12 col-lg-2 col-form-label">Loại hồ sơ:<span class="text-danger">*</span></b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <div class="switch-button switch-button-xs switch-button-success">
-                                        <input type="hidden" class="input-tmp" name="is_active" value="0">
-                                        <input type="checkbox" id="switch4" name="is_active" value="1" checked>
-                                        <span>
-                                            <label for="switch4"></label>
-                                        </span>
-                                    </div>
+                                    <select class="form-control form-control-sm" name="type_id" required="">
+                                        <?php foreach ($types as $row) : ?>
+                                            <option value="<?= $row->id ?>"><?= $row->name ?></option>
+                                        <?php endforeach ?>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -69,6 +70,16 @@
                                 <b class="col-12 col-lg-2 col-form-label">Ngày hết hạn:</b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='date' name="date_expire" />
+                                </div>
+                                <b class="col-12 col-lg-2 col-form-label">Hiện hành:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <div class="switch-button switch-button-xs switch-button-success">
+                                        <input type="hidden" class="input-tmp" name="is_active" value="0">
+                                        <input type="checkbox" id="switch4" name="is_active" value="1" checked>
+                                        <span>
+                                            <label for="switch4"></label>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group row">

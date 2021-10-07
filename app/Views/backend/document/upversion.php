@@ -29,20 +29,47 @@
                             </div>
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Tiêu đề:<span class="text-danger">*</span></b>
-                                <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="name_vi" required="" placeholder="Tiêu đề" />
+                                <div class="col-12 col-lg-5 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="name_vi" required="" placeholder="Tiếng việt" />
                                 </div>
-
-
+                                <div class="col-12 col-lg-5 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="name_en" placeholder="Tiếng anh" />
+                                </div>
                             </div>
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Trạng thái:<span class="text-danger">*</span></b>
-                                <div class="col-12 col-lg-10 pt-1">
+                                <div class="col-12 col-lg-4 pt-1">
                                     <select class="form-control form-control-sm" name="status_id" required="">
                                         <?php foreach ($status as $row) : ?>
                                             <option value="<?= $row->id ?>" <?= $row->no_delete ? "disabled" : "" ?>><?= $row->name ?></option>
                                         <?php endforeach ?>
                                     </select>
+                                </div>
+                                <b class="col-12 col-lg-2 col-form-label">Loại hồ sơ:<span class="text-danger">*</span></b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <select class="form-control form-control-sm" name="type_id" required="">
+                                        <?php foreach ($types as $row) : ?>
+                                            <option value="<?= $row->id ?>"><?= $row->name ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <b class="col-12 col-lg-2 col-form-label">Ngày hiệu lực:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='date' name="date_effect" />
+                                </div>
+                                <b class="col-12 col-lg-2 col-form-label">Ngày rà soát:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='date' name="date_review" />
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+
+                                <b class="col-12 col-lg-2 col-form-label">Ngày hết hạn:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='date' name="date_expire" />
                                 </div>
                                 <b class="col-12 col-lg-2 col-form-label">Hiện hành:</b>
                                 <div class="col-12 col-lg-4 pt-1">
@@ -53,24 +80,6 @@
                                             <label for="switch4"></label>
                                         </span>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <b class="col-12 col-lg-2 col-form-label">Ngày hiệu lực:</b>
-                                <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='date' name="date_effect" />
-                                </div>
-                                <b class="col-12 col-lg-2 col-form-label">Ngày rà soát:</b>
-                                <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='date' name="date_expire" />
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-
-                                <b class="col-12 col-lg-2 col-form-label">Ngày hết hạn:</b>
-                                <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='date' name="date_expire" />
                                 </div>
                             </div>
                             <div class="form-group row">

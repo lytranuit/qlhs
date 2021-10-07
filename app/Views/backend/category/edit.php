@@ -103,8 +103,15 @@
 <div class="row mt-5">
     <div class="col-12">
         <div class="card card-fluid">
-            <div class="card-header">
+            <div class="card-header" style="z-index: 1000;">
                 Doument
+                <div class="ml-auto">
+                    <select class="form-control document_add" multiple>
+                    </select>
+                    <button class="btn btn-success add_document">
+                        Add
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive-md">
@@ -155,12 +162,42 @@
 
 <!-- Style --->
 <?= $this->section("style") ?>
+<style>
+    .document_add {
+        width: 900px;
+    }
+
+    @media only screen and (max-width: 800px) {
+        .document_add {
+            width: 400px;
+        }
+
+    }
+
+    @media only screen and (max-width: 600px) {
+        .document_add {
+            width: 200px;
+        }
+
+    }
+
+    @media only screen and (max-width: 400px) {
+        .document_add {
+            width: 150px;
+        }
+
+    }
+</style>
+<link rel="stylesheet" href="<?= base_url("assets/lib/chosen/chosen.min.css") ?> " ?>
 <link rel="stylesheet" href="<?= base_url("assets/lib/datatables/datatables.min.css") ?> " ?>
 <?= $this->endSection() ?>
 
 <!-- Script --->
 <?= $this->section('script') ?>
 
+
+<script src="<?= base_url("assets/lib/chosen/chosen.jquery.js") ?>"></script>
+<script src="<?= base_url("assets/lib/ajaxchosen/chosen.ajaxaddition.jquery.js") ?>"></script>
 <script src="<?= base_url('assets/lib/datatables/datatables.min.js') ?>"></script>
 <script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
 <script type='text/javascript'>
@@ -171,6 +208,19 @@
 
         // $("select[multiple]").chosen();
         // $(".image_ft").imageFeature();
+        let data = {};
+        data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
+        data['documents_disable'] = <?= json_encode($documents_disable) ?>;
+        $(".document_add").ajaxChosen({
+            dataType: 'json',
+            type: 'POST',
+            url: path + "admin/category/documentlist",
+            data: data
+        }, {
+            loadingImg: path + 'public/img/loading.gif'
+        }, {
+            allow_single_deselect: true
+        });
         $('#quanlytin').DataTable();
         //$('.edit').froalaEditor({
         //    heightMin: 200,
@@ -210,23 +260,24 @@
         //     maxLevels: 1,
         //     placeholder: 'dd-placeholder',
         // });
-        // $(".add_document").click(function() {
+        $(".add_document").click(function() {
 
-        //     let document = $(".document_add").val();
-        //     let category_id = tin['id'];
-        //     $.ajax({
-        //         type: "POST",
-        //         data: {
-        //             data: JSON.stringify(document),
-        //             category_id: category_id,
-        //         },
-        //         url: path + "admin/" + controller + "/adddocumentcategory",
-        //         success: function(msg) {
-        //             // alert("Success!");
-        //             location.reload();
-        //         }
-        //     })
-        // });
+            let document = $(".document_add").val();
+            let category_id = tin['id'];
+            $.ajax({
+                type: "POST",
+                data: {
+                    data: JSON.stringify(document),
+                    category_id: category_id,
+                    '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
+                },
+                url: path + "admin/" + controller + "/adddocumentcategory",
+                success: function(msg) {
+                    // alert("Success!");
+                    location.reload();
+                }
+            })
+        });
     });
 </script>
 

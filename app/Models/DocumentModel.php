@@ -31,6 +31,11 @@ class DocumentModel extends BaseModel
                 $builder = $this->db->table('document_status');
                 $row_a->status = $builder->where('id', $status_id)->get()->getFirstRow();
             }
+            if (in_array("type", $relation)) {
+                $type_id = $row_a->type_id;
+                $builder = $this->db->table('document_type');
+                $row_a->type = $builder->where('id', $type_id)->get()->getFirstRow();
+            }
             if (in_array("samecode", $relation)) {
                 $code = $row_a->code;
                 $builder = $this->db->table('document');
@@ -51,6 +56,11 @@ class DocumentModel extends BaseModel
                 $status_id = $row_a['status_id'];
                 $builder = $this->db->table('document_status');
                 $row_a['status'] = $builder->where('id', $status_id)->get()->getFirstRow("array");
+            }
+            if (in_array("type", $relation)) {
+                $type_id = $row_a['type_id'];
+                $builder = $this->db->table('document_type');
+                $row_a['type'] = $builder->where('id', $type_id)->get()->getFirstRow("array");
             }
 
             if (in_array("samecode", $relation)) {

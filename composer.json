@@ -15,7 +15,8 @@
 		"psr/log": "^1.1",
 		"4spacesdk/ci4ormextension": "dev-master",
 		"denis303/codeigniter4-recaptcha": "dev-master",
-		"phpoffice/phpspreadsheet": "^1.18"
+		"phpoffice/phpspreadsheet": "^1.18",
+		"phpoffice/phpword": "^0.18.2"
 	},
 	"require-dev": {
 		"codeigniter4/codeigniter4-standard": "^1.0",

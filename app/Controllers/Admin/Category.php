@@ -74,9 +74,9 @@ class Category extends BaseController
             // die();
             // $this->data['documents_add'] = $Document_model->asObject()->findAll();
 
-            // $this->data['documents_disable'] = array_map(function ($item) {
-            //     return $item->document_id;
-            // }, (array) $this->data['documents']);
+            $this->data['documents_disable'] = array_map(function ($item) {
+                return $item->document_id;
+            }, (array) $this->data['documents']);
             // echo "<pre>";
             // print_r($this->data['products_disable']);
             // die();
@@ -134,37 +134,55 @@ class Category extends BaseController
     }
 
 
-    public function addproductcategory()
+    public function adddocumentcategory()
     {
 
         if (!in_groups(array('admin', 'editor'))) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
         }
-        $ProductCategoryModel = model("ProductCategoryModel");
+        $DocumentCategoryModel = model("DocumentCategoryModel");
+        $CategoryModel = model("CategoryModel");
         $data = json_decode($this->request->getVar('data'), true);
         $category_id = $this->request->getVar('category_id');
 
-        $list = $ProductCategoryModel->where(array("category_id" => $category_id))->asObject()->findAll();
-        $max_order = 0;
-        foreach ($list as $row) {
-            if ($max_order < $row->order) {
-                $max_order = $row->order;
+        $list = $DocumentCategoryModel->where(array("category_id" => $category_id))->asObject()->findAll();
+        $list_document = array_map(function ($item) {
+            return $item->document_id;
+        }, (array) $list);
+        $data = array_diff($data, $list_document);
+        $list_parents = $CategoryModel->get_category_parents($category_id);
+        $array = [];
+        foreach ($data as $key => $document_id) {
+            $array[] =  array(
+                'document_id' => $document_id,
+                'category_id' => $category_id,
+            );
+            foreach ($list_parents as $parent_id) {
+                $array[] =  array(
+                    'document_id' => $document_id,
+                    'category_id' => $parent_id,
+                );
             }
         }
-        $list_product = array_map(function ($item) {
-            return $item->product_id;
-        }, (array) $list);
-        $data = array_diff($data, $list_product);
-        $max_order++;
-        foreach ($data as $key => $product_id) {
 
-            $array = array(
-                'product_id' => $product_id,
-                'category_id' => $category_id,
-                'order' => $max_order
-            );
-            $ProductCategoryModel->insert($array);
-        }
+        // print_r($array);
+        // die();
+        $DocumentCategoryModel->insertBatch($array);
         echo json_encode(1);
+    }
+    public function documentlist()
+    {
+        $Document_model = model("DocumentModel");
+        $data = $this->request->getPost('data');
+        $documents_disable = $this->request->getPost('documents_disable');
+
+        $search = $data['q'];
+        $data = $Document_model->where("(code like '%$search%')")->asArray()->paginate(100, '', 0);
+        $results = array();
+        foreach ($data as $row) {
+            $results[] = array("id" => $row['id'], 'disabled' => in_array($row['id'], $documents_disable) ? true : false, 'text' => $row['code'] . "." . ($row['version'] < 10 ? "0" . $row['version'] : $row['version']) . ' - ' . $row['name_vi']);
+        }
+        echo json_encode(array('q' => $search, 'results' => $results));
+        die();
     }
 }

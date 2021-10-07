@@ -114,14 +114,14 @@
 					//array of kv pairs [{id:'', text:''}...]
 					$.each(items, function (i, opt) {
 						if (typeof valuesHash[opt.id] === 'undefined') {
-							$('<option value="' + opt.id + '">' + opt.text + '</option>').appendTo(select);
+							$('<option value="' + opt.id + '" ' + (opt.disabled ? "disabled" : "") + '>' + opt.text + '</option>').appendTo(select);
 						}
 					});
 				} else {
 					//hash of kv pairs {'id':'text'...}
 					$.each(items, function (value, text) {
 						if (typeof valuesHash[value] === 'undefined') {
-							$('<option value="' + value + '">' + text + '</option>').appendTo(select);
+							$('<option value="' + value + '" ' + (opt.disabled ? "disabled" : "") + '>' + text + '</option>').appendTo(select);
 						}
 					});
 				}
