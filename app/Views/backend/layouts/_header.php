@@ -51,6 +51,7 @@
                                     <i class="fa fa-angle-down ml-2 opacity-8"></i>
                                 </a>
                                 <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
+                                    <a type="button" tabindex="0" class="dropdown-item" href="<?= base_url("admin/account") ?>"><?= lang("Custom.info") ?></a>
                                     <a type="button" tabindex="0" class="dropdown-item" href="<?= route_to("logout") ?>"><?= lang("Custom.logout") ?></a>
                                 </div>
                             </div>
