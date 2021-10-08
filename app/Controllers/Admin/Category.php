@@ -175,7 +175,7 @@ class Category extends BaseController
         $Document_model = model("DocumentModel");
         $data = $this->request->getPost('data');
         $documents_disable = $this->request->getPost('documents_disable');
-
+        $documents_disable = $documents_disable ? $documents_disable : [];
         $search = $data['q'];
         $data = $Document_model->where("(code like '%$search%')")->asArray()->paginate(100, '', 0);
         $results = array();
