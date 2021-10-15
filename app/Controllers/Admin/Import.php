@@ -147,7 +147,7 @@ class Import extends BaseController
                 $id = $document_model->insert($array);
 
                 $document = $document_model->find($id);
-                $data_qr = base_url("admin/qrcode/document/$document->uuid");
+                $data_qr = base_url("admin/qrcode/document/" . urlencode($document->uuid));
                 $dir = FCPATH . "assets/qrcode/";
                 $save_name  = $id . "_" . $row[2]  . '.png';
 
@@ -179,7 +179,8 @@ class Import extends BaseController
         foreach ($documents as $row) {
             $code1 =  $row['code'] . "." . ($row['version'] < 10 ? "0" . $row['version'] : $row['version']);
             $id = $row['id'];
-            $data_qr = base_url("admin/qrcode/document/" . $row['uuid']);
+
+            $data_qr = base_url("admin/qrcode/document/" . urlencode($row['uuid']));
             // print_r($data_qr);
             // die();
             $dir = FCPATH . "assets/qrcode/";
