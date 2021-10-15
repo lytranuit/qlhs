@@ -1,4 +1,5 @@
 <?php
+
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
@@ -21,8 +22,8 @@ class Encryption extends BaseConfig
 	  | See the user guide for more info.
 	 */
 
-	public $key = '';
-
+	public $key = 'daotran';
+	public $blockSize = 8;
 	/*
 	  |--------------------------------------------------------------------------
 	  | Encryption driver to use
@@ -32,5 +33,4 @@ class Encryption extends BaseConfig
 	  | The default driver, if you don't specify one, is 'OpenSSL'.
 	 */
 	public $driver = 'OpenSSL';
-
 }

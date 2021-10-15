@@ -202,7 +202,8 @@ class Document extends BaseController
             /* Load QR Code Library */
             // $this->load->library('ciqrcode');
             /* Data */
-            $data_qr = base_url("admin/" . $this->data['controller'] . "/edit/$id");
+            $document = $Document_model->find($id);
+            $data_qr = base_url("admin/qrcode/document/$document->uuid");
             $dir = FCPATH . "assets/qrcode/";
             $code1 =  $obj['code'] . "." . ($obj['version'] < 10 ? "0" . $obj['version'] : $obj['version']);
             $save_name  = $id . "_" . $code1  . '.png';
@@ -292,7 +293,8 @@ class Document extends BaseController
             /* Load QR Code Library */
             // $this->load->library('ciqrcode');
             /* Data */
-            $data_qr = base_url("admin/" . $this->data['controller'] . "/edit/$id");
+            $document = $Document_model->find($id);
+            $data_qr = base_url("admin/qrcode/document/$document->uuid");
             $dir = FCPATH . "assets/qrcode/";
             $code1 =  $obj['code'] . "." . ($obj['version'] < 10 ? "0" . $obj['version'] : $obj['version']);
             $save_name  = $id . "_" . $code1  . '.png';
