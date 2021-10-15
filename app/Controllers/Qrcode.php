@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Admin;
+namespace App\Controllers;
 
 
 class Qrcode extends BaseController
@@ -10,7 +10,6 @@ class Qrcode extends BaseController
     }
     public function document($code)
     {
-
         $document_model = model("DocumentModel");
         $document = $document_model->where('uuid', $code)->first();
         if (!empty($document)) {
