@@ -132,10 +132,10 @@
                             <?php foreach ($documents as $row) : ?>
                                 <tr>
                                     <td>
-                                        <a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->document_id ?>"><?= $row->code . "." . ($row->version < 10 ? "0" . $row->version : $row->version) ?></a>
+                                        <a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->id ?>"><?= $row->code . "." . ($row->version < 10 ? "0" . $row->version : $row->version) ?></a>
                                     </td>
                                     <td>
-                                        <a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->document_id ?>"><?= $row->name_vi ?></a>
+                                        <a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->id ?>"><?= $row->name_vi ?></a>
                                     </td>
                                     <td>
                                         <?= isset($row->status->name) ? $row->status->name : $row->status_id; ?>
@@ -308,7 +308,7 @@
                     category_id: category_id,
                     '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
                 },
-                url: path + "admin/" + controller + "/adddocument" + code,
+                url: path + "admin/" + controller + "/adddocument/" + code,
                 success: function(msg) {
                     alert("Đã thêm vào danh mục!");
                 }
