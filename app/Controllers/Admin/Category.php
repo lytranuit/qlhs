@@ -171,7 +171,7 @@ class Category extends BaseController
         echo json_encode(1);
     }
 
-    public function adddocument()
+    public function adddocument($code)
     {
 
         if (!in_groups(array('admin', 'editor'))) {
@@ -180,8 +180,7 @@ class Category extends BaseController
         $DocumentCategoryModel = model("DocumentCategoryModel");
         $CategoryModel = model("CategoryModel");
         $DocumentModel = model("DocumentModel");
-        $code = $this->request->getVar('code');
-        $category_id = $this->request->getVar('category_id');
+        $category_id = $this->request->getPost('category_id');
 
         $document = $DocumentModel->where('uuid', $code)->first();
         if (empty($document)) {

@@ -299,18 +299,16 @@
             video: document.getElementById('preview')
         });
         scanner.addListener('scan', function(content) {
-            console.log(content);
             let anArray = content.split("/");
             let code = anArray.pop();
-            alert(code);
+            let category_id = tin['id'];
             $.ajax({
                 type: "POST",
                 data: {
-                    code: code,
                     category_id: category_id,
                     '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
                 },
-                url: path + "admin/" + controller + "/adddocument",
+                url: path + "admin/" + controller + "/adddocument" + code,
                 success: function(msg) {
                     alert("Đã thêm vào danh mục!");
                 }
@@ -325,6 +323,20 @@
             $("#scan").trigger("click");
         })
         $("#scan").click(function() {
+            let code = 'bJ%2B%2B%2By2IEeyWjUzZj6ytKQ%3D%3D';
+            let category_id = tin['id'];
+            $.ajax({
+                type: "POST",
+                data: {
+                    category_id: category_id,
+                    '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
+                },
+                url: path + "admin/" + controller + "/adddocument/" + code,
+                success: function(msg) {
+                    alert("Đã thêm vào danh mục!");
+                }
+            })
+            return;
             if (cameras.length > 0) {
                 let cam = cameras[select_cam];
                 if (cam.name.indexOf("back") != -1) {
