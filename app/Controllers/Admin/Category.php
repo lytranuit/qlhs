@@ -170,6 +170,43 @@ class Category extends BaseController
         $DocumentCategoryModel->insertBatch($array);
         echo json_encode(1);
     }
+
+    public function adddocument()
+    {
+
+        if (!in_groups(array('admin', 'editor'))) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+        }
+        $DocumentCategoryModel = model("DocumentCategoryModel");
+        $CategoryModel = model("CategoryModel");
+        $DocumentModel = model("DocumentModel");
+        $code = $this->request->getVar('code');
+        $category_id = $this->request->getVar('category_id');
+
+        $document = $DocumentModel->where('uuid', $code)->first();
+        if (empty($document)) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        }
+        $list_parents = $CategoryModel->get_category_parents($category_id);
+        $array = [];
+        $document_id = $document->id;
+        $array[] =  array(
+            'document_id' => $document_id,
+            'category_id' => $category_id,
+        );
+        foreach ($list_parents as $parent_id) {
+            $array[] =  array(
+                'document_id' => $document_id,
+                'category_id' => $parent_id,
+            );
+        }
+
+
+        // print_r($array);
+        // die();
+        $DocumentCategoryModel->insertBatch($array);
+        echo json_encode(1);
+    }
     public function documentlist()
     {
         $Document_model = model("DocumentModel");

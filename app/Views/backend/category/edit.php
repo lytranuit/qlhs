@@ -108,9 +108,13 @@
                 <div class="ml-auto">
                     <select class="form-control document_add" multiple>
                     </select>
-                    <button class="btn btn-success add_document">
+                    <button class="btn btn-success btn-sm add_document">
                         Add
                     </button>
+                </div>
+
+                <div style="margin-left:auto;">
+                    <a class="btn btn-sm btn-success" id='scan' href="#"><i class="fas fa-qrcode"></i> Quét QR</a>
                 </div>
             </div>
             <div class="card-body">
@@ -167,7 +171,7 @@
         width: 900px;
     }
 
-    @media only screen and (max-width: 800px) {
+    @media only screen and (max-width: 1100px) {
         .document_add {
             width: 400px;
         }
@@ -176,7 +180,7 @@
 
     @media only screen and (max-width: 600px) {
         .document_add {
-            width: 200px;
+            width: 150px;
         }
 
     }
@@ -190,6 +194,8 @@
 </style>
 <link rel="stylesheet" href="<?= base_url("assets/lib/chosen/chosen.min.css") ?> " ?>
 <link rel="stylesheet" href="<?= base_url("assets/lib/datatables/datatables.min.css") ?> " ?>
+<link rel="stylesheet" href="<?= base_url("assets/lib/qrcode/qrcode.css") ?> " ?>
+
 <?= $this->endSection() ?>
 
 <!-- Script --->
@@ -200,6 +206,13 @@
 <script src="<?= base_url("assets/lib/ajaxchosen/chosen.ajaxaddition.jquery.js") ?>"></script>
 <script src="<?= base_url('assets/lib/datatables/datatables.min.js') ?>"></script>
 <script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
+
+<script src="<?= base_url('assets/lib/qrcode/instascan.min.js') ?>"></script>
+<div id="div_video" class="d-none">
+    <video id="preview"></video>
+    <div class="custom-scanner"></div>
+    <button class="btn btn-sm btn-secondary change_cam"><i class="fas fa-sync-alt"></i></button>
+</div>
 <script type='text/javascript'>
     var tin = <?= json_encode($tin) ?>;
     var controller = '<?= $controller ?>';
@@ -277,6 +290,65 @@
                     location.reload();
                 }
             })
+        });
+
+
+
+
+        let scanner = new Instascan.Scanner({
+            video: document.getElementById('preview')
+        });
+        scanner.addListener('scan', function(content) {
+            console.log(content);
+            let anArray = content.split("/");
+            let code = anArray.pop();
+            $.ajax({
+                type: "POST",
+                data: {
+                    code: code,
+                    category_id: category_id,
+                    '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
+                },
+                url: path + "admin/" + controller + "/adddocument",
+                success: function(msg) {
+                    alert("Đã thêm vào danh mục!");
+                }
+            })
+            // location.href = content;
+        });
+        var select_cam = 0;
+        $(".change_cam").click(function() {
+            select_cam++;
+            if (select_cam > cameras.length)
+                select_cam = 0;
+            $("#scan").trigger("click");
+        })
+        $("#scan").click(function() {
+            if (cameras.length > 0) {
+                let cam = cameras[select_cam];
+                if (cam.name.indexOf("back") != -1) {
+                    scanner.mirror = false
+                } else {
+                    scanner.mirror = true
+                }
+                scanner.start(cam);
+                $("#div_video").removeClass("d-none");
+                if (cameras.length == 1) {
+                    $(".change_cam").addClass("d-none");
+                }
+            } else {
+                alert('Không tìm thấy camera.');
+                console.log('No cameras found.');
+            }
+        });
+        var cameras = [];
+        Instascan.Camera.getCameras().then(function(c) {
+            cameras = c;
+            if (cameras.length > 1) {
+                select_cam = cameras.length - 1;
+            }
+        }).catch(function(e) {
+            console.log(e);
         });
     });
 </script>
