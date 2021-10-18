@@ -302,6 +302,7 @@
             console.log(content);
             let anArray = content.split("/");
             let code = anArray.pop();
+            alert(code);
             $.ajax({
                 type: "POST",
                 data: {

@@ -29,14 +29,9 @@ class Account extends BaseController
         $id_user = user_id();
         $User_model = model("Myth\Auth\Authorization\UserModel");
 
+		$this->auth = service('authentication');
         $user = $User_model->find($id_user);
-        $old_pass = $user->password_hash;
-        $user->setPassword($_POST['password']);
-        echo $old_pass;
-        echo "<br>";
-        echo $user->password_hash;
-        die();
-        if (!isset($_POST['password']) || (isset($_POST['password']) && $old_pass != $user->password_hash)) {
+        if (!isset($_POST['password']) || (isset($_POST['password']) && !$this->auth->attempt(['username' => $user->username, 'password' => $_POST['password']], false))) {
             echo json_encode(array('code' => 402, "msg" => "Mật khẩu cũ không đúng."));
             die();
         }
