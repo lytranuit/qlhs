@@ -323,20 +323,6 @@
             $("#scan").trigger("click");
         })
         $("#scan").click(function() {
-            let code = 'bJ%2B%2B%2By2IEeyWjUzZj6ytKQ%3D%3D';
-            let category_id = tin['id'];
-            $.ajax({
-                type: "POST",
-                data: {
-                    category_id: category_id,
-                    '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
-                },
-                url: path + "admin/" + controller + "/adddocument/" + code,
-                success: function(msg) {
-                    alert("Đã thêm vào danh mục!");
-                }
-            })
-            return;
             if (cameras.length > 0) {
                 let cam = cameras[select_cam];
                 if (cam.name.indexOf("back") != -1) {

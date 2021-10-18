@@ -16,7 +16,7 @@ class DocumentCategoryModel extends BaseModel
     {
         $builder = $this->db->table('document_category');
         $builder->select('*,document_category.id as pc_id');
-        return $builder->where(array('category_id' => $id))->orderby('document.date', "DESC")->join('document', 'document.id = document_category.document_id')->get()->getResult();
+        return $builder->join('document', 'document.id = document_category.document_id')->where(array('category_id' => $id))->orderby('document.date', "DESC")->groupby("document.id")->get()->getResult();
     }
 
     protected $useTimestamps = false;
