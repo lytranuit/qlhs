@@ -203,10 +203,10 @@ class Document extends BaseController
             // $this->load->library('ciqrcode');
             /* Data */
             $document = $Document_model->find($id);
-            $data_qr = base_url("qrcode/document/") . "/" . urlencode($document->uuid);;
+            $data_qr = base_url("qrcode/document/") . "/" . urlencode($document->uuid);
             $dir = FCPATH . "assets/qrcode/";
             $code1 =  $obj['code'] . "." . ($obj['version'] < 10 ? "0" . $obj['version'] : $obj['version']);
-            $save_name  = $id . "_" . $code1  . '.png';
+            $save_name  =  $id . "_" . time() . '.png';
 
             /* QR Code File Directory Initialize */
             if (!file_exists($dir)) {
@@ -294,10 +294,10 @@ class Document extends BaseController
             // $this->load->library('ciqrcode');
             /* Data */
             $document = $Document_model->find($id);
-            $data_qr = base_url("qrcode/document") . "/" . urlencode($document->uuid);;
+            $data_qr = base_url("qrcode/document") . "/" . urlencode($document->uuid);
             $dir = FCPATH . "assets/qrcode/";
             $code1 =  $obj['code'] . "." . ($obj['version'] < 10 ? "0" . $obj['version'] : $obj['version']);
-            $save_name  = $id . "_" . $code1  . '.png';
+            $save_name  =  $id . "_" . time() . '.png';
 
             /* QR Code File Directory Initialize */
             if (!file_exists($dir)) {

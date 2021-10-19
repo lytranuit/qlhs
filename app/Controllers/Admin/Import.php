@@ -149,7 +149,7 @@ class Import extends BaseController
                 $document = $document_model->find($id);
                 $data_qr = base_url("qrcode/document") . "/" . urlencode($document->uuid);
                 $dir = FCPATH . "assets/qrcode/";
-                $save_name  = $id . "_" . $row[2]  . '.png';
+                $save_name  =  $id . "_" . time() . '.png';
 
                 /* QR Code File Directory Initialize */
                 if (!file_exists($dir)) {
@@ -302,7 +302,7 @@ class Import extends BaseController
                 $document = $document_model->find($id);
                 $data_qr = base_url("qrcode/document") . "/" . urlencode($document->uuid);
                 $dir = FCPATH . "assets/qrcode/";
-                $save_name  = $id . "_" . $row[2]  . '.png';
+                $save_name =  $id . "_" . time()  . '.png';
 
                 /* QR Code File Directory Initialize */
                 if (!file_exists($dir)) {
@@ -336,8 +336,7 @@ class Import extends BaseController
             // print_r($data_qr);
             // die();
             $dir = FCPATH . "assets/qrcode/";
-            $save_name  = $id . "_" . $code1  . '.png';
-
+            $save_name = $id . "_" . time()  . '.png';
             /* QR Code File Directory Initialize */
             if (!file_exists($dir)) {
                 mkdir($dir, 0775, true);
