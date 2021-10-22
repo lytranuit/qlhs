@@ -694,10 +694,6 @@ class Document extends BaseController
                 $sheet->setCellValue('G' . $rows, $post->description_vi);
                 $rows++;
             }
-            foreach (range('A', 'G') as $columnID) {
-                $sheet->getColumnDimension($columnID)
-                    ->setAutoSize(true);
-            }
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $file = "assets/excel/" . time() . ".xlsx";
             $writer->save($file);
