@@ -263,7 +263,7 @@ class Document extends BaseController
                 }
                 // die();
             }
-            
+
             return redirect()->to(base_url('admin/' . $this->data['controller']));
         } else {
             //load_editor($this->data);
@@ -607,5 +607,101 @@ class Document extends BaseController
 
         echo json_encode($json_data);
     }
-  
+    public function exportexcel()
+    {
+        $Document_model = model("DocumentModel", false);
+        $option_model = model("OptionModel");
+        $orders = $this->request->getVar('order');
+        $search = $this->request->getPost('search')['value'];
+        $search_type = $this->request->getPost('search_type');
+        $search_status = $this->request->getPost('search_status');
+        $filter = $this->request->getPost('filter');
+        $type_id = $this->request->getPost('type_id');
+        $where = $Document_model;
+        if ($filter == "1")
+            $where->where("is_active", 1);
+        elseif ($filter == "6") {
+            $where->where("date_review <", date("Y-m-d"));
+        } elseif ($filter == "5") {
+            $mail_review = $option_model->get_options_group("mail_review");
+            $before_send_review = $mail_review['before_send'];
+            $where->where("date_review <", date("Y-m-d", strtotime("+$before_send_review day")));
+        } elseif ($filter == "4") {
+            $mail_expire = $option_model->get_options_group("mail_expire");
+            $before_send_expire = $mail_expire['before_send'];
+            $where->where("date_expire <", date("Y-m-d", strtotime("+$before_send_expire day")));
+        }
+        if ($type_id > 0) {
+            $where->where('type_id', $type_id);
+        }
+        //echo "<pre>";
+        //print_r($totalData);
+        //die();
+
+
+        if ($search_type == "status" && $search_status != "") {
+            $where->where("status_id", $search_status);
+        } elseif (empty($search)) {
+            // $where = $Document_model;
+            // echo "1";die();
+        } elseif ($search_type == "code") {
+            $where->like("code", $search, "after");
+        } else {
+            $where->like($search_type, $search);
+        }
+
+        if (isset($orders)) {
+            foreach ($orders as $order) {
+                $data = $order['data'];
+                $dir = $order['dir'];
+                switch ($data) {
+                    default:
+                        $where->orderby($data, $dir);
+                        break;
+                    case 'status':
+                        $where->orderby('status_id', $dir);
+                        break;
+                    case 'type':
+                        $where->orderby('type_id', $dir);
+                        break;
+                }
+            }
+        }
+        // $where = $Document_model;
+        $posts = $where->orderby("id", "DESC")->asObject()->findAll();
+        $Document_model->relation($posts, array("status", "type"));
+
+        if (!empty($posts)) {
+            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setCellValue('A1', 'Id');
+            $sheet->setCellValue('B1', 'Mã');
+            $sheet->setCellValue('C1', 'Ấn bản');
+            $sheet->setCellValue('D1', 'Tiêu đề');
+            $sheet->setCellValue('E1', 'Trạng thái');
+            $sheet->setCellValue('F1', 'Loại tài liệu');
+            $sheet->setCellValue('G1', 'Mô tả');
+            $rows = 2;
+
+            foreach ($posts as $post) {
+                $sheet->setCellValue('A' . $rows, $post->id);
+                $sheet->setCellValue('B' . $rows, $post->code);
+                $sheet->setCellValue('C' . $rows, $post->version);
+                $sheet->setCellValue('D' . $rows, $post->name_vi);
+                $sheet->setCellValue('E' . $rows, isset($post->status) ? $post->status->name : $post->status_id);
+                $sheet->setCellValue('F' . $rows, isset($post->type) ? $post->type->name : $post->type_id);
+                $sheet->setCellValue('G' . $rows, $post->description_vi);
+                $rows++;
+            }
+            foreach (range('A', 'G') as $columnID) {
+                $sheet->getColumnDimension($columnID)
+                    ->setAutoSize(true);
+            }
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $file = "assets/excel/" . time() . ".xlsx";
+            $writer->save($file);
+            echo json_encode(base_url($file));
+        }
+    }
 }

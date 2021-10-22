@@ -12,7 +12,7 @@
                 <?php if (in_groups(array("admin", "editor"))) : ?>
                     <a class="btn btn-success btn-sm" href="<?= base_url("admin/$controller/add") ?>">Thêm</a>
                 <?php endif ?>
-                <a class="btn btn-primary btn-sm ml-2 text-white" href="<?= base_url("admin/$controller/exportexcel") ?>">
+                <a class="btn btn-primary btn-sm ml-2 text-white export">
                     <i class="fas fa-file-excel"></i>
                     Excel
                 </a>
@@ -71,15 +71,6 @@
             "stateSave": true,
             "processing": true,
             "serverSide": true,
-            buttons: [{
-                extend: 'excel',
-                action: function(e, dt, button, config) {
-                    var self = this;
-                    console.log(dt)
-                    console.log(button)
-                    console.log(config)
-                }
-            }],
             // "ordering": false,
             "ajax": {
                 "url": path + "admin/<?= $controller ?>/table",
@@ -153,6 +144,15 @@
                 let filter = localStorage.getItem('SEARCH_FILTER') || "0";
                 $(".filter").val(filter);
             }
+        });
+        $(".export").click(async function() {
+            let url = await $.ajax({
+                "url": path + "admin/<?= $controller ?>/exportexcel",
+                "data": table.ajax.params(),
+                "type": "POST",
+                "dataType": "JSON"
+            })
+            location.href = url;
         });
         $(document).on("change", ".filter", function() {
             let filter = $(this).val();
