@@ -193,8 +193,8 @@
     }
 </style>
 <link rel="stylesheet" href="<?= base_url("assets/lib/chosen/chosen.min.css") ?> " ?>
-<link rel="stylesheet" href="<?= base_url("assets/lib/datatables/datatables.min.css") ?> " ?>
-<link rel="stylesheet" href="<?= base_url("assets/lib/qrcode/qrcode.css") ?> " ?>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.11.3/b-2.0.1/b-colvis-2.0.1/b-html5-2.0.1/b-print-2.0.1/datatables.min.css"/>
+ <link rel="stylesheet" href="<?= base_url("assets/lib/qrcode/qrcode.css") ?> " ?>
 
 <?= $this->endSection() ?>
 
@@ -204,7 +204,10 @@
 
 <script src="<?= base_url("assets/lib/chosen/chosen.jquery.js") ?>"></script>
 <script src="<?= base_url("assets/lib/ajaxchosen/chosen.ajaxaddition.jquery.js") ?>"></script>
-<script src="<?= base_url('assets/lib/datatables/datatables.min.js') ?>"></script>
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+ <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.11.3/b-2.0.1/b-colvis-2.0.1/b-html5-2.0.1/b-print-2.0.1/datatables.min.js"></script>
+ 
 <script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
 
 <script src="<?= base_url('assets/lib/qrcode/instascan.min.js') ?>"></script>
@@ -234,7 +237,12 @@
         }, {
             allow_single_deselect: true
         });
-        $('#quanlytin').DataTable();
+        $('#quanlytin').DataTable({
+            dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>rt<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+            buttons: [
+                'excel'
+            ]
+        });
         //$('.edit').froalaEditor({
         //    heightMin: 200,
         //    heightMax: 500, // Set the image upload URL.

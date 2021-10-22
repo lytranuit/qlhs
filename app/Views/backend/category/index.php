@@ -90,6 +90,16 @@
                 location.reload();
             }
         })
+        $(document).on("click", ".dd-handle", function() {
+            // $(".showhide", $(this)).html("-")
+            let parent = $(this).closest(".dd-item");
+            $(".dd-list", parent).toggle();
+            if ($(".dd-list", parent).is(":hidden")) {
+                $(".showhide", $(this)).html("+")
+            } else {
+                $(".showhide", $(this)).html("-")
+            }
+        })
     });
 </script>
 

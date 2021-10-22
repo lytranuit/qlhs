@@ -12,6 +12,10 @@
                 <?php if (in_groups(array("admin", "editor"))) : ?>
                     <a class="btn btn-success btn-sm" href="<?= base_url("admin/$controller/add") ?>">Thêm</a>
                 <?php endif ?>
+                <a class="btn btn-primary btn-sm ml-2 text-white" href="<?= base_url("admin/$controller/exportexcel") ?>">
+                    <i class="fas fa-file-excel"></i>
+                    Excel
+                </a>
                 <div style="margin-left:auto;">
                     <a class="btn btn-sm btn-success" id='scan' href="#"><i class="fas fa-qrcode"></i> Quét QR</a>
                 </div>
@@ -67,6 +71,15 @@
             "stateSave": true,
             "processing": true,
             "serverSide": true,
+            buttons: [{
+                extend: 'excel',
+                action: function(e, dt, button, config) {
+                    var self = this;
+                    console.log(dt)
+                    console.log(button)
+                    console.log(config)
+                }
+            }],
             // "ordering": false,
             "ajax": {
                 "url": path + "admin/<?= $controller ?>/table",
@@ -141,7 +154,6 @@
                 $(".filter").val(filter);
             }
         });
-
         $(document).on("change", ".filter", function() {
             let filter = $(this).val();
             localStorage.setItem('SEARCH_FILTER', filter);

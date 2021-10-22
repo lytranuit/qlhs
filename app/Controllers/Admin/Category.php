@@ -75,7 +75,7 @@ class Category extends BaseController
             // $this->data['documents_add'] = $Document_model->asObject()->findAll();
 
             $this->data['documents_disable'] = array_map(function ($item) {
-                return $item->document_id;
+                return $item->id;
             }, (array) $this->data['documents']);
             // echo "<pre>";
             // print_r($this->data['products_disable']);

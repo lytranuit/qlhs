@@ -1,12 +1,10 @@
-
 /*----------------------- 
 6.12 Shortable / Nesetable
 -------------------------*/
 
 .dashboard-short-list {}
 
-.drag-handle,
-.drag-indicator {
+.drag-handle, .drag-indicator {
     cursor: move;
     cursor: -webkit-grab;
     cursor: grab;
@@ -70,9 +68,7 @@
     display: none;
 }
 
-.dd-item,
-.dd-empty,
-.dd-placeholder {
+.dd-item, .dd-empty, .dd-placeholder {
     display: block;
     position: relative;
     margin: 0;
@@ -134,8 +130,7 @@
     content: '-';
 }
 
-.dd-placeholder,
-.dd-empty {
+.dd-placeholder, .dd-empty {
     margin: 5px 0;
     padding: 0;
     min-height: 30px;
@@ -171,7 +166,6 @@
     box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, .1);
 }
 
-
 /**
 * Nestable Extras
 */
@@ -191,8 +185,7 @@
     margin: 20px 0;
 }
 
-#nestable-output,
-#nestable2-output {
+#nestable-output, #nestable2-output {
     width: 100%;
     height: 7em;
     font-size: 0.75em;
@@ -212,7 +205,6 @@
 .dd-hover>.dd-handle {
     background: #5969ff !important;
 }
-
 
 /**
 * Nestable Draggable Handles
@@ -287,3 +279,7 @@
     background: #ddd;
 }
 
+.showhide {
+    margin:5px;
+    cursor: pointer;
+}

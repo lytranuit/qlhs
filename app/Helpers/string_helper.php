@@ -181,9 +181,10 @@ if (!function_exists('html_nestable')) {
         foreach ($return as $row) {
             $sub_html = "";
             $is_deleted = true;
-            if ($row['id'] == 19) {
-                $is_deleted = false;
-            }
+
+            $child =  array_filter((array) $array, function ($item) use ($column, $row) {
+                return $item[$column] == $row['id'];
+            });
             $delete_html = "";
             if ($is_deleted && in_groups(array("admin", "editor"))) {
                 $delete_html = '<button class="btn btn-sm btn-outline-light dd-item-delete">
@@ -193,7 +194,7 @@ if (!function_exists('html_nestable')) {
             $html .= '<li class="dd-item" id="menuItem_' . $row['id'] . '" data-id="' . $row['id'] . '">
                             <div class="dd-handle">
                              ' . $sub_html . '
-                                <div><a href="' . base_url("admin/$controller/edit/" . $row['id']) . '">' . $row['name_vi'] . '</a></div>
+                                <div>' . (count($child) > 0 ? '<span class="showhide">-</span>' : "") . '<a href="' . base_url("admin/$controller/edit/" . $row['id']) . '">' . $row['name_vi'] . '</a></div>
                                 <div class="dd-nodrag btn-group ml-auto">
                                     ' . $delete_html . '
                                 </div>
