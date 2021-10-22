@@ -19,7 +19,6 @@ class Import extends BaseController
     public function sop()
     {
         die();
-        $ciqrcode = new Ciqrcode();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/SOP.xlsx';
 
@@ -145,33 +144,12 @@ class Import extends BaseController
                     'is_active' => 1,
                 );
                 $id = $document_model->insert($array);
-
-                $document = $document_model->find($id);
-                $data_qr = base_url("qrcode/document") . "/" . urlencode($document->uuid);
-                $dir = FCPATH . "assets/qrcode/";
-                $save_name  =  $id . "_" . time() . '.png';
-
-                /* QR Code File Directory Initialize */
-                if (!file_exists($dir)) {
-                    mkdir($dir, 0775, true);
-                }
-
-                /* QR Configuration  */
-
-                /* QR Data  */
-                $params['data']     = $data_qr;
-                $params['level']    = 'L';
-                $params['size']     = 10;
-                $params['savename'] = $dir . $save_name;
-
-                $ciqrcode->generate($params);
-                $document_model->update($id, array("image_url" => "/assets/qrcode/$save_name"));
             }
         }
     }
     public function maiqa()
     {
-        $ciqrcode = new Ciqrcode();
+        die();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/List - DANH MA SO CHO TDQTSX, TDQTVS.xlsx';
 
@@ -298,27 +276,188 @@ class Import extends BaseController
                     'from_file' => "Sheet_" . $sheet_name . "_List - DANH MA SO CHO TDQTSX, TDQTVS.xlsx"
                 );
                 $id = $document_model->insert($array);
+            }
+        }
+    }
+    public function hiepqa()
+    {
+        //Đường dẫn file
+        $file = APPPATH . '../assets/up/Danh sách & tình trạng hồ sơ cập nhật hồ sơ đao tạo_21.10.21.xlsx';
 
-                $document = $document_model->find($id);
-                $data_qr = base_url("qrcode/document") . "/" . urlencode($document->uuid);
-                $dir = FCPATH . "assets/qrcode/";
-                $save_name =  $id . "_" . time()  . '.png';
+        /** Load $inputFileName to a Spreadsheet Object  **/
+        // $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
+        // print_r($spreadsheet);
+        // die();
+        //Tiến hành xác thực file
+        $objFile = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
+        $objData = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($objFile);
 
-                /* QR Code File Directory Initialize */
-                if (!file_exists($dir)) {
-                    mkdir($dir, 0775, true);
+        //Chỉ đọc dữ liệu
+        // $objData->setReadDataOnly(true);
+        // Load dữ liệu sang dạng đối tượng
+        $objPHPExcel = $objData->load($file);
+        //Lấy ra số trang sử dụng phương thức getSheetCount();
+        // Lấy Ra tên trang sử dụng getSheetNames();
+        //Chọn trang cần truy xuất
+        // $sheet = $objPHPExcel->setActiveSheetIndex(0);
+
+        // //Lấy ra số dòng cuối cùng
+        // $Totalrow = $sheet->getHighestRow();
+        // //Lấy ra tên cột cuối cùng
+        // $LastColumn = $sheet->getHighestColumn();
+        // //Chuyển đổi tên cột đó về vị trí thứ, VD: C là 3,D là 4
+        // $TotalCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($LastColumn);
+
+        //Tạo mảng chứa dữ liệu
+        $data = [];
+
+        $count_sheet = $objPHPExcel->getSheetCount();
+        // print_r($count_sheet);
+        // die();
+        for ($k = 0; $k < $count_sheet; $k++) {
+
+            $sheet = $objPHPExcel->setActiveSheetIndex($k);
+            $sheet_name = $sheet->getTitle();
+            // if (strpos($sheet_name, "#") == false) continue;
+            // print_r($sheet_name);die();
+            //Lấy ra số dòng cuối cùng
+            $Totalrow = $sheet->getHighestRow();
+            //Lấy ra tên cột cuối cùng
+            $LastColumn = $sheet->getHighestColumn();
+            //Chuyển đổi tên cột đó về vị trí thứ, VD: C là 3,D là 4
+            $TotalCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($LastColumn);
+
+            //Tạo mảng chứa dữ liệu
+            $data = [];
+
+            //Tiến hành lặp qua từng ô dữ liệu
+            //----Lặp dòng, Vì dòng đầu là tiêu đề cột nên chúng ta sẽ lặp giá trị từ dòng 2
+            $row = 2;
+            for ($i = $row; $i <= $Totalrow; $i++) {
+                //----Lặp cột
+                for ($j = 0; $j < $TotalCol; $j++) {
+                    // Tiến hành lấy giá trị của từng ô đổ vào mảng
+                    $cell = $sheet->getCellByColumnAndRow($j, $i);
+
+                    $data[$i -  $row][$j] = $cell->getValue();
+                    ///CHUYEN RICH TEXT
+                    if ($data[$i -  $row][$j] instanceof \PhpOffice\PhpSpreadsheet\RichText\RichText) {
+                        $data[$i -  $row][$j] = $data[$i -  $row][$j]->getPlainText();
+                    }
+
+                    // ////CHUYEN DATE 
+                    // if (PHPExcel_Shared_Date::isDateTime($cell) && $data[$i - 1][$j] > 0) {
+
+                    //     if (is_numeric($data[$i - 1][$j])) {
+                    //         $data[$i - 1][$j] = date("Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($data[$i - 1][$j]));
+                    //     } else if ($data[$i - 1][$j] == '26/09/16') {
+                    //         $data[$i - 1][$j] = '2016-09-26';
+                    //     }
+                    // }
+                }
+            }
+
+
+            echo "<pre>";
+            // echo $sheet_name . "<br>";
+            // print_r($data);
+            // die();
+            $document_model = model("DocumentModel");
+            foreach ($data as $row) {
+
+                $name = $row[3];
+                if ($name == "") continue;
+                // $row[1] = trim($row[1]);
+                // $explode =  explode(".", $row[1]);
+                // if (count($explode) < 2) continue;
+
+                $version = $row[2];
+                $code = $row[1];
+                $status = $row[4];
+                $type = $row[5];
+                $is_active = $row[9];
+                $description = $row[10];
+
+                $other = strlen($version);
+                $explode = array();
+                if ($code != "" && $code != "NA") {
+
+                    $explode =  explode(".", $code);
+                    if (count($explode) >= 2) {
+                        goto end;
+                    }
+                    $explode =  explode("/", $code);
+                    if (count($explode) >= 2) {
+                        goto end;
+                    }
+                    end:
+                    if ($explode[count($explode) - 1] == $version) {
+                        $code = substr($code, 0, 0 - strlen($version) - 1);
+                    }
                 }
 
-                /* QR Configuration  */
 
-                /* QR Data  */
-                $params['data']     = $data_qr;
-                $params['level']    = 'L';
-                $params['size']     = 10;
-                $params['savename'] = $dir . $save_name;
-
-                $ciqrcode->generate($params);
-                $document_model->update($id, array("image_url" => "/assets/qrcode/$save_name"));
+                $array = preg_split("/\r\n|\n|\r/", $name);
+                $name_vi = isset($array[0]) ? $array[0] : "";
+                $name_en = isset($array[1]) ? $array[1] : "";
+                // print_r($array);
+                // die();
+                $date_effect_row = explode(".", $row[6]);
+                // $date_review_row = explode(".", $row[5]);
+                if (count($date_effect_row) < 3) {
+                    $date_effect = null;
+                } else {
+                    $d = $date_effect_row[0];
+                    $m = $date_effect_row[1];
+                    $y = "20$date_effect_row[2]";
+                    $date_effect = "$y-$m-$d";
+                }
+                // if (count($date_review_row) < 3) {
+                //     $date_review = null;
+                // } else {
+                //     $d = $date_review_row[0];
+                //     $m = $date_review_row[1];
+                //     $y = "20$date_review_row[2]";
+                //     $date_review = "$y-$m-$d";
+                // }
+                switch ($status) {
+                    case "Đang lưu trữ":
+                        $status_id = 2;
+                        break;
+                    default:
+                        $status_id = 1;
+                        break;
+                }
+                switch ($type) {
+                    case "Hồ sơ đào tạo":
+                        $type_id = 8;
+                        break;
+                    case "Hồ sơ GMP":
+                        $type_id = 9;
+                        break;
+                    default:
+                        $type_id = 7;
+                }
+                if ($is_active == "Yes") {
+                    $is_active = 1;
+                } else {
+                    $is_active = 0;
+                }
+                $array = array(
+                    // 'other' => $explode,
+                    'code' => $code,
+                    'version' => $version,
+                    'date_effect' => $date_effect,
+                    'name_vi' => $name_vi,
+                    'name_en' => $name_en,
+                    'status_id' => $status_id,
+                    'type_id' => $type_id,
+                    'is_active' => $is_active,
+                    'description_vi' => $description,
+                    'from_file' => "Sheet_" . $sheet_name . "_Danh sách & tình trạng hồ sơ cập nhật hồ sơ đao tạo_21.10.21.xlsx"
+                );
+                // print_r($array);
+                $id = $document_model->insert($array);
             }
         }
     }

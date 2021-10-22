@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use CodeIgniter\Database\BaseBuilder;
 use App\Models\BaseModel;
-use phpDocumentor\Reflection\Types\Null_;
+use App\Libraries\Ciqrcode;
+
 
 class DocumentModel extends BaseModel
 {
@@ -13,6 +13,13 @@ class DocumentModel extends BaseModel
 
     protected $returnType     = 'object';
 
+    protected $afterInsert = ['insertTrail', 'create_qr'];
+
+    protected function initialize()
+    {
+
+        $this->ciqrcode = new Ciqrcode();
+    }
     function format_row($row_a, $relation)
     {
         if (gettype($row_a) == "object") {
@@ -75,5 +82,32 @@ class DocumentModel extends BaseModel
     {
         $this->where("is_active", 1);
         return $this;
+    }
+    public function create_qr($params)
+    {
+        // print_r($params);
+        // die();
+        $id = $params['id'];
+        $document = $this->find($id);
+        $data_qr = base_url("qrcode/document") . "/" . urlencode($document->uuid);
+        $dir = FCPATH . "assets/qrcode/";
+        $save_name =  $id . "_" . time()  . '.png';
+
+        /* QR Code File Directory Initialize */
+        if (!file_exists($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        /* QR Configuration  */
+
+        /* QR Data  */
+        $params['data']     = $data_qr;
+        $params['level']    = 'L';
+        $params['size']     = 10;
+        $params['savename'] = $dir . $save_name;
+
+        $this->ciqrcode->generate($params);
+        $this->update($id, array("image_url" => "/assets/qrcode/$save_name"));
+        return $params;
     }
 }

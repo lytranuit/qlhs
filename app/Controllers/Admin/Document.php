@@ -199,31 +199,6 @@ class Document extends BaseController
             }
             //QRCODE
 
-            /* Load QR Code Library */
-            // $this->load->library('ciqrcode');
-            /* Data */
-            $document = $Document_model->find($id);
-            $data_qr = base_url("qrcode/document/") . "/" . urlencode($document->uuid);
-            $dir = FCPATH . "assets/qrcode/";
-            $code1 =  $obj['code'] . "." . ($obj['version'] < 10 ? "0" . $obj['version'] : $obj['version']);
-            $save_name  =  $id . "_" . time() . '.png';
-
-            /* QR Code File Directory Initialize */
-            if (!file_exists($dir)) {
-                mkdir($dir, 0775, true);
-            }
-
-            /* QR Configuration  */
-            $ciqrcode = new Ciqrcode();
-
-            /* QR Data  */
-            $params['data']     = $data_qr;
-            $params['level']    = 'L';
-            $params['size']     = 10;
-            $params['savename'] = $dir . $save_name;
-
-            $ciqrcode->generate($params);
-            $Document_model->update($id, array("image_url" => "/assets/qrcode/$save_name"));
             return redirect()->to(base_url('admin/' . $this->data['controller']));
         } else {
             //load_editor($this->data);
@@ -288,33 +263,7 @@ class Document extends BaseController
                 }
                 // die();
             }
-            //QRCODE
-
-            /* Load QR Code Library */
-            // $this->load->library('ciqrcode');
-            /* Data */
-            $document = $Document_model->find($id);
-            $data_qr = base_url("qrcode/document") . "/" . urlencode($document->uuid);
-            $dir = FCPATH . "assets/qrcode/";
-            $code1 =  $obj['code'] . "." . ($obj['version'] < 10 ? "0" . $obj['version'] : $obj['version']);
-            $save_name  =  $id . "_" . time() . '.png';
-
-            /* QR Code File Directory Initialize */
-            if (!file_exists($dir)) {
-                mkdir($dir, 0775, true);
-            }
-
-            /* QR Configuration  */
-            $ciqrcode = new Ciqrcode();
-
-            /* QR Data  */
-            $params['data']     = $data_qr;
-            $params['level']    = 'L';
-            $params['size']     = 10;
-            $params['savename'] = $dir . $save_name;
-
-            $ciqrcode->generate($params);
-            $Document_model->update($id, array("image_url" => "/assets/qrcode/$save_name"));
+            
             return redirect()->to(base_url('admin/' . $this->data['controller']));
         } else {
             //load_editor($this->data);

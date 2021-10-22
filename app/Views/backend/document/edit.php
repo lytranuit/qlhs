@@ -20,12 +20,12 @@
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Mã tài liệu:<span class="text-danger">*</span></b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="code" readonly required="" placeholder="Mã tài liệu" />
+                                    <input class="form-control form-control-sm" type='text' name="code" required="" placeholder="Mã tài liệu" />
                                 </div>
 
                                 <b class="col-12 col-lg-2 col-form-label">Ấn bản:<span class="text-danger">*</span></b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='number' name="version" readonly required="" placeholder="Ấn bản" />
+                                    <input class="form-control form-control-sm" type='text' name="version" required="" placeholder="Ấn bản" />
                                 </div>
 
                             </div>

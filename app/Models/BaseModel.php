@@ -52,6 +52,7 @@ class BaseModel extends Model
         $id = $params['id'];
         $data = $params['data'];
         $this->trail($id, 'insert', $data, null, null);
+        return $params;
     }
 
     public function deleteTrail($params)
