@@ -465,6 +465,7 @@ class Import extends BaseController
 
     public function luuqa()
     {
+        die();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/Danh sách & tình trạng hồ sơ cập nhật đến_ver 150921_CKBT.xlsx';
 
@@ -651,7 +652,7 @@ class Import extends BaseController
     function updateqr()
     {
 
-        // $ciqrcode = new Ciqrcode();
+        $ciqrcode = new Ciqrcode();
         $document_model = model("DocumentModel");
         $documents = $document_model->asArray()->findAll();
         foreach ($documents as $row) {

@@ -7,10 +7,10 @@ use App\Libraries\Ciqrcode;
 
 class Document extends BaseController
 {
-    private $type_id = 1;
+    private $type_id = 0;
     function __construct()
     {
-        $this->type_id = isset($_GET['type_id']) ? $_GET['type_id'] : 1;
+        $this->type_id = isset($_GET['type_id']) ? $_GET['type_id'] : 0;
     }
     public function index()
     {
