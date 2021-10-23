@@ -494,7 +494,7 @@ class Document extends BaseController
         if (!empty($posts)) {
             foreach ($posts as $post) {
                 $nestedData['id'] =  '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
-                $nestedData['code'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '">' . $post->code . "." . ($post->version < 10 ? "0" . $post->version : $post->version) . '</a>';
+                $nestedData['code'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '">' . $post->code . "." . $post->version . '</a>';
                 $nestedData['name_vi'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '">' . $post->name_vi . '</a>';
                 $nestedData['version'] = $post->version;
                 $nestedData['file'] = "";

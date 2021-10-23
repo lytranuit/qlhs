@@ -216,7 +216,7 @@ class Category extends BaseController
         $data = $Document_model->where("(code like '%$search%')")->asArray()->paginate(100, '', 0);
         $results = array();
         foreach ($data as $row) {
-            $results[] = array("id" => $row['id'], 'disabled' => in_array($row['id'], $documents_disable) ? true : false, 'text' => $row['code'] . "." . ($row['version'] < 10 ? "0" . $row['version'] : $row['version']) . ' - ' . $row['name_vi']);
+            $results[] = array("id" => $row['id'], 'disabled' => in_array($row['id'], $documents_disable) ? true : false, 'text' => $row['code'] . "." .$row['version'] . ' - ' . $row['name_vi']);
         }
         echo json_encode(array('q' => $search, 'results' => $results));
         die();
