@@ -806,6 +806,7 @@ class Import extends BaseController
     }
     public function duyqa2019()
     {
+        die();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/LIST OF GCL 2019.xlsx';
 
@@ -968,6 +969,7 @@ class Import extends BaseController
 
     public function duyqa2020()
     {
+        die();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/LIST OF GCL 2020.xlsx';
 
@@ -1130,6 +1132,7 @@ class Import extends BaseController
 
     public function duyqa2021()
     {
+        die();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/LIST OF GCL 2021.xlsx';
 

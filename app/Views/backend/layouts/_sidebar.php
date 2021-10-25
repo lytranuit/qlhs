@@ -58,7 +58,7 @@
                     <ul class="mm-collapse mm-show">
                         <?php foreach ($types_list as $row) : ?>
                             <li>
-                                <a href="<?= base_url("/admin/document?type_id=$row->id") ?>" class="">
+                                <a href="<?= base_url("/admin/document/index/$row->id") ?>" class="">
                                     <?= $row->name ?>
                                 </a>
                             </li>

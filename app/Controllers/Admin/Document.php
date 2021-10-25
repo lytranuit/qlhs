@@ -12,17 +12,27 @@ class Document extends BaseController
     {
         $this->type_id = isset($_GET['type_id']) ? $_GET['type_id'] : 0;
     }
-    public function index()
+    public function index($type_id = 0)
     {
         // echo date("Y-m-d H:i:s");
         // die();
 
         $DocumentStatus_model = model("DocumentStatusModel");
         $this->data['status'] = $DocumentStatus_model->asObject()->findAll();
-        $this->data['type_id'] =  $this->type_id;
+        $this->data['type_id'] =  $type_id;
         return view($this->data['content'], $this->data);
     }
 
+    // public function index($type_id)
+    // {
+    //     // echo date("Y-m-d H:i:s");
+    //     // die();
+
+    //     $DocumentStatus_model = model("DocumentStatusModel");
+    //     $this->data['status'] = $DocumentStatus_model->asObject()->findAll();
+    //     $this->data['type_id'] =  $this->type_id;
+    //     return view($this->data['content'], $this->data);
+    // }
     public function edit($id)
     { /////// trang ca nhan
         if (isset($_POST['dangtin'])) {
