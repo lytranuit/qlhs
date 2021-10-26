@@ -136,6 +136,8 @@
                     // data['search_type'] = search_type;
                     // data['search_status'] = search_status;
                     // data['filter'] = filter;
+                    
+                    data['search_type'] = "code";
                     switch (id) {
                         case 1:
                             break;

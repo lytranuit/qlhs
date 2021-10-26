@@ -460,7 +460,6 @@ class Document extends BaseController
         //die();
         $totalFiltered = $totalData;
 
-
         if ($search_type == "status" && $search_status != "") {
             $where->where("status_id", $search_status);
             $totalFiltered = $where->countAllResults(false);
@@ -469,6 +468,10 @@ class Document extends BaseController
             // echo "1";die();
         } elseif ($search_type == "code") {
             $where->like("code", $search, "after");
+            $totalFiltered = $where->countAllResults(false);
+        } elseif ($search_type == "") {
+            $where->like("code", $search, "after");
+            $where->orLike("name_vi", $search);
             $totalFiltered = $where->countAllResults(false);
         } else {
             $where->like($search_type, $search);
