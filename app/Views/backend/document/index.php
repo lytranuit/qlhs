@@ -57,12 +57,65 @@
 
 <script src="<?= base_url('assets/lib/datatables/datatables.min.js') ?>"></script>
 <script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
-<script src="<?= base_url('assets/lib/qrcode/instascan.min.js') ?>"></script>
+<select id="cam-list'"></select>
 <div id="div_video" class="d-none">
     <video id="preview"></video>
     <div class="custom-scanner"></div>
     <button class="btn btn-sm btn-secondary change_cam"><i class="fas fa-sync-alt"></i></button>
 </div>
+
+<script type="module">
+    import QrScanner from "<?= base_url('assets/lib/qr-scanner/qr-scanner.min.js') ?>";
+    QrScanner.WORKER_PATH = "<?= base_url('assets/lib/qr-scanner/qr-scanner-worker.min.js') ?>";
+
+    const video = document.getElementById('preview');
+    const camList = document.getElementById('cam-list');
+    var scanner = new QrScanner(video);
+    var select_cam = 0;
+    var cameras = [];
+    QrScanner.hasCamera().then(hasCamera => {
+        if (hasCamera) {
+            scanner.start().then(() => {
+                // updateFlashAvailability();
+                // List cameras after the scanner started to avoid listCamera's stream and the scanner's stream being requested
+                // at the same time which can result in listCamera's unconstrained stream also being offered to the scanner.
+                // Note that we can also start the scanner after listCameras, we just have it this way around in the demo to
+                // start the scanner earlier.
+                QrScanner.listCameras(true).then(c => {
+                    cameras = c;
+                    if (cameras.length > 1) {
+                        select_cam = cameras.length - 1;
+                    }
+                });
+            });
+        }
+    });
+    $(".change_cam").click(function() {
+        select_cam++;
+        if (select_cam > cameras.length)
+            select_cam = 0;
+        $("#scan").trigger("click");
+    })
+    $("#scan").click(function() {
+        if (cameras.length > 0) {
+            let cam = cameras[select_cam];
+            scanner.setCamera(cam.id)
+            // if (cam.name.indexOf("back") != -1 && cam.name.indexOf("mặt sau") != -1) {
+            //     scanner.mirror = false
+            // } else {
+            //     scanner.mirror = true
+            // }
+            scanner.start();
+            $("#div_video").removeClass("d-none");
+            if (cameras.length == 1) {
+                $(".change_cam").addClass("d-none");
+            }
+        } else {
+            alert('Không tìm thấy camera.');
+            console.log('No cameras found.');
+        }
+    });
+</script>
 <script type="text/javascript">
     $(document).ready(function() {
         let list_status = <?= json_encode($status) ?>;
@@ -177,62 +230,6 @@
             localStorage.setItem('SEARCH_STATUS', search_status);
             table.ajax.reload();
         });
-
-
-
-        let scanner = new Instascan.Scanner({
-            video: document.getElementById('preview')
-        });
-        scanner.addListener('scan', function(content) {
-            console.log(content);
-            location.href = content;
-        });
-        var select_cam = 0;
-        $(".change_cam").click(function() {
-            select_cam++;
-            if (select_cam > cameras.length)
-                select_cam = 0;
-            $("#scan").trigger("click");
-        })
-        $("#scan").click(function() {
-            if (cameras.length > 0) {
-                let cam = cameras[select_cam];
-                if (cam.name.indexOf("back") != -1) {
-                    scanner.mirror = false
-                } else {
-                    scanner.mirror = true
-                }
-                scanner.start(cam);
-                $("#div_video").removeClass("d-none");
-                if (cameras.length == 1) {
-                    $(".change_cam").addClass("d-none");
-                }
-            } else {
-                alert('Không tìm thấy camera.');
-                console.log('No cameras found.');
-            }
-        });
-        var cameras = [];
-        Instascan.Camera.getCameras().then(function(c) {
-            cameras = c;
-            if (cameras.length > 1) {
-                select_cam = cameras.length - 1;
-            }
-            // console.log(cameras);
-            // if (cameras.length > 1) {
-            //     let html = "<select class='form-control form-control-sm d-none' id='select_cam'>";
-            //     for (let k in cameras) {
-            //         let cam = cameras[k];
-            //         html += "<option value='" + k + "'>" + cam.name + "</option>";
-            //     }
-            //     html += "</select>";
-            //     $("#scan").before(html);
-            //     $("#select_cam").val(cameras.length - 1);
-            // }
-        }).catch(function(e) {
-            console.log(e);
-        });
     });
 </script>
-
 <?= $this->endSection() ?>
