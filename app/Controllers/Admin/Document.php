@@ -471,7 +471,7 @@ class Document extends BaseController
             $totalFiltered = $where->countAllResults(false);
         } elseif ($search_type == "") {
             $where->like("code", $search, "after");
-            $where->orLike("name_vi", $search);
+            // $where->orLike("name_vi", $search);
             $totalFiltered = $where->countAllResults(false);
         } else {
             $where->like($search_type, $search);

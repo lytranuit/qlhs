@@ -126,12 +126,13 @@
                                 <div class="col-12 pt-2">
                                     <div class="card no-shadow border">
                                         <div class="card-header">
-                                            Danh mục
+                                            Vi trí
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-12">
                                                     <?= $category ?>
+                                                    <a href="#" class="hideshowdm">Chỉnh sửa</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -433,6 +434,18 @@
             ]
 
         });
+        $(".hideshowdm").click(function() {
+            $(this).toggleClass("actived");
+            if ($(this).hasClass("actived")) {
+                $(this).text("Chỉnh sửa");
+                $(".vitri .custom-control-input").parent().hide();
+                $(".vitri .custom-control-input:checked").parent().show();
+            } else {
+                $(this).text("Thu gọn");
+                $(".vitri .custom-control-input").parent().show();
+            }
+        });
+        $(".hideshowdm").trigger("click");
     });
 
     function add_file(item) {

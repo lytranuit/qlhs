@@ -218,7 +218,7 @@ if (!function_exists('html_product_category_nestable')) {
         });
         ///Bebin Tag
         if ($parent == 0) {
-            $html .= '<ul style="list-style: none;padding:0">';
+            $html .= '<ul style="list-style: none;padding:0" class="vitri">';
         } else {
             $html .= '<ul style="list-style: none;padding-left: 20px;">';
         }

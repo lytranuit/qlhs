@@ -41,11 +41,11 @@
                 </li>
                 </li>
 
-                <li class="app-sidebar__heading">Danh mục</li>
+                <li class="app-sidebar__heading">Vị trí</li>
                 <li>
                     <a href="<?= base_url() ?>/admin/category" class="">
                         <i class="metismenu-icon fas fa-bars"></i>
-                        Danh mục
+                        Vị trí
                     </a>
                 </li>
                 <li class="app-sidebar__heading">Tài liệu</li>
