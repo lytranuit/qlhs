@@ -179,9 +179,10 @@
     }
 
     @media only screen and (max-width: 600px) {
-        .mobile-hidden{
-            display:none;
+        .mobile-hidden {
+            display: none;
         }
+
         .document_add {
             width: 150px;
         }
@@ -224,7 +225,27 @@
     QrScanner.WORKER_PATH = "<?= base_url('assets/lib/qr-scanner/qr-scanner-worker.min.js') ?>";
 
     const video = document.getElementById('preview');
-    var scanner = new QrScanner(video);
+    var prev = "";
+    var scanner = new QrScanner(video, content => {
+        if (content == "" || content == prev)
+            return;
+        alert(content);
+        prev = content;
+        let anArray = content.split("/");
+        let code = anArray.pop();
+        let category_id = tin['id'];
+        $.ajax({
+            type: "POST",
+            data: {
+                category_id: category_id,
+                '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
+            },
+            url: path + "admin/" + controller + "/adddocument/" + code,
+            success: function(msg) {
+                alert("Đã thêm vào danh mục!");
+            }
+        })
+    });
     var select_cam = 0;
     var cameras = [];
     QrScanner.hasCamera().then(hasCamera => {
@@ -254,11 +275,6 @@
         if (cameras.length > 0) {
             let cam = cameras[select_cam];
             scanner.setCamera(cam.id)
-            // if (cam.name.indexOf("back") != -1 && cam.name.indexOf("mặt sau") != -1) {
-            //     scanner.mirror = false
-            // } else {
-            //     scanner.mirror = true
-            // }
             scanner.start();
             $("#div_video").removeClass("d-none");
             if (cameras.length == 1) {
@@ -297,18 +313,6 @@
                 'excel'
             ]
         });
-        //$('.edit').froalaEditor({
-        //    heightMin: 200,
-        //    heightMax: 500, // Set the image upload URL.
-        //    imageUploadURL: '<?= base_url() ?>admin/uploadimage',
-        //    // Set request type.
-        //    imageUploadMethod: 'POST',
-        //    // Set max image size to 5MB.
-        //    imageMaxSize: 5 * 1024 * 1024,
-        //    // Allow to upload PNG and JPG.
-        //    imageAllowedTypes: ['jpeg', 'jpg', 'png', 'gif'],
-        //    htmlRemoveTags: [],
-        //});
         $.validator.setDefaults({
             debug: true,
             success: "valid"

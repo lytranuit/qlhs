@@ -70,7 +70,13 @@
 
     const video = document.getElementById('preview');
     const camList = document.getElementById('cam-list');
-    var scanner = new QrScanner(video);
+    var prev = "";
+    var scanner = new QrScanner(video, content => {
+        if (content == "" || content == prev)
+            return;
+        prev = content;
+        location.href = content;
+    });
     var select_cam = 0;
     var cameras = [];
     QrScanner.hasCamera().then(hasCamera => {
