@@ -215,7 +215,7 @@
 <script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
 
 <div id="div_video" class="d-none">
-    <video id="preview"></video>
+    <video id="preview" class="d-none"></video>
     <div class="custom-scanner"></div>
     <button class="btn btn-sm btn-secondary change_cam"><i class="fas fa-sync-alt"></i></button>
 </div>
@@ -250,18 +250,11 @@
     var cameras = [];
     QrScanner.hasCamera().then(hasCamera => {
         if (hasCamera) {
-            scanner.start().then(() => {
-                // updateFlashAvailability();
-                // List cameras after the scanner started to avoid listCamera's stream and the scanner's stream being requested
-                // at the same time which can result in listCamera's unconstrained stream also being offered to the scanner.
-                // Note that we can also start the scanner after listCameras, we just have it this way around in the demo to
-                // start the scanner earlier.
-                QrScanner.listCameras(true).then(c => {
-                    cameras = c;
-                    if (cameras.length > 1) {
-                        select_cam = cameras.length - 1;
-                    }
-                });
+            QrScanner.listCameras(true).then(c => {
+                cameras = c;
+                if (cameras.length > 1) {
+                    select_cam = cameras.length - 1;
+                }
             });
         }
     });
@@ -277,6 +270,7 @@
             scanner.setCamera(cam.id);
             scanner.setInversionMode('both');
             scanner.start();
+            $("#preview").before(scanner.$canvas);
             $("#div_video").removeClass("d-none");
             if (cameras.length == 1) {
                 $(".change_cam").addClass("d-none");
@@ -301,6 +295,7 @@
         $(".document_add").ajaxChosen({
             dataType: 'json',
             type: 'POST',
+            22
             url: path + "admin/category/documentlist",
             data: data
         }, {
