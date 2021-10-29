@@ -274,7 +274,8 @@
     $("#scan").click(function() {
         if (cameras.length > 0) {
             let cam = cameras[select_cam];
-            scanner.setCamera(cam.id)
+            scanner.setCamera(cam.id);
+            scanner.setInversionMode('both');
             scanner.start();
             $("#div_video").removeClass("d-none");
             if (cameras.length == 1) {

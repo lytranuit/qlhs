@@ -79,6 +79,7 @@
     });
     var select_cam = 0;
     var cameras = [];
+
     QrScanner.hasCamera().then(hasCamera => {
         if (hasCamera) {
             scanner.start().then(() => {
@@ -106,11 +107,7 @@
         if (cameras.length > 0) {
             let cam = cameras[select_cam];
             scanner.setCamera(cam.id)
-            // if (cam.name.indexOf("back") != -1 && cam.name.indexOf("mặt sau") != -1) {
-            //     scanner.mirror = false
-            // } else {
-            //     scanner.mirror = true
-            // }
+            scanner.setInversionMode('both');
             scanner.start();
             $("#div_video").removeClass("d-none");
             if (cameras.length == 1) {
