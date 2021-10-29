@@ -229,7 +229,6 @@
     var scanner = new QrScanner(video, content => {
         if (content == "" || content == prev)
             return;
-        alert(content);
         prev = content;
         let anArray = content.split("/");
         let code = anArray.pop();
@@ -295,7 +294,6 @@
         $(".document_add").ajaxChosen({
             dataType: 'json',
             type: 'POST',
-            22
             url: path + "admin/category/documentlist",
             data: data
         }, {
