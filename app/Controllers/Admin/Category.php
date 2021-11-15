@@ -94,14 +94,17 @@ class Category extends BaseController
         $category_id = $this->request->getVar('category_id');
         $search = $this->request->getPost('search')['value'];
         $page = ($start / $limit) + 1;
-
+        $where = $Document_model;
         $Document_category_model = model("DocumentCategoryModel");
         $docs = $Document_category_model->document_by_category($category_id);
 
         $ids = array_map(function ($item) {
             return $item->id;
         }, (array)$docs);
-        $where = $Document_model->whereIn("id", $ids);
+        if (count($ids) > 0) {
+
+            $Document_model->whereIn("id", $ids);
+        }
         // echo "<pre>";
         // print_r($swhere);
         $totalData = $where->countAllResults(false);
