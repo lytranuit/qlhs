@@ -102,8 +102,9 @@ class Category extends BaseController
             return $item->id;
         }, (array)$docs);
         if (count($ids) > 0) {
-
             $Document_model->whereIn("id", $ids);
+        } else {
+            $Document_model->where("0=1");
         }
         // echo "<pre>";
         // print_r($swhere);
