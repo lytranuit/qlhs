@@ -122,35 +122,15 @@
                     <table id="quanlytin" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
                         <thead>
                             <tr>
+                                <th>Id</th>
                                 <th>Mã</th>
                                 <th>Tiêu đề</th>
                                 <th>Trạng thái</th>
+                                <th>Loại tài liệu</th>
                                 <th>Đính kèm</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($documents as $row) : ?>
-                                <tr>
-                                    <td>
-                                        <a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->id ?>"><?= $row->code . "." . $row->version ?></a>
-                                    </td>
-                                    <td>
-                                        <a class="" href="<?= base_url() ?>/admin/document/edit/<?= $row->id ?>"><?= $row->name_vi ?></a>
-                                    </td>
-                                    <td>
-                                        <?= isset($row->status->name) ? $row->status->name : $row->status_id; ?>
-                                    </td>
-                                    <td>
-                                        <?php foreach ($row->files as $file) : ?>
-                                            <div class="">
-                                                <div class="file-icon" data-type="<?= $file->ext ?>"></div>
-                                                <a href="<?= $file->url ?>" download="<?= $file->name ?>"><?= $file->name ?></a>
-                                            </div>
-                                        <?php endforeach ?>
-                                    </td>
-                                </tr>
-
-                            <?php endforeach ?>
                         </tbody>
                     </table>
                 </div>
@@ -301,11 +281,55 @@
         }, {
             allow_single_deselect: true
         });
+
         $('#quanlytin').DataTable({
-            dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>rt<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+            dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6 text-right"l>rt<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
             buttons: [
                 'excel'
-            ]
+            ],
+
+            "stateSave": true,
+            "processing": true,
+            "serverSide": true,
+            // "ordering": false,
+            "ajax": {
+                "url": path + "admin/<?= $controller ?>/tabledocument",
+                "dataType": "json",
+                "type": "POST",
+                'data': function(data) {
+                    // Read values
+                    let orders = data['order'];
+                    for (let i in orders) {
+                        let order = orders[i];
+                        let column = order['column'];
+                        orders[i]['data'] = data['columns'][column]['data'];
+                    }
+
+                    data['category_id'] = tin.id;
+                    data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
+                }
+            },
+            "columns": [{
+                    "data": "id"
+                },
+                {
+                    "data": "code",
+                }, {
+                    "data": "name_vi",
+                    "width": "500px",
+                    "orderable": false
+                },
+                {
+                    "data": "status"
+                },
+                {
+                    "data": "type"
+                },
+                {
+                    "data": "file",
+                    "orderable": false
+                }
+            ],
         });
         $.validator.setDefaults({
             debug: true,

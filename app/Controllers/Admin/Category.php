@@ -68,7 +68,7 @@ class Category extends BaseController
             //print_r($tin);
             //die();   
             $this->data['documents'] = $Document_category_model->document_by_category($id);
-            $Document_model->relation($this->data['documents'], array('files', "status"));
+            // $Document_model->relation($this->data['documents'], array('files', "status"));
             // echo "<pre>";
             // print_r($this->data['products']);
             // die();
@@ -85,7 +85,90 @@ class Category extends BaseController
             return view($this->data['content'], $this->data);
         }
     }
+    public function tabledocument()
+    {
+        $Document_model = model("DocumentModel", false);
+        $limit = $this->request->getVar('length');
+        $start = $this->request->getVar('start');
+        $orders = $this->request->getVar('order');
+        $category_id = $this->request->getVar('category_id');
+        $search = $this->request->getPost('search')['value'];
+        $page = ($start / $limit) + 1;
 
+        $Document_category_model = model("DocumentCategoryModel");
+        $docs = $Document_category_model->document_by_category($category_id);
+
+        $ids = array_map(function ($item) {
+            return $item->id;
+        }, (array)$docs);
+        $where = $Document_model->whereIn("id", $ids);
+        // echo "<pre>";
+        // print_r($swhere);
+        $totalData = $where->countAllResults(false);
+
+        //echo "<pre>";
+        //print_r($totalData);
+        //die();
+        $totalFiltered = $totalData;
+
+
+        if (isset($orders)) {
+            foreach ($orders as $order) {
+                $data = $order['data'];
+                $dir = $order['dir'];
+                switch ($data) {
+                    default:
+                        $where->orderby($data, $dir);
+                        break;
+                    case 'status':
+                        $where->orderby('status_id', $dir);
+                        break;
+                    case 'type':
+                        $where->orderby('type_id', $dir);
+                        break;
+                }
+            }
+        }
+        // $where = $Document_model;
+        $posts = $where->orderby("id", "DESC")->asObject()->paginate($limit, '', $page);
+
+
+        $Document_model->relation($posts, array('files', "status", "type"));
+        // echo "<pre>";
+        // print_r($posts);
+        // die();
+        $data = array();
+        if (!empty($posts)) {
+            foreach ($posts as $post) {
+                $nestedData['id'] =  '<a href="' . base_url("admin/document/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
+                $nestedData['code'] = '<a href="' . base_url("admin/document/edit/" . $post->id) . '">' . $post->code . "." . $post->version . '</a>';
+                $nestedData['name_vi'] = '<a href="' . base_url("admin/document/edit/" . $post->id) . '">' . $post->name_vi . '</a>';
+                $nestedData['version'] = $post->version;
+                $nestedData['file'] = "";
+                if (isset($post->files)) {
+                    foreach ($post->files as $row) {
+                        $nestedData['file'] .= '<div class="">
+                        <div class="file-icon" data-type="' . $row->ext . '"></div>
+                        <a href="' . $row->url . '" download="' . $row->name . '">' . $row->name . '</a>
+                    </div>';
+                    }
+                }
+                $nestedData['status'] = isset($post->status) ? $post->status->name : $post->status_id;
+                $nestedData['type'] = isset($post->type) ? $post->type->name : $post->type_id;
+                $nestedData['action'] = "";
+                $data[] = $nestedData;
+            }
+        }
+
+        $json_data = array(
+            "draw" => intval($this->request->getVar('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+
+        echo json_encode($json_data);
+    }
     public function deletemenu()
     {
         if (!in_groups(array('admin', 'editor'))) {
@@ -206,6 +289,7 @@ class Category extends BaseController
         $DocumentCategoryModel->insertBatch($array);
         echo json_encode(1);
     }
+
     public function documentlist()
     {
         $Document_model = model("DocumentModel");
@@ -216,7 +300,7 @@ class Category extends BaseController
         $data = $Document_model->where("(code like '%$search%')")->asArray()->paginate(100, '', 0);
         $results = array();
         foreach ($data as $row) {
-            $results[] = array("id" => $row['id'], 'disabled' => in_array($row['id'], $documents_disable) ? true : false, 'text' => $row['code'] . "." .$row['version'] . ' - ' . $row['name_vi']);
+            $results[] = array("id" => $row['id'], 'disabled' => in_array($row['id'], $documents_disable) ? true : false, 'text' => $row['code'] . "." . $row['version'] . ' - ' . $row['name_vi']);
         }
         echo json_encode(array('q' => $search, 'results' => $results));
         die();
