@@ -86,6 +86,11 @@ class AuthController extends Controller
 
 		// Try to log them in...
 		if (!$this->auth->attempt([$type => $login, 'password' => $password], $remember)) {
+
+			$UserModel = model("UserModel");
+			$description = "User " . user()->name . " login failed";
+			$UserModel->trail(1, 'login', null, null, $description);
+
 			return redirect()->back()->withInput()->with('error', $this->auth->error() ?? lang('Auth.badAttempt'));
 		}
 
@@ -93,6 +98,10 @@ class AuthController extends Controller
 		if ($this->auth->user()->force_pass_reset === true) {
 			return redirect()->to(route_to('reset-password') . '?token=' . $this->auth->user()->reset_hash)->withCookies();
 		}
+
+		$UserModel = model("UserModel");
+		$description = "User " . user()->name . " login successfuly";
+		$UserModel->trail(1, 'login', null, null, $description);
 
 		$redirectURL = session('redirect_url') ?? site_url('/');
 		unset($_SESSION['redirect_url']);
@@ -106,6 +115,10 @@ class AuthController extends Controller
 	public function logout()
 	{
 		if ($this->auth->check()) {
+			$UserModel = model("UserModel");
+			$description = "User " . user()->name . " logout";
+			$UserModel->trail(1, 'login', null, null, $description);
+
 			$this->auth->logout();
 		}
 
