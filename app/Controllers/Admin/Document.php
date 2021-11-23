@@ -529,6 +529,7 @@ class Document extends BaseController
                 // }
                 $nestedData['status'] = isset($post->status) ? $post->status->name : $post->status_id;
                 $nestedData['type'] = isset($post->type) ? $post->type->name : $post->type_id;
+                $nestedData['description_vi'] = $post->description_vi;
                 $nestedData['action'] = "";
                 if (in_groups(array('admin', 'editor')))
                     $nestedData['action'] = '<div class="btn-group"><a href="' . base_url("admin/" . $this->data['controller'] . "/upversion/" . $post->id) . '" class="btn btn-warning btn-sm" title="Lên ấn bản?" data-type="confirm">'

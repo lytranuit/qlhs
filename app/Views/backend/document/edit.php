@@ -86,7 +86,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <b class="col-12 col-form-label">Mô tả sơ lược:</b>
+                                <b class="col-12 col-form-label">Ghi chú:</b>
                                 <div class="col-12 pt-1">
                                     <textarea class="form-control" name="description_vi" rows="10"></textarea>
                                 </div>
