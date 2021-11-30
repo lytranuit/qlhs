@@ -85,6 +85,97 @@ class Category extends BaseController
             return view($this->data['content'], $this->data);
         }
     }
+    public function exportexcel()
+    {
+        $Document_model = model("DocumentModel", false);
+        $limit = $this->request->getVar('length');
+        $start = $this->request->getVar('start');
+        $orders = $this->request->getVar('order');
+        $category_id = $this->request->getVar('category_id');
+        $search = $this->request->getPost('search')['value'];
+        $page = ($start / $limit) + 1;
+        $where = $Document_model;
+        $Document_category_model = model("DocumentCategoryModel");
+        $docs = $Document_category_model->document_by_category($category_id);
+
+        $ids = array_map(function ($item) {
+            return $item->id;
+        }, (array)$docs);
+        if (count($ids) > 0) {
+            $Document_model->whereIn("id", $ids);
+        } else {
+            $Document_model->where("0=1");
+        }
+        // echo "<pre>";
+        // print_r($swhere);
+        $totalData = $where->countAllResults(false);
+
+        //echo "<pre>";
+        //print_r($totalData);
+        //die();
+        $totalFiltered = $totalData;
+
+
+        if (isset($orders)) {
+            foreach ($orders as $order) {
+                $data = $order['data'];
+                $dir = $order['dir'];
+                switch ($data) {
+                    default:
+                        $where->orderby($data, $dir);
+                        break;
+                    case 'status':
+                        $where->orderby('status_id', $dir);
+                        break;
+                    case 'type':
+                        $where->orderby('type_id', $dir);
+                        break;
+                }
+            }
+        }
+        // $where = $Document_model;
+        $posts = $where->orderby("id", "DESC")->asObject()->paginate($limit, '', $page);
+
+
+        $Document_model->relation($posts, array("status", "type", 'categories'));
+        $file = APPPATH . '../assets/template/template.xlsx';
+        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
+        /**  Create a new Reader of the type defined in $inputFileType  **/
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+        // echo "<pre>";
+        // print_r($reader);
+        // die();
+        /**  Load $inputFileName to a Spreadsheet Object  **/
+        $spreadsheet = $reader->load($file);
+        $sheet = $spreadsheet->getActiveSheet();
+        if (!empty($posts)) {
+            $rows = 7;
+            $sheet->insertNewRowBefore($rows + 1, count($posts));
+            foreach ($posts as $key => $post) {
+                $categries = array_map(function ($item) {
+                    return $item->name_vi;
+                }, $post->categories);
+
+
+                $sheet->setCellValue('A' . $rows, $key + 1);
+                $sheet->setCellValue('B' . $rows, $post->name_vi);
+                $sheet->setCellValue('C' . $rows, isset($post->type) ? $post->type->name : $post->type_id);
+                $sheet->setCellValue('D' . $rows, implode(" / ", $categries));
+                $sheet->setCellValue('E' . $rows, $post->date_effect);
+                $sheet->setCellValue('F' . $rows, '');
+                $sheet->setCellValue('G' . $rows, $post->date_expire);
+                $sheet->setCellValue('H' . $rows, $post->code . "." . $post->version);
+                $sheet->setCellValue('I' . $rows, $post->description_vi);
+                $rows++;
+            }
+        }
+        $sheet->getRowDimension(1)->setRowHeight(-1);
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $file = "assets/excel/" . time() . ".xlsx";
+        $writer->save($file);
+        echo json_encode(base_url($file));
+    }
     public function tabledocument()
     {
         $Document_model = model("DocumentModel", false);

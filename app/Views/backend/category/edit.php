@@ -282,10 +282,22 @@
             allow_single_deselect: true
         });
 
-        $('#quanlytin').DataTable({
+        let table = $('#quanlytin').DataTable({
             dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6 text-right"l>rt<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
             buttons: [
-                'excel'
+                // 'excel',
+                {
+                    text: 'Excel',
+                    action: async function(e, dt, node, config) {
+                        let url = await $.ajax({
+                            "url": path + "admin/<?= $controller ?>/exportexcel",
+                            "data": table.ajax.params(),
+                            "type": "POST",
+                            "dataType": "JSON"
+                        })
+                        location.href = url;
+                    }
+                }
             ],
 
             "stateSave": true,
