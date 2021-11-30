@@ -683,35 +683,46 @@ class Document extends BaseController
         }
         // $where = $Document_model;
         $posts = $where->orderby("id", "DESC")->asObject()->findAll();
-        $Document_model->relation($posts, array("status", "type"));
-
+        $Document_model->relation($posts, array("status", "type", 'categories'));
+        // echo "<pre>";
+        // print_r($posts);
+        // die();
+        $file = APPPATH . '../assets/template/template.xlsx';
+        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
+        /**  Create a new Reader of the type defined in $inputFileType  **/
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+        // echo "<pre>";
+        // print_r($reader);
+        // die();
+        /**  Load $inputFileName to a Spreadsheet Object  **/
+        $spreadsheet = $reader->load($file);
+        $sheet = $spreadsheet->getActiveSheet();
         if (!empty($posts)) {
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+            $rows = 7;
+            $sheet->insertNewRowBefore($rows + 1, count($posts));
+            foreach ($posts as $key => $post) {
+                $categries = array_map(function ($item) {
+                    return $item->name_vi;
+                }, $post->categories);
 
-            $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setCellValue('A1', 'Id');
-            $sheet->setCellValue('B1', 'Mã');
-            $sheet->setCellValue('C1', 'Ấn bản');
-            $sheet->setCellValue('D1', 'Tiêu đề');
-            $sheet->setCellValue('E1', 'Trạng thái');
-            $sheet->setCellValue('F1', 'Loại tài liệu');
-            $sheet->setCellValue('G1', 'Mô tả');
-            $rows = 2;
 
-            foreach ($posts as $post) {
-                $sheet->setCellValue('A' . $rows, $post->id);
-                $sheet->setCellValue('B' . $rows, $post->code);
-                $sheet->setCellValue('C' . $rows, $post->version);
-                $sheet->setCellValue('D' . $rows, $post->name_vi);
-                $sheet->setCellValue('E' . $rows, isset($post->status) ? $post->status->name : $post->status_id);
-                $sheet->setCellValue('F' . $rows, isset($post->type) ? $post->type->name : $post->type_id);
-                $sheet->setCellValue('G' . $rows, $post->description_vi);
+                $sheet->setCellValue('A' . $rows, $key + 1);
+                $sheet->setCellValue('B' . $rows, $post->name_vi);
+                $sheet->setCellValue('C' . $rows, isset($post->type) ? $post->type->name : $post->type_id);
+                $sheet->setCellValue('D' . $rows, implode(" / ", $categries));
+                $sheet->setCellValue('E' . $rows, $post->date_effect);
+                $sheet->setCellValue('F' . $rows, '');
+                $sheet->setCellValue('G' . $rows, $post->date_expire);
+                $sheet->setCellValue('H' . $rows, $post->code . "." . $post->version);
+                $sheet->setCellValue('I' . $rows, $post->description_vi);
                 $rows++;
             }
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            $file = "assets/excel/" . time() . ".xlsx";
-            $writer->save($file);
-            echo json_encode(base_url($file));
         }
+        $sheet->getRowDimension(1)->setRowHeight(-1);
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $file = "assets/excel/" . time() . ".xlsx";
+        $writer->save($file);
+        echo json_encode(base_url($file));
     }
 }
