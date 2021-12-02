@@ -2,3 +2,5 @@
 .env
 /assets/userfiles
 assets/qrcode/
+assets/upload/
+assets/excel/
