@@ -200,12 +200,14 @@
             }
         });
         $(".export").click(async function() {
+            $(".page-loader-wrapper").show();
             let url = await $.ajax({
                 "url": path + "admin/<?= $controller ?>/exportexcel",
                 "data": table.ajax.params(),
                 "type": "POST",
                 "dataType": "JSON"
             })
+            $(".page-loader-wrapper").hide();
             location.href = url;
         });
         $(document).on("change", ".filter", function() {

@@ -153,14 +153,14 @@ class Category extends BaseController
             $sheet->insertNewRowBefore($rows + 1, count($posts));
             foreach ($posts as $key => $post) {
                 $categries = array_map(function ($item) {
-                    return $item->name_vi;
+                    return "- $item->name_vi";
                 }, $post->categories);
 
 
                 $sheet->setCellValue('A' . $rows, $key + 1);
                 $sheet->setCellValue('B' . $rows, $post->name_vi);
                 $sheet->setCellValue('C' . $rows, isset($post->type) ? $post->type->name : $post->type_id);
-                $sheet->setCellValue('D' . $rows, implode(" / ", $categries));
+                $sheet->setCellValue('D' . $rows, implode("\n", $categries));
                 $sheet->setCellValue('E' . $rows, $post->date_effect);
                 $sheet->setCellValue('F' . $rows, '');
                 $sheet->setCellValue('G' . $rows, $post->date_expire);
