@@ -225,7 +225,6 @@
             } else {
                 alert("Please select a file.");
             }
-
         })
         $(document).on("click", ".remove_file", function() {
             $(this).parents(".file_box").remove();

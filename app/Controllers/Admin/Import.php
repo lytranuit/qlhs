@@ -1344,4 +1344,333 @@ class Import extends BaseController
                 ->set(["name_vi" => $name_vi, 'name_en' => $name_en])->update();
         }
     }
+
+    public function table()
+    {
+        $ImportModel = model("ImportModel", false);
+        $limit = $this->request->getVar('length');
+        $start = $this->request->getVar('start');
+        $search = $this->request->getPost('search')['value'];
+        $page = ($start / $limit) + 1;
+        $where = $ImportModel;
+        // echo "<pre>";
+        // print_r($where);
+        $totalData = $where->countAllResults(false);
+
+        //echo "<pre>";
+        //print_r($totalData);
+        //die();
+        $totalFiltered = $totalData;
+
+        if (empty($search)) {
+            // $where = $Document_model;
+            // echo "1";die();
+        } else {
+            $where->like("name", $search);
+            $totalFiltered = $where->countAllResults(false);
+        }
+
+        // $where = $Document_model;
+        $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
+
+        $ImportModel->relation($posts, array('file'));
+        // echo "<pre>";
+        // print_r($posts);
+        // die();
+        $data = array();
+        if (!empty($posts)) {
+            foreach ($posts as $post) {
+                $nestedData['id'] =  '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
+                $nestedData['name'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '">' . $post->name . '</a>';
+                $nestedData['description'] =  $post->description;
+                $nestedData['file'] = "";
+                if (isset($post->file)) {
+                    $row = $post->file;
+                    $nestedData['file'] .= '<div class="">
+                        <div class="file-icon" data-type="' . $row->ext . '"></div>
+                        <a href="' . $row->url . '" download="' . $row->name . '">' . $row->name . '</a>
+                    </div>';
+                }
+                $nestedData['action'] = "";
+                if (in_groups(array('admin', 'editor'))) {
+                    $nestedData['action'] .= '<div class="btn-group">';
+                    if ($post->status != 1) {
+                        $nestedData['action'] .= '<a href="#" class="btn btn-success btn-sm import" title="Import data?" data-id="' . $post->id . '">'
+                            . '<i class="fas fa-upload">'
+                            . '</i>'
+                            . '</a>';
+                        $nestedData['action'] .= '<a href="' . base_url("admin/" . $this->data['controller'] . "/remove/" . $post->id) . '" class="btn btn-danger btn-sm" title="Xóa tài liệu?" data-type="confirm">'
+                            . '<i class="fas fa-trash-alt">'
+                            . '</i>'
+                            . '</a>';
+                    }else{
+                        $nestedData['action'] .= "Đã Nhập";
+                    }
+                    $nestedData['action'] .= '</div>';
+                }
+                $data[] = $nestedData;
+            }
+        }
+
+        $json_data = array(
+            "draw" => intval($this->request->getVar('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+
+        echo json_encode($json_data);
+    }
+    public function add()
+    { /////// trang ca nhan
+        if (isset($_POST['dangtin'])) {
+            if (!in_groups(array('admin', 'editor'))) {
+                throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+            }
+            $ImportModel = model("ImportModel");
+            $data = $this->request->getPost();
+            $obj = $ImportModel->create_object($data);
+            $ImportModel->insert($obj);
+            return redirect()->to(base_url('admin/' . $this->data['controller']));
+        } else {
+            //load_editor($this->data);
+            return view($this->data['content'], $this->data);
+        }
+    }
+
+    public function edit($id)
+    { /////// trang ca nhan
+        if (isset($_POST['dangtin'])) {
+
+            $ImportModel = model("ImportModel");
+            $data = $this->request->getPost();
+
+            $obj_old = $ImportModel->where(array('id' => $id))->asArray()->first();
+            $obj = $ImportModel->create_object($data);
+            // print_r($obj);die();
+            $ImportModel->update($id, $obj);
+
+            $description = "User " . user()->name . " updated a Import";
+            $ImportModel->trail(1, 'update', $obj, $obj_old, $description);
+            return redirect()->to(base_url('admin/' . $this->data['controller']));
+        } else {
+            $ImportModel = model("ImportModel");
+            $tin = $ImportModel->where(array('id' => $id))->asObject()->first();
+
+            $ImportModel->relation($tin, array('file'));
+            $this->data['tin'] = $tin;
+            return view($this->data['content'], $this->data);
+        }
+    }
+
+    public function remove($id)
+    { /////// trang ca nhan
+        $ImportModel = model("ImportModel");
+        $ImportModel->delete($id);
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        exit;
+    }
+    public function import($id)
+    {
+        $ImportModel = model("ImportModel");
+        $DocumentTypeModel = model("DocumentTypeModel");
+        $DocumentCategoryModel = model("DocumentCategoryModel");
+        $CategoryModel = model("CategoryModel");
+        $tin = $ImportModel->where(array('id' => $id))->asObject()->first();
+
+        $ImportModel->relation($tin, array('file'));
+        $ImportModel->update($id, array("status" => 1));
+        if (isset($tin->file) && $tin->file->ext == "xlsx") {
+            //Đường dẫn file
+            $file = APPPATH . '..' . $tin->file->url;
+
+            /** Load $inputFileName to a Spreadsheet Object  **/
+            // $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
+            // print_r($spreadsheet);
+            // die();
+            //Tiến hành xác thực file
+            $objFile = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
+            $objData = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($objFile);
+
+            //Chỉ đọc dữ liệu
+            // $objData->setReadDataOnly(true);
+            // Load dữ liệu sang dạng đối tượng
+            $objPHPExcel = $objData->load($file);
+            //Lấy ra số trang sử dụng phương thức getSheetCount();
+            // Lấy Ra tên trang sử dụng getSheetNames();
+            //Chọn trang cần truy xuất
+            // $sheet = $objPHPExcel->setActiveSheetIndex(0);
+
+            // //Lấy ra số dòng cuối cùng
+            // $Totalrow = $sheet->getHighestRow();
+            // //Lấy ra tên cột cuối cùng
+            // $LastColumn = $sheet->getHighestColumn();
+            // //Chuyển đổi tên cột đó về vị trí thứ, VD: C là 3,D là 4
+            // $TotalCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($LastColumn);
+
+            //Tạo mảng chứa dữ liệu
+            $data = [];
+
+            $count_sheet = $objPHPExcel->getSheetCount();
+            // print_r($count_sheet);
+            // die();
+            for ($k = 0; $k < $count_sheet; $k++) {
+
+                $sheet = $objPHPExcel->setActiveSheetIndex($k);
+                $sheet_name = $sheet->getTitle();
+                // if (strpos($sheet_name, "#") == false) continue;
+                // print_r($sheet_name);die();
+                //Lấy ra số dòng cuối cùng
+                $Totalrow = $sheet->getHighestRow();
+                //Lấy ra tên cột cuối cùng
+                $LastColumn = $sheet->getHighestColumn();
+                //Chuyển đổi tên cột đó về vị trí thứ, VD: C là 3,D là 4
+                $TotalCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($LastColumn);
+
+                //Tạo mảng chứa dữ liệu
+                $data = [];
+
+                //Tiến hành lặp qua từng ô dữ liệu
+                //----Lặp dòng, Vì dòng đầu là tiêu đề cột nên chúng ta sẽ lặp giá trị từ dòng 2
+                $row = 7;
+                for ($i = $row; $i <= $Totalrow; $i++) {
+                    //----Lặp cột
+                    for ($j = 0; $j <= $TotalCol; $j++) {
+                        // Tiến hành lấy giá trị của từng ô đổ vào mảng
+                        $cell = $sheet->getCellByColumnAndRow($j, $i);
+
+                        $data[$i -  $row][$j] = $cell->getValue();
+                        ///CHUYEN RICH TEXT
+                        if ($data[$i -  $row][$j] instanceof \PhpOffice\PhpSpreadsheet\RichText\RichText) {
+                            $data[$i -  $row][$j] = $data[$i -  $row][$j]->getPlainText();
+                        }
+
+                        // ////CHUYEN DATE 
+                        // if (PHPExcel_Shared_Date::isDateTime($cell) && $data[$i - 1][$j] > 0) {
+
+                        //     if (is_numeric($data[$i - 1][$j])) {
+                        //         $data[$i - 1][$j] = date("Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($data[$i - 1][$j]));
+                        //     } else if ($data[$i - 1][$j] == '26/09/16') {
+                        //         $data[$i - 1][$j] = '2016-09-26';
+                        //     }
+                        // }
+                    }
+                }
+
+
+                // echo "<pre>";
+                // echo $TotalCol . "<br>";
+                // print_r($data);
+                // die();
+                $document_model = model("DocumentModel");
+                foreach ($data as $row) {
+
+                    $name = $row[2];
+                    $code = $row[9];
+                    if ($name == "" || $code == "") continue;
+                    // $row[1] = trim($row[1]);
+                    // $explode =  explode(".", $row[1]);
+                    // if (count($explode) < 2) continue;
+
+                    // $version = $row[2];
+                    // $status = $row[4];
+                    $type = trim($row[3]);
+                    // $is_active = $row[9];
+                    $vi_tri = trim($row[4]);
+                    $description = $row[10];
+                    $version = "";
+                    $explode = array();
+                    if ($code != "" && $code != "NA") {
+
+                        $explode =  explode(".", $code);
+                        if (count($explode) >= 2) {
+                            goto end;
+                        }
+                        $explode =  explode("/", $code);
+                        if (count($explode) >= 2) {
+                            goto end;
+                        }
+                        end:
+                        if (count($explode) >= 2) {
+                            $version = $explode[count($explode) - 1];
+                            $code = substr($code, 0, 0 - strlen($version) - 1);
+                        }
+                    }
+
+
+                    $array = preg_split("/\r\n|\n|\r/", $name);
+                    $name_vi = isset($array[0]) ? $array[0] : "";
+                    $name_en = isset($array[1]) ? $array[1] : "";
+                    // print_r($array);
+                    // die();
+                    $date_effect_row = explode(".", $row[5]);
+                    $date_review_row = explode(".", $row[6]);
+                    if (count($date_effect_row) < 3) {
+                        $date_effect = null;
+                    } else {
+                        $d = $date_effect_row[0];
+                        $m = $date_effect_row[1];
+                        $y = "20$date_effect_row[2]";
+                        $date_effect = "$y-$m-$d";
+                    }
+                    if (count($date_review_row) < 3) {
+                        $date_review = null;
+                    } else {
+                        $d = $date_review_row[0];
+                        $m = $date_review_row[1];
+                        $y = "20$date_review_row[2]";
+                        $date_review = "$y-$m-$d";
+                    }
+
+
+                    $array = array(
+                        // 'other' => $explode,
+                        'code' => $code,
+                        'version' => $version,
+                        'date_effect' => $date_effect,
+                        'date_review' => $date_review,
+                        'name_vi' => $name_vi,
+                        'name_en' => $name_en,
+                        'description_vi' => $description,
+                        'from_file' => $id
+                    );
+                    $type_obj = $DocumentTypeModel->where(array('name' => $type))->asObject()->first();
+                    if (!empty($type_obj)) {
+                        $array['type_id'] = $type_obj->id;
+                    }
+                    // print_r($array);
+                    ///FOUND 
+                    $document = $document_model->where(array("code" => $code, 'version' => $version))->asObject()->first();
+                    if ($code != "" && $code != "NA" && !empty($document)) {
+                        $document_id = $document->id;
+                        $document_model->update($document_id, $array);
+                    } else {
+                        $document_id = $document_model->insert($array);
+                    }
+                    ///ADD CATEGORY
+                    $category_obj = $CategoryModel->where(array('name_vi' => $vi_tri))->asObject()->first();
+                    if (!empty($category_obj)) {
+                        $category_id = $category_obj->id;
+                        $list_parents = $CategoryModel->get_category_parents($category_id);
+                        $array = [];
+                        $array[] =  array(
+                            'document_id' => $document_id,
+                            'category_id' => $category_id,
+                        );
+                        foreach ($list_parents as $parent_id) {
+                            $array[] =  array(
+                                'document_id' => $document_id,
+                                'category_id' => $parent_id,
+                            );
+                        }
+                        // print_r($array);
+                        // die();
+                        $DocumentCategoryModel->insertBatch($array);
+                    }
+                }
+            }
+        }
+
+        return redirect()->to(base_url('admin/' . $this->data['controller']));
+    }
 }
