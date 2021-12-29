@@ -301,6 +301,22 @@
                         location.href = url;
 
                     }
+                }, // 'QR EXCEL',
+                {
+                    text: 'QR download',
+                    action: async function(e, dt, node, config) {
+
+                        $(".page-loader-wrapper").show();
+                        let url = await $.ajax({
+                            "url": path + "admin/<?= $controller ?>/exportqr",
+                            "data": table.ajax.params(),
+                            "type": "POST",
+                            "dataType": "JSON"
+                        })
+                        $(".page-loader-wrapper").hide();
+                        location.href = url;
+
+                    }
                 }
             ],
 

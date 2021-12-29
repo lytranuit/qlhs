@@ -176,6 +176,104 @@ class Category extends BaseController
         $writer->save($file);
         echo json_encode(base_url($file));
     }
+    public function exportqr()
+    {
+        $Document_model = model("DocumentModel", false);
+        $limit = $this->request->getVar('length');
+        $start = $this->request->getVar('start');
+        $orders = $this->request->getVar('order');
+        $category_id = $this->request->getVar('category_id');
+        $search = $this->request->getPost('search')['value'];
+        $page = ($start / $limit) + 1;
+        $where = $Document_model;
+        $Document_category_model = model("DocumentCategoryModel");
+        $docs = $Document_category_model->document_by_category($category_id);
+
+        $ids = array_map(function ($item) {
+            return $item->id;
+        }, (array)$docs);
+        if (count($ids) > 0) {
+            $Document_model->whereIn("id", $ids);
+        } else {
+            $Document_model->where("0=1");
+        }
+        // echo "<pre>";
+        // print_r($swhere);
+        $totalData = $where->countAllResults(false);
+
+        //echo "<pre>";
+        //print_r($totalData);
+        //die();
+        $totalFiltered = $totalData;
+
+
+        if (isset($orders)) {
+            foreach ($orders as $order) {
+                $data = $order['data'];
+                $dir = $order['dir'];
+                switch ($data) {
+                    default:
+                        $where->orderby($data, $dir);
+                        break;
+                    case 'status':
+                        $where->orderby('status_id', $dir);
+                        break;
+                    case 'type':
+                        $where->orderby('type_id', $dir);
+                        break;
+                }
+            }
+        }
+        // $where = $Document_model;
+        $posts = $where->orderby("id", "DESC")->asObject()->paginate($limit, '', $page);
+        // Creating the new document...
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+
+        /* Note: any element you append to a document must reside inside of a Section. */
+
+        // Adding an empty Section to the document...
+        $section = $phpWord->addSection();
+
+        $styleCell =
+            [
+                'borderColor' => 'ffffff',
+                'borderSize' => 6,
+            ];
+        $table = $section->addTable(array('borderSize' => 0, 'cellMargin'  => 80, 'width' => 100 * 50, 'unit' => \PhpOffice\PhpWord\Style\Table::WIDTH_PERCENT, 'valign' => 'center'));
+
+        $count = 0;
+
+        /**  Load $inputFileName to a Spreadsheet Object  **/
+        if (!empty($posts)) {
+
+            foreach ($posts as $key => $row) {
+                $count++;
+                if ($count > 6)
+                    $count = 1;
+                if ($count == 1)
+                    $table->addRow(null, []);
+                $cell = $table->addCell(null, $styleCell);
+                $cell->addImage(
+                    APPPATH . '..' . $row->image_url,
+                    array(
+                        'align' => 'center',
+                        'width'         => 70,
+                        'height'        => 70,
+                        'marginTop'     => -1,
+                        'marginLeft'    => -1,
+                        'wrappingStyle' => 'behind'
+                    )
+                );
+                $name = basename($row->image_url);
+                $cell->addText($name, array('size' => 8), array('align' => 'center'));
+            }
+        }
+        // Saving the document as OOXML file...
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $file = "assets/excel/" . time() . ".doc";
+        $objWriter->save($file);
+        echo json_encode(base_url($file));
+    }
     public function tabledocument()
     {
         $Document_model = model("DocumentModel", false);
