@@ -725,4 +725,114 @@ class Document extends BaseController
         $writer->save($file);
         echo json_encode(base_url($file));
     }
+    public function exportqr()
+    {
+        $Document_model = model("DocumentModel", false);
+        $option_model = model("OptionModel");
+        $orders = $this->request->getVar('order');
+        $search = $this->request->getPost('search')['value'];
+        $search_type = $this->request->getPost('search_type');
+        $search_status = $this->request->getPost('search_status');
+        $filter = $this->request->getPost('filter');
+        $type_id = $this->request->getPost('type_id');
+        $where = $Document_model;
+        if ($filter == "1")
+            $where->where("is_active", 1);
+        elseif ($filter == "6") {
+            $where->where("date_review <", date("Y-m-d"));
+        } elseif ($filter == "5") {
+            $mail_review = $option_model->get_options_group("mail_review");
+            $before_send_review = $mail_review['before_send'];
+            $where->where("date_review <", date("Y-m-d", strtotime("+$before_send_review day")));
+        } elseif ($filter == "4") {
+            $mail_expire = $option_model->get_options_group("mail_expire");
+            $before_send_expire = $mail_expire['before_send'];
+            $where->where("date_expire <", date("Y-m-d", strtotime("+$before_send_expire day")));
+        }
+        if ($type_id > 0) {
+            $where->where('type_id', $type_id);
+        }
+        //echo "<pre>";
+        //print_r($totalData);
+        //die();
+
+
+        if ($search_type == "status" && $search_status != "") {
+            $where->where("status_id", $search_status);
+        } elseif (empty($search)) {
+            // $where = $Document_model;
+            // echo "1";die();
+        } elseif ($search_type == "code") {
+            $where->like("code", $search, "after");
+        } else {
+            $where->like($search_type, $search);
+        }
+
+        if (isset($orders)) {
+            foreach ($orders as $order) {
+                $data = $order['data'];
+                $dir = $order['dir'];
+                switch ($data) {
+                    default:
+                        $where->orderby($data, $dir);
+                        break;
+                    case 'status':
+                        $where->orderby('status_id', $dir);
+                        break;
+                    case 'type':
+                        $where->orderby('type_id', $dir);
+                        break;
+                }
+            }
+        }
+        // $where = $Document_model;
+        $posts = $where->orderby("id", "DESC")->asObject()->findAll();
+        // Creating the new document...
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+
+        /* Note: any element you append to a document must reside inside of a Section. */
+
+        // Adding an empty Section to the document...
+        $section = $phpWord->addSection();
+
+        $styleCell =
+            [
+                'borderColor' => 'ffffff',
+                'borderSize' => 6,
+            ];
+        $table = $section->addTable(array('borderSize' => 0, 'cellMargin'  => 80, 'width' => 100 * 50, 'unit' => \PhpOffice\PhpWord\Style\Table::WIDTH_PERCENT, 'valign' => 'center'));
+
+        $count = 0;
+
+        /**  Load $inputFileName to a Spreadsheet Object  **/
+        if (!empty($posts)) {
+
+            foreach ($posts as $key => $row) {
+                $count++;
+                if ($count > 6)
+                    $count = 1;
+                if ($count == 1)
+                    $table->addRow(null, []);
+                $cell = $table->addCell(null, $styleCell);
+                $cell->addImage(
+                    APPPATH . '..' . $row->image_url,
+                    array(
+                        'align' => 'center',
+                        'width'         => 70,
+                        'height'        => 70,
+                        'marginTop'     => -1,
+                        'marginLeft'    => -1,
+                        'wrappingStyle' => 'behind'
+                    )
+                );
+                $name = basename($row->image_url);
+                $cell->addText($name, array('size' => 8), array('align' => 'center'));
+            }
+        }
+        // Saving the document as OOXML file...
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $file = "assets/excel/" . time() . ".doc";
+        $objWriter->save($file);
+        echo json_encode(base_url($file));
+    }
 }

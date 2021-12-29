@@ -16,6 +16,10 @@
                     <i class="fas fa-file-excel"></i>
                     Excel
                 </a>
+                <a class="btn btn-primary btn-sm ml-2 text-white qrdownload">
+                    <i class="fas fa-download"></i>
+                    QR download
+                </a>
                 <div style="margin-left:auto;">
                     <a class="btn btn-sm btn-success" id='scan' href="#"><i class="fas fa-qrcode"></i> Quét QR</a>
                 </div>
@@ -203,6 +207,17 @@
             $(".page-loader-wrapper").show();
             let url = await $.ajax({
                 "url": path + "admin/<?= $controller ?>/exportexcel",
+                "data": table.ajax.params(),
+                "type": "POST",
+                "dataType": "JSON"
+            })
+            $(".page-loader-wrapper").hide();
+            location.href = url;
+        });
+        $(".qrdownload").click(async function() {
+            $(".page-loader-wrapper").show();
+            let url = await $.ajax({
+                "url": path + "admin/<?= $controller ?>/exportqr",
                 "data": table.ajax.params(),
                 "type": "POST",
                 "dataType": "JSON"

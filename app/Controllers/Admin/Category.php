@@ -134,7 +134,7 @@ class Category extends BaseController
             }
         }
         // $where = $Document_model;
-        $posts = $where->orderby("id", "DESC")->asObject()->paginate($limit, '', $page);
+        $posts = $where->orderby("id", "DESC")->asObject()->findAll();
 
 
         $Document_model->relation($posts, array("status", "type", 'categories'));
@@ -225,7 +225,7 @@ class Category extends BaseController
             }
         }
         // $where = $Document_model;
-        $posts = $where->orderby("id", "DESC")->asObject()->paginate($limit, '', $page);
+        $posts = $where->orderby("id", "DESC")->asObject()->findAll();
         // Creating the new document...
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
 
