@@ -1664,7 +1664,7 @@ class Import extends BaseController
                         }
                         // print_r($array);
                         // die();
-                        $DocumentCategoryModel->insertBatch($array);
+                        $DocumentCategoryModel->ignore(true)->insertBatch($array);
                     }
                 }
             }
