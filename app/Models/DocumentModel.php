@@ -28,6 +28,12 @@ class DocumentModel extends BaseModel
                 $builder = $this->db->table('document_category')->join("category", "document_category.category_id = category.id");
                 $row_a->categories = $builder->where('document_id', $document_id)->get()->getResult();
             }
+
+            if (in_array("core_category", $relation)) {
+                $document_id = $row_a->id;
+                $builder = $this->db->table('document_category')->join("category", "document_category.category_id = category.id");
+                $row_a->core_category = $builder->where('document_id', $document_id)->where('category.count_child', 0)->get()->getFirstRow();
+            }
             if (in_array("files", $relation)) {
                 $document_id = $row_a->id;
                 $builder = $this->db->table('document_file');
@@ -53,6 +59,11 @@ class DocumentModel extends BaseModel
                 $document_id = $row_a['id'];
                 $builder = $this->db->table('document_category')->join("category", "document_category.category_id = category.id");
                 $row_a['categories'] = $builder->where('document_id', $document_id)->get()->getResult("array");
+            }
+            if (in_array("core_category", $relation)) {
+                $document_id = $row_a['id'];
+                $builder = $this->db->table('document_category')->join("category", "document_category.category_id = category.id");
+                $row_a['core_category'] = $builder->where('document_id', $document_id)->where('category.count_child', 0)->get()->getFirstRow("array");
             }
             if (in_array("files", $relation)) {
                 $document_id = $row_a['id'];

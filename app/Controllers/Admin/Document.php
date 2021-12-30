@@ -683,7 +683,7 @@ class Document extends BaseController
         }
         // $where = $Document_model;
         $posts = $where->orderby("id", "DESC")->asObject()->findAll();
-        $Document_model->relation($posts, array("status", "type", 'categories'));
+        $Document_model->relation($posts, array("status", "type", 'core_category'));
         // echo "<pre>";
         // print_r($posts);
         // die();
@@ -701,20 +701,16 @@ class Document extends BaseController
             $rows = 7;
             $sheet->insertNewRowBefore($rows + 1, count($posts));
             foreach ($posts as $key => $post) {
-                $categries = array_map(function ($item) {
-                    return "- " . $item->name_vi;
-                }, $post->categories);
-
-
                 $sheet->setCellValue('A' . $rows, $key + 1);
                 $sheet->setCellValue('B' . $rows, $post->name_vi);
                 $sheet->setCellValue('C' . $rows, isset($post->type) ? $post->type->name : $post->type_id);
-                $sheet->setCellValue('D' . $rows, implode("\n", $categries));
-                $sheet->setCellValue('E' . $rows, $post->date_effect);
-                $sheet->setCellValue('F' . $rows, '');
-                $sheet->setCellValue('G' . $rows, $post->date_expire);
-                $sheet->setCellValue('H' . $rows, $post->code . "." . $post->version);
-                $sheet->setCellValue('I' . $rows, $post->description_vi);
+                $sheet->setCellValue('D' . $rows, isset($post->core_category) ? $post->core_category->name_vi : "");
+                $sheet->setCellValue('E' . $rows, $post->date_effect != "" ? date("d.m.y", strtotime($post->date_effect)) : "");
+                $sheet->setCellValue('F' . $rows, $post->date_review != "" ? date("d.m.y", strtotime($post->date_review)) : "");
+                $sheet->setCellValue('G' . $rows, '');
+                $sheet->setCellValue('H' . $rows, $post->date_expire != "" ? date("d.m.y", strtotime($post->date_expire)) : "");
+                $sheet->setCellValue('I' . $rows, $post->code . "." . $post->version);
+                $sheet->setCellValue('J' . $rows, $post->description_vi);
                 $rows++;
             }
         }

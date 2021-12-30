@@ -1403,7 +1403,7 @@ class Import extends BaseController
                             . '<i class="fas fa-trash-alt">'
                             . '</i>'
                             . '</a>';
-                    }else{
+                    } else {
                         $nestedData['action'] .= "Đã Nhập";
                     }
                     $nestedData['action'] .= '</div>';
@@ -1545,15 +1545,12 @@ class Import extends BaseController
                             $data[$i -  $row][$j] = $data[$i -  $row][$j]->getPlainText();
                         }
 
-                        // ////CHUYEN DATE 
-                        // if (PHPExcel_Shared_Date::isDateTime($cell) && $data[$i - 1][$j] > 0) {
 
-                        //     if (is_numeric($data[$i - 1][$j])) {
-                        //         $data[$i - 1][$j] = date("Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($data[$i - 1][$j]));
-                        //     } else if ($data[$i - 1][$j] == '26/09/16') {
-                        //         $data[$i - 1][$j] = '2016-09-26';
-                        //     }
-                        // }
+                        if (\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($cell) && $data[$i - $row][$j] > 0) {
+                            if (is_numeric($data[$i -  $row][$j])) {
+                                $data[$i -  $row][$j] =  date("d.m.y", \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($data[$i -  $row][$j]));
+                            }
+                        }
                     }
                 }
 
@@ -1650,7 +1647,9 @@ class Import extends BaseController
                     ///ADD CATEGORY
                     $category_obj = $CategoryModel->where(array('name_vi' => $vi_tri))->asObject()->first();
                     if (!empty($category_obj)) {
+
                         $category_id = $category_obj->id;
+                        ////UPDATE CATEGORY
                         $list_parents = $CategoryModel->get_category_parents($category_id);
                         $array = [];
                         $array[] =  array(

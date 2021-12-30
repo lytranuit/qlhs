@@ -137,7 +137,7 @@ class Category extends BaseController
         $posts = $where->orderby("id", "DESC")->asObject()->findAll();
 
 
-        $Document_model->relation($posts, array("status", "type", 'categories'));
+        $Document_model->relation($posts, array("status", "type", 'core_category'));
         $file = APPPATH . '../assets/template/template.xlsx';
         $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
         /**  Create a new Reader of the type defined in $inputFileType  **/
@@ -152,20 +152,16 @@ class Category extends BaseController
             $rows = 7;
             $sheet->insertNewRowBefore($rows + 1, count($posts));
             foreach ($posts as $key => $post) {
-                $categries = array_map(function ($item) {
-                    return "- $item->name_vi";
-                }, $post->categories);
-
-
                 $sheet->setCellValue('A' . $rows, $key + 1);
                 $sheet->setCellValue('B' . $rows, $post->name_vi);
                 $sheet->setCellValue('C' . $rows, isset($post->type) ? $post->type->name : $post->type_id);
-                $sheet->setCellValue('D' . $rows, implode("\n", $categries));
-                $sheet->setCellValue('E' . $rows, $post->date_effect);
-                $sheet->setCellValue('F' . $rows, '');
-                $sheet->setCellValue('G' . $rows, $post->date_expire);
-                $sheet->setCellValue('H' . $rows, $post->code . "." . $post->version);
-                $sheet->setCellValue('I' . $rows, $post->description_vi);
+                $sheet->setCellValue('D' . $rows, isset($post->core_category) ? $post->core_category->name_vi : "");
+                $sheet->setCellValue('E' . $rows, $post->date_effect != "" ? date("d.m.y", strtotime($post->date_effect)) : "");
+                $sheet->setCellValue('F' . $rows, $post->date_review != "" ? date("d.m.y", strtotime($post->date_review)) : "");
+                $sheet->setCellValue('G' . $rows, '');
+                $sheet->setCellValue('H' . $rows, $post->date_expire != "" ? date("d.m.y", strtotime($post->date_expire)) : "");
+                $sheet->setCellValue('I' . $rows, $post->code . "." . $post->version);
+                $sheet->setCellValue('J' . $rows, $post->description_vi);
                 $rows++;
             }
         }
@@ -385,9 +381,11 @@ class Category extends BaseController
             if (isset($row['id'])) {
                 $id = $row['id'];
                 $parent_id = isset($row['parent_id']) && $row['parent_id'] != "" ? $row['parent_id'] : 0;
+                $count_child = isset($row['count_child']) && $row['count_child'] != "" ? $row['count_child'] : 0;
                 $array = array(
                     'parent_id' => $parent_id,
-                    'sort' => $key
+                    'sort' => $key,
+                    "count_child" => $count_child
                 );
                 $CategoryModel->update($id, $array);
             }
