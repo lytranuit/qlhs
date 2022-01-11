@@ -1630,6 +1630,7 @@ class Import extends BaseController
                         'name_vi' => $name_vi,
                         'name_en' => $name_en,
                         'description_vi' => $description,
+                        'status_id' => 2
                     );
                     $type_obj = $DocumentTypeModel->where(array('name' => $type))->asObject()->first();
                     if (!empty($type_obj)) {
