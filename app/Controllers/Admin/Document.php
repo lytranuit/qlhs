@@ -705,12 +705,17 @@ class Document extends BaseController
                 $sheet->setCellValue('B' . $rows, $post->name_vi);
                 $sheet->setCellValue('C' . $rows, isset($post->type) ? $post->type->name : $post->type_id);
                 $sheet->setCellValue('D' . $rows, isset($post->core_category) ? $post->core_category->name_vi : "");
-                $sheet->setCellValue('E' . $rows, $post->date_effect != "" ? date("d.m.y", strtotime($post->date_effect)) : "");
-                $sheet->setCellValue('F' . $rows, $post->date_review != "" ? date("d.m.y", strtotime($post->date_review)) : "");
+                $sheet->setCellValue('E' . $rows, $post->date_effect != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_effect) : "");
+                $sheet->setCellValue('F' . $rows, $post->date_review != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_review) : "");
                 $sheet->setCellValue('G' . $rows, '');
-                $sheet->setCellValue('H' . $rows, $post->date_expire != "" ? date("d.m.y", strtotime($post->date_expire)) : "");
+                $sheet->setCellValue('H' . $rows, $post->date_expire != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_expire) : "");
                 $sheet->setCellValue('I' . $rows, $post->code . "." . $post->version);
                 $sheet->setCellValue('J' . $rows, $post->description_vi);
+                $sheet->setCellValue('K' . $rows, $post->id);
+
+                $sheet->getStyle('E' . $rows)->getNumberFormat()->setFormatCode("d/m/Y");
+                $sheet->getStyle('F' . $rows)->getNumberFormat()->setFormatCode("d/m/Y");
+                $sheet->getStyle('H' . $rows)->getNumberFormat()->setFormatCode("d/m/Y");
                 $rows++;
             }
         }

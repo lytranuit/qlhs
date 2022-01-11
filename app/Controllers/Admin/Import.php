@@ -1575,6 +1575,7 @@ class Import extends BaseController
                     // $is_active = $row[9];
                     $vi_tri = trim($row[4]);
                     $description = $row[10];
+                    $document_id = $row[11];
                     $version = "";
                     $explode = array();
                     if ($code != "" && $code != "NA") {
@@ -1629,7 +1630,6 @@ class Import extends BaseController
                         'name_vi' => $name_vi,
                         'name_en' => $name_en,
                         'description_vi' => $description,
-                        'from_file' => $id
                     );
                     $type_obj = $DocumentTypeModel->where(array('name' => $type))->asObject()->first();
                     if (!empty($type_obj)) {
@@ -1637,11 +1637,11 @@ class Import extends BaseController
                     }
                     // print_r($array);
                     ///FOUND 
-                    $document = $document_model->where(array("code" => $code, 'version' => $version))->asObject()->first();
-                    if ($code != "" && $code != "NA" && !empty($document)) {
-                        $document_id = $document->id;
+                    // $document = $document_model->where(array("code" => $code, 'version' => $version))->asObject()->first();
+                    if ($document_id > 0) {
                         $document_model->update($document_id, $array);
                     } else {
+                        $array['from_file'] = $id;
                         $document_id = $document_model->insert($array);
                     }
                     ///ADD CATEGORY
