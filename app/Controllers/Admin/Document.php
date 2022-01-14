@@ -703,7 +703,7 @@ class Document extends BaseController
             foreach ($posts as $key => $post) {
                 $sheet->setCellValue('A' . $rows, $key + 1);
                 $sheet->setCellValue('B' . $rows, $post->name_vi);
-                $sheet->setCellValue('C' . $rows, isset($post->type) ? $post->type->name : $post->type_id);
+                $sheet->setCellValue('C' . $rows, isset($post->type) ? $post->type->name : "");
                 $sheet->setCellValue('D' . $rows, isset($post->core_category) ? $post->core_category->name_vi : "");
                 $sheet->setCellValue('E' . $rows, $post->date_effect != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_effect) : "");
                 $sheet->setCellValue('F' . $rows, $post->date_review != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_review) : "");
@@ -712,6 +712,7 @@ class Document extends BaseController
                 $sheet->setCellValue('I' . $rows, $post->code . "." . $post->version);
                 $sheet->setCellValue('J' . $rows, $post->description_vi);
                 $sheet->setCellValue('K' . $rows, $post->id);
+                $sheet->setCellValue('L' . $rows, isset($post->status) ? $post->status->name : "");
 
                 $sheet->getStyle('E' . $rows)->getNumberFormat()->setFormatCode("d/m/Y");
                 $sheet->getStyle('F' . $rows)->getNumberFormat()->setFormatCode("d/m/Y");

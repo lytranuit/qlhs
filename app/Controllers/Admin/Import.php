@@ -1473,7 +1473,9 @@ class Import extends BaseController
     public function import($id)
     {
         $ImportModel = model("ImportModel");
+        $document_model = model("DocumentModel");
         $DocumentTypeModel = model("DocumentTypeModel");
+        $DocumentStatusModel = model("DocumentStatusModel");
         $DocumentCategoryModel = model("DocumentCategoryModel");
         $CategoryModel = model("CategoryModel");
         $tin = $ImportModel->where(array('id' => $id))->asObject()->first();
@@ -1559,7 +1561,6 @@ class Import extends BaseController
                 // echo $TotalCol . "<br>";
                 // print_r($data);
                 // die();
-                $document_model = model("DocumentModel");
                 foreach ($data as $row) {
 
                     $name = $row[2];
@@ -1576,6 +1577,7 @@ class Import extends BaseController
                     $vi_tri = trim($row[4]);
                     $description = $row[10];
                     $document_id = $row[11];
+                    $status = $row[12];
                     $version = "";
                     $explode = array();
                     if ($code != "" && $code != "NA") {
@@ -1629,12 +1631,18 @@ class Import extends BaseController
                         'date_review' => $date_review,
                         'name_vi' => $name_vi,
                         'name_en' => $name_en,
-                        'description_vi' => $description,
-                        'status_id' => 2
+                        'description_vi' => $description
                     );
                     $type_obj = $DocumentTypeModel->where(array('name' => $type))->asObject()->first();
                     if (!empty($type_obj)) {
                         $array['type_id'] = $type_obj->id;
+                    } else {
+                        $type_id = $DocumentTypeModel->insert(array("name" => $type));
+                        $array['type_id'] = $type_id;
+                    }
+                    $status_obj = $DocumentStatusModel->where(array('name' => $status))->asObject()->first();
+                    if (!empty($status_obj)) {
+                        $array['status_id'] = $status_obj->id;
                     }
                     // print_r($array);
                     ///FOUND 
