@@ -133,8 +133,8 @@ class Loan extends BaseController
             $RequestLoanDocumentModel = model("RequestLoanDocumentModel");
             $data = $this->request->getPost();
 
+            $data['date'] = date("Y-m-d H:i:s");
             $obj = $RequestLoanModel->create_object($data);
-
             //INSERT
             $id = $RequestLoanModel->insert($obj);
             /*
