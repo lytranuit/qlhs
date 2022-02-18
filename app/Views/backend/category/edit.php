@@ -105,17 +105,19 @@
         <div class="card card-fluid">
             <div class="card-header" style="z-index: 1000;">
                 Doument
-                <div class="ml-auto mobile-hidden">
-                    <select class="form-control document_add" multiple>
-                    </select>
-                    <button class="btn btn-success btn-sm add_document">
-                        Add
-                    </button>
-                </div>
 
-                <div style="margin-left:auto;">
-                    <a class="btn btn-sm btn-success" id='scan' href="#"><i class="fas fa-qrcode"></i> Quét QR</a>
-                </div>
+                <?php if (!in_groups("guest")) : ?>
+                    <div class="ml-auto mobile-hidden">
+                        <select class="form-control document_add" multiple>
+                        </select>
+                        <button class="btn btn-success btn-sm add_document">
+                            Add
+                        </button>
+                    </div>
+                    <div style="margin-left:auto;">
+                        <a class="btn btn-sm btn-success" id='scan' href="#"><i class="fas fa-qrcode"></i> Quét QR</a>
+                    </div>
+                <?php endif ?>
             </div>
             <div class="card-body">
                 <div class="table-responsive-md">

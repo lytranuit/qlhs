@@ -64,26 +64,42 @@
                             </li>
                         <?php endforeach ?>
                     </ul>
-
                 </li>
-                <li>
-                    <a href="<?= base_url() ?>/admin/status" class="">
-                        <i class="metismenu-icon fas fa-info-circle"></i>
-                        Trạng thái
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= base_url() ?>/admin/type" class="">
-                        <i class="metismenu-icon fas fa-info-circle"></i>
-                        Loại tài liệu
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= base_url() ?>/admin/import" class="">
-                        <i class="metismenu-icon fas fa-file-excel"></i>
-                        Import
-                    </a>
-                </li>
+                <?php if (!in_groups("guest")) : ?>
+                    <li>
+                        <a href="<?= base_url() ?>/admin/loan" class="">
+                            <i class="metismenu-icon fas fa-plus-circle"></i>
+                            Đăng ký mượn tài liệu
+                        </a>
+                    </li>
+                <?php else : ?>
+                    <li>
+                        <a href="<?= base_url() ?>/admin/loan/add" class="">
+                            <i class="metismenu-icon fas fa-plus-circle"></i>
+                            Đăng ký mượn tài liệu
+                        </a>
+                    </li>
+                <?php endif ?>
+                <?php if (!in_groups("guest")) : ?>
+                    <li>
+                        <a href="<?= base_url() ?>/admin/status" class="">
+                            <i class="metismenu-icon fas fa-info-circle"></i>
+                            Trạng thái
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= base_url() ?>/admin/type" class="">
+                            <i class="metismenu-icon fas fa-info-circle"></i>
+                            Loại tài liệu
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= base_url() ?>/admin/import" class="">
+                            <i class="metismenu-icon fas fa-file-excel"></i>
+                            Import
+                        </a>
+                    </li>
+                <?php endif ?>
                 <!-- <li class="app-sidebar__heading">Auditrail</li>
                 <li>
                     <a href="<?= base_url() ?>/admin/history" class="">
