@@ -70,6 +70,8 @@
                         <a href="<?= base_url() ?>/admin/loan" class="">
                             <i class="metismenu-icon fas fa-plus-circle"></i>
                             Đăng ký mượn tài liệu
+
+                            <?= view_cell("\App\Libraries\SideBarWidget::num_loan") ?>
                         </a>
                     </li>
                 <?php else : ?>

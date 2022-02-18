@@ -42,4 +42,15 @@ class SideBarWidget
 
         return view("frontend/widget/sidebar/" . __FUNCTION__, $this->data);
     }
+    public function num_loan()
+    {
+
+        $RequestLoanModel = model("RequestLoanModel");
+
+        $count = $RequestLoanModel->where(array('status_id' => 0))->countAllResults();
+        if ($count > 0)
+            return '<span class="badge bg-danger text-white rounded-pill">' . $count . '</span>';
+        else
+            return '';
+    }
 }
