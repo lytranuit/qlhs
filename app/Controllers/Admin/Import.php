@@ -1576,8 +1576,10 @@ class Import extends BaseController
                     // $is_active = $row[9];
                     $vi_tri = trim($row[4]);
                     $description = $row[10];
-                    $document_id = $row[11];
-                    $status = $row[12];
+
+                    $document_id = isset($row[11]) ? $row[11] : 0;
+                    $status = isset($row[12]) ? $row[12] : "";
+
                     $version = "";
                     $explode = array();
                     if ($code != "" && $code != "NA") {
