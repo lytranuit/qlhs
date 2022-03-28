@@ -1570,7 +1570,7 @@ class Import extends BaseController
                     // $explode =  explode(".", $row[1]);
                     // if (count($explode) < 2) continue;
 
-                    // $version = $row[2];
+                    $version = isset($row[13]) ? $row[13] : "";
                     // $status = $row[4];
                     $type = trim($row[3]);
                     // $is_active = $row[9];
@@ -1578,26 +1578,26 @@ class Import extends BaseController
                     $description = $row[10];
 
                     $document_id = isset($row[11]) ? $row[11] : 0;
-                    $status = isset($row[12]) ? $row[12] : "";
+                    $status = isset($row[12]) ? $row[12] : "Đang lưu trữ";
 
-                    $version = "";
-                    $explode = array();
-                    if ($code != "" && $code != "NA") {
+                    // $version = "";
+                    // $explode = array();
+                    // if ($code != "" && $code != "NA") {
 
-                        $explode =  explode(".", $code);
-                        if (count($explode) >= 2) {
-                            goto end;
-                        }
-                        $explode =  explode("/", $code);
-                        if (count($explode) >= 2) {
-                            goto end;
-                        }
-                        end:
-                        if (count($explode) >= 2) {
-                            $version = $explode[count($explode) - 1];
-                            $code = substr($code, 0, 0 - strlen($version) - 1);
-                        }
-                    }
+                    //     $explode =  explode(".", $code);
+                    //     if (count($explode) >= 2) {
+                    //         goto end;
+                    //     }
+                    //     $explode =  explode("/", $code);
+                    //     if (count($explode) >= 2) {
+                    //         goto end;
+                    //     }
+                    //     end:
+                    //     if (count($explode) >= 2) {
+                    //         $version = $explode[count($explode) - 1];
+                    //         $code = substr($code, 0, 0 - strlen($version) - 1);
+                    //     }
+                    // }
 
 
                     $array = preg_split("/\r\n|\n|\r/", $name);

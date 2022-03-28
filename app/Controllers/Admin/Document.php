@@ -709,10 +709,11 @@ class Document extends BaseController
                 $sheet->setCellValue('F' . $rows, $post->date_review != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_review) : "");
                 $sheet->setCellValue('G' . $rows, '');
                 $sheet->setCellValue('H' . $rows, $post->date_expire != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_expire) : "");
-                $sheet->setCellValue('I' . $rows, $post->code . "." . $post->version);
+                $sheet->setCellValue('I' . $rows, $post->code);
                 $sheet->setCellValue('J' . $rows, $post->description_vi);
                 $sheet->setCellValue('K' . $rows, $post->id);
                 $sheet->setCellValue('L' . $rows, isset($post->status) ? $post->status->name : "");
+                $sheet->setCellValue('M' . $rows, $post->version);
 
                 $sheet->getStyle('E' . $rows)->getNumberFormat()->setFormatCode("d/m/Y");
                 $sheet->getStyle('F' . $rows)->getNumberFormat()->setFormatCode("d/m/Y");
