@@ -127,5 +127,11 @@ class Home extends BaseController
                 }
             }
         }
+
+        ////CHECK HIỆU LỰC
+        $document_model->where("is_active", 1)->where("date_expire !=", "0000-00-00")->where("date_expire <", date("Y-m-d"))->set(['is_active' => 0])->update();
+        // $documents = $where->findAll();
+
+        echo 1;
     }
 }
