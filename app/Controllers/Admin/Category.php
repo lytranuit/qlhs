@@ -337,7 +337,7 @@ class Category extends BaseController
         if (!empty($posts)) {
             foreach ($posts as $post) {
                 $nestedData['id'] =  '<a href="' . base_url("admin/document/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
-                $nestedData['code'] = '<a href="' . base_url("admin/document/edit/" . $post->id) . '">' . $post->code . "." . $post->version . '</a>';
+                $nestedData['code'] = '<a href="' . base_url("admin/document/edit/" . $post->id) . '">' . $post->code . '</a>';
                 $nestedData['name_vi'] = '<a href="' . base_url("admin/document/edit/" . $post->id) . '">' . $post->name_vi . '</a>';
                 $nestedData['version'] = $post->version;
                 $nestedData['file'] = "";
@@ -498,7 +498,7 @@ class Category extends BaseController
         $data = $Document_model->where("(code like '%$search%')")->asArray()->paginate(100, '', 0);
         $results = array();
         foreach ($data as $row) {
-            $results[] = array("id" => $row['id'], 'disabled' => in_array($row['id'], $documents_disable) ? true : false, 'text' => $row['code'] . "." . $row['version'] . ' - ' . $row['name_vi']);
+            $results[] = array("id" => $row['id'], 'disabled' => in_array($row['id'], $documents_disable) ? true : false, 'text' => $row['code'] . ' - ' . $row['name_vi']);
         }
         echo json_encode(array('q' => $search, 'results' => $results));
         die();

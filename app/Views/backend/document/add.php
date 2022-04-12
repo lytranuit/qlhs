@@ -21,10 +21,10 @@
                                     <input class="form-control form-control-sm" type='text' name="code" required="" placeholder="Mã tài liệu" />
                                 </div>
 
-                                <b class="col-12 col-lg-2 col-form-label">Ấn bản:<span class="text-danger">*</span></b>
+                                <!-- <b class="col-12 col-lg-2 col-form-label">Ấn bản:<span class="text-danger">*</span></b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='number' name="version" required="" placeholder="Ấn bản" />
-                                </div>
+                                </div> -->
 
                             </div>
                             <div class="form-group row">

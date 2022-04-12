@@ -23,10 +23,10 @@
                                     <input class="form-control form-control-sm" type='text' name="code" required="" placeholder="Mã tài liệu" />
                                 </div>
 
-                                <b class="col-12 col-lg-2 col-form-label">Ấn bản:<span class="text-danger">*</span></b>
+                                <!-- <b class="col-12 col-lg-2 col-form-label">Ấn bản:<span class="text-danger">*</span></b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="version" required="" placeholder="Ấn bản" />
-                                </div>
+                                </div> -->
 
                             </div>
                             <div class="form-group row">
@@ -217,6 +217,9 @@
     </div>
 </div>
 
+
+
+
 <div aria-hidden="true" aria-labelledby="form-modalLabel" class="modal fade" id="loan-modal" role="dialog" tabindex="-1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -313,10 +316,15 @@
 <?= $this->section('script') ?>
 
 
+
+
 <script src="<?= base_url('assets/lib/datatables/datatables.min.js') ?>"></script>
 <script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
 <script src="<?= base_url("assets/lib/chosen/chosen.jquery.js") ?>"></script>
 <script src="<?= base_url("assets/lib/mustache/mustache.min.js") ?>"></script>
+
+
+
 <!-- <script src="<?= base_url("assets/lib/image_feature/jquery.image_v2.js") ?>"></script> -->
 
 <!--<script src="https://cdn.ckeditor.com/ckeditor5/12.3.1/classic/ckeditor.js"></script>-->

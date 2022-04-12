@@ -228,6 +228,7 @@ class Document extends BaseController
 
     public function upversion($id)
     { /////// trang ca nhan
+        return;
         if (isset($_POST['dangtin'])) {
             if (!in_groups(array('admin', 'editor'))) {
                 throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
@@ -507,7 +508,7 @@ class Document extends BaseController
         if (!empty($posts)) {
             foreach ($posts as $post) {
                 $nestedData['id'] =  '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
-                $nestedData['code'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '">' . $post->code . "." . $post->version . '</a>';
+                $nestedData['code'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '">' . $post->code . '</a>';
                 $nestedData['name_vi'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '">' . $post->name_vi . '</a>';
                 $nestedData['version'] = $post->version;
                 $nestedData['file'] = "";
@@ -532,10 +533,7 @@ class Document extends BaseController
                 $nestedData['description_vi'] = $post->description_vi;
                 $nestedData['action'] = "";
                 if (in_groups(array('admin', 'editor')))
-                    $nestedData['action'] = '<div class="btn-group"><a href="' . base_url("admin/" . $this->data['controller'] . "/upversion/" . $post->id) . '" class="btn btn-warning btn-sm" title="Lên ấn bản?" data-type="confirm">'
-                        . '<i class="fas fa-arrow-alt-circle-up">'
-                        . '</i>'
-                        . '</a><a href="' . base_url("admin/" . $this->data['controller'] . "/remove/" . $post->id) . '" class="btn btn-danger btn-sm" title="Xóa tài liệu?" data-type="confirm">'
+                    $nestedData['action'] = '<div class="btn-group"><a href="' . base_url("admin/" . $this->data['controller'] . "/remove/" . $post->id) . '" class="btn btn-danger btn-sm" title="Xóa tài liệu?" data-type="confirm">'
                         . '<i class="fas fa-trash-alt">'
                         . '</i>'
                         . '</a></div>';
