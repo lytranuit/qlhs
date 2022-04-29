@@ -8,9 +8,13 @@
             <?= csrf_field() ?>
             <section class="card card-fluid">
                 <h5 class="card-header">
+                    <a href="<?= $prev_page ?>" class="btn btn-sm btn-success">
+                        <i class="fas fa-long-arrow-alt-left"></i>
+                    </a>
                     <?php if (in_groups(array("admin", "editor"))) : ?>
                         <div class="d-inline-block w-100">
-                            <button type="submit" name="dangtin" class="btn btn-sm btn-primary float-right">Save</button>
+                            <button type="submit" name="dangtin" class="ml-2 btn btn-sm btn-primary float-right">Save</button>
+                            <a href="<?= base_url("admin/document/upversion/$tin->id") ?>" class="btn btn-sm btn-success float-right">Duplicate</a>
                         </div>
                     <?php endif ?>
                 </h5>

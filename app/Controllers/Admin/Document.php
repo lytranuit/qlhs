@@ -115,7 +115,9 @@ class Document extends BaseController
             $description = "User " . user()->name . " updated a document";
             $Document_model->trail(1, 'update', $obj, $obj_old, $description);
 
-            return redirect()->to(base_url('admin/' . $this->data['controller']));
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            exit;
+            // return redirect()->to(base_url('admin/' . $this->data['controller']));
         } else {
             $Document_model = model("DocumentModel");
             $category_model = model("CategoryModel");
@@ -156,6 +158,22 @@ class Document extends BaseController
                 ->orderBy('parent_id', 'ASC')->orderBy('sort', 'ASC')->asArray()->findAll();
             $this->data['category'] = html_product_category_nestable($this->data['category'], 'parent_id', 0);
 
+
+            // var_dump(current_url());
+            // echo "<br>";
+            // var_dump(previous_url());
+            // die();
+            if (current_url() != previous_url()) {
+                $prev_page = previous_url();
+                $_SESSION['prev_page'] = previous_url();
+            } else {
+                if (isset($_SESSION['prev_page'])) {
+                    $prev_page = $_SESSION['prev_page'];
+                } else {
+                    $prev_page = "#";
+                }
+            }
+            $this->data['prev_page'] = $prev_page;
             return view($this->data['content'], $this->data);
         }
     }
@@ -228,7 +246,7 @@ class Document extends BaseController
 
     public function upversion($id)
     { /////// trang ca nhan
-        return;
+        // return;
         if (isset($_POST['dangtin'])) {
             if (!in_groups(array('admin', 'editor'))) {
                 throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
@@ -275,12 +293,20 @@ class Document extends BaseController
                 // die();
             }
 
-            return redirect()->to(base_url('admin/' . $this->data['controller']));
+            return redirect()->to(base_url("admin/document/edit/$id"));
         } else {
             //load_editor($this->data);
             $Document_model = model("DocumentModel");
             $tin = $Document_model->where(array('id' => $id))->asObject()->first();
-            $tin->version = $tin->version + 1;
+            $Document_model->relation($tin, array("categories"));
+            if (!empty($tin->categories)) {
+                $cate_id = array();
+                foreach ($tin->categories as $key => $cate) {
+                    $cate_id[] = $cate->category_id;
+                }
+                $tin->category_list = $cate_id;
+            }
+            $tin->code = "";
             $this->data['tin'] = $tin;
             $category_model = model("CategoryModel");
             $DocumentStatus_model = model("DocumentStatusModel");

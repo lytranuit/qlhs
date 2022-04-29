@@ -1599,10 +1599,11 @@ class Import extends BaseController
                     //     }
                     // }
 
-
-                    $array = preg_split("/\r\n|\n|\r/", $name);
-                    $name_vi = isset($array[0]) ? $array[0] : "";
-                    $name_en = isset($array[1]) ? $array[1] : "";
+                    $name_vi = $name;
+                    $name_en = "";
+                    // $array = preg_split("/\r\n|\n|\r/", $name);
+                    // $name_vi = isset($array[0]) ? $array[0] : "";
+                    // $name_en = isset($array[1]) ? $array[1] : "";
                     // print_r($array);
                     // die();
                     $date_effect_row = explode(".", $row[5]);
@@ -1648,9 +1649,13 @@ class Import extends BaseController
                     }
                     // print_r($array);
                     ///FOUND 
-                    // $document = $document_model->where(array("code" => $code, 'version' => $version))->asObject()->first();
+                    $document = $document_model->where(array("code" => $code))->asObject()->first();
                     if ($document_id > 0) {
                         $document_model->update($document_id, $array);
+                    } elseif (!empty($document)) {
+                        $document_model->where('code', $code)
+                            ->set($array)
+                            ->update();
                     } else {
                         $array['from_file'] = $id;
                         $document_id = $document_model->insert($array);
