@@ -1681,6 +1681,14 @@ class Import extends BaseController
                         // print_r($array);
                         // die();
                         $DocumentCategoryModel->ignore(true)->insertBatch($array);
+                    } else {
+                        $category_id = $CategoryModel->insert(array("name_vi" => $vi_tri));
+                        $array = [];
+                        $array[] =  array(
+                            'document_id' => $document_id,
+                            'category_id' => $category_id,
+                        );
+                        $DocumentCategoryModel->ignore(true)->insertBatch($array);
                     }
                 }
             }
