@@ -21,9 +21,9 @@ class Home extends BaseController
 
         $mail_review = $option_model->get_options_group("mail_review");
         $before_send_review = $mail_review['before_send'];
-        $this->data['num_doc_review'] = $document_model->where("date_review <", date("Y-m-d", strtotime("+$before_send_review day")))->countAllResults();
+        $this->data['num_doc_review'] = $document_model->where("is_active", 1)->where("date_review <", date("Y-m-d", strtotime("+$before_send_review day")))->where("date_review >=", date("Y-m-d"))->countAllResults();
 
-        $this->data['num_doc_out_review'] = $document_model->where("date_review <", date("Y-m-d"))->countAllResults();
+        $this->data['num_doc_out_review'] = $document_model->where("is_active", 1)->where("date_review <", date("Y-m-d"))->countAllResults();
 
 
         $this->data['status'] = $DocumentStatus_model->asObject()->findAll();
