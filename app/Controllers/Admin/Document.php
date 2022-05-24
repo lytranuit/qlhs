@@ -465,11 +465,11 @@ class Document extends BaseController
         if ($filter == "1")
             $where->where("is_active", 1);
         elseif ($filter == "6") {
-            $where->where("date_review <", date("Y-m-d"));
+            $where->where("is_active", 1)->where("date_review <", date("Y-m-d"));
         } elseif ($filter == "5") {
             $mail_review = $option_model->get_options_group("mail_review");
             $before_send_review = $mail_review['before_send'];
-            $where->where("date_review <", date("Y-m-d", strtotime("+$before_send_review day")));
+            $where->where("is_active", 1)->where("date_review >=", date("Y-m-d"))->where("date_review <", date("Y-m-d", strtotime("+$before_send_review day")));
         } elseif ($filter == "4") {
             $mail_expire = $option_model->get_options_group("mail_expire");
             $before_send_expire = $mail_expire['before_send'];
