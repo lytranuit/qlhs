@@ -1573,7 +1573,7 @@ class Import extends BaseController
                     $version = isset($row[13]) ? $row[13] : "";
                     // $status = $row[4];
                     $type = trim($row[3]);
-                    // $is_active = $row[9];
+                    $is_active = isset($row[14]) && $row[14] == 0 ? 0 : 1;
                     $vi_tri = trim($row[4]);
                     $description = $row[10];
 
@@ -1634,7 +1634,8 @@ class Import extends BaseController
                         'date_review' => $date_review,
                         'name_vi' => $name_vi,
                         'name_en' => $name_en,
-                        'description_vi' => $description
+                        'description_vi' => $description,
+                        'is_active' => $is_active
                     );
                     $type_obj = $DocumentTypeModel->where(array('name' => $type))->asObject()->first();
                     if (!empty($type_obj)) {

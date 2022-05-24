@@ -21,14 +21,14 @@
                                     <input class="form-control form-control-sm" type='text' name="code" required="" placeholder="Mã tài liệu" />
                                 </div>
 
-                                <!-- <b class="col-12 col-lg-2 col-form-label">Ấn bản:<span class="text-danger">*</span></b>
+                                <b class="col-12 col-lg-2 col-form-label">Ấn bản:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='number' name="version" required="" placeholder="Ấn bản" />
-                                </div> -->
+                                    <input class="form-control form-control-sm" type='number' name="version" placeholder="Ấn bản" />
+                                </div>
 
                             </div>
                             <div class="form-group row">
-                            <b class="col-12 col-lg-2 col-form-label">Tiêu đề:<span class="text-danger">*</span></b>
+                                <b class="col-12 col-lg-2 col-form-label">Tiêu đề:<span class="text-danger">*</span></b>
                                 <div class="col-12 col-lg-10 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="name_vi" required="" placeholder="Tiếng việt" />
                                 </div>
