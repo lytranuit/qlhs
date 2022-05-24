@@ -165,6 +165,7 @@ class Category extends BaseController
                 $sheet->setCellValue('K' . $rows, $post->id);
                 $sheet->setCellValue('L' . $rows, isset($post->status) ? $post->status->name : "");
                 $sheet->setCellValue('M' . $rows, $post->version);
+                $sheet->setCellValue('N' . $rows, $post->is_active == 0 ? "0" : "1");
 
                 $sheet->getStyle('E' . $rows)->getNumberFormat()->setFormatCode("d/m/Y");
                 $sheet->getStyle('F' . $rows)->getNumberFormat()->setFormatCode("d/m/Y");

@@ -29,12 +29,12 @@
                             </div>
                             <div class="form-group row">
                             <b class="col-12 col-lg-2 col-form-label">Tiêu đề:<span class="text-danger">*</span></b>
-                                <div class="col-12 col-lg-5 pt-1">
+                                <div class="col-12 col-lg-10 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="name_vi" required="" placeholder="Tiếng việt" />
                                 </div>
-                                <div class="col-12 col-lg-5 pt-1">
+                                <!-- <div class="col-12 col-lg-5 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="name_en" placeholder="Tiếng anh" />
-                                </div>
+                                </div> -->
                             </div>
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Trạng thái:<span class="text-danger">*</span></b>
