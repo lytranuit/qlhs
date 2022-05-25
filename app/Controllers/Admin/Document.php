@@ -307,6 +307,7 @@ class Document extends BaseController
                 $tin->category_list = $cate_id;
             }
             $tin->code = "";
+            $tin->version = "";
             $this->data['tin'] = $tin;
             $category_model = model("CategoryModel");
             $DocumentStatus_model = model("DocumentStatusModel");
