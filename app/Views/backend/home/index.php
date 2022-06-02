@@ -136,37 +136,21 @@
                     // data['search_type'] = search_type;
                     // data['search_status'] = search_status;
                     // data['filter'] = filter;
-                    
-                    data['search_type'] = "code";
-                    switch (id) {
-                        case 1:
-                            break;
-                        case 2:
-                            data['search_type'] = "status";
-                            data['search_status'] = 2;
-                            break;
-                        case 3:
-                            data['search_type'] = "status";
-                            data['search_status'] = 4;
-                            break;
-                        case 4:
-                            data['filter'] = "4";
-                            break;
-                        case 5:
-                            data['filter'] = "5";
-                            break;
-                        case 6:
-                            data['filter'] = "6";
-                            break;
-                    }
-                    data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
 
+                    data['filter_home'] = id;
                     let orders = data['order'];
                     for (let i in orders) {
                         let order = orders[i];
                         let column = order['column'];
                         orders[i]['data'] = data['columns'][column]['data'];
                     }
+                    let search_type = localStorage.getItem('SEARCH_TYPE') || "code";
+                    let search_status = localStorage.getItem('SEARCH_STATUS') || "0";
+                    let filter = localStorage.getItem('SEARCH_FILTER') || "0";
+                    data['search_type'] = search_type;
+                    data['search_status'] = search_status;
+                    data['filter'] = filter;
+                    data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
                 }
             },
             "columns": [{
@@ -192,7 +176,33 @@
                     "data": "action",
                     "orderable": false
                 }
-            ]
+            ],
+            initComplete: function() {
+                $(".dataTables_filter label").prepend("<select style='margin-right: 0.5em;display: inline-block;width: auto;' class='form-control form-control-sm search_type'><option value='id'>ID</option><option value='code'>Mã tài liệu</option><option value='name_vi'>Tên tài liệu</option><option value='status'>Trạng thái</option><option value='description_vi'>Ghi chú</option></select>");
+                $(".dataTables_filter label").append("<select style='margin-left: 0.5em;display: inline-block;width: auto;' class='form-control form-control-sm search_status d-none'></select>");
+                $(".dataTables_length label").prepend("<select style='margin-right: 0.5em;display: inline-block;width: auto;' class='form-control form-control-sm filter'><option value='0'>Tất cả</option><option value='1'>Tài liệu hiện hành</option></select>");
+                let html = "";
+                for (let status of list_status) {
+                    html += "<option value='" + status.id + "'>" + status.name + "</option>";
+                }
+                $(".search_status").append(html);
+
+                let search_type = localStorage.getItem('SEARCH_TYPE') || "code";
+                $(".search_type").val(search_type);
+
+                if (search_type == "status") {
+                    $(".search_status").removeClass("d-none");
+                    $(".dataTables_filter label input").addClass("d-none");
+                } else {
+                    $(".search_status").addClass("d-none");
+                    $(".dataTables_filter label input").removeClass("d-none");
+                }
+                let search_status = localStorage.getItem('SEARCH_STATUS') || "0";
+                $(".search_status").val(search_status);
+
+                let filter = localStorage.getItem('SEARCH_FILTER') || "0";
+                $(".filter").val(filter);
+            }
         });
         $(".box-hover").click(function() {
             let name = $(this).find(".badge").text();
@@ -200,6 +210,29 @@
             $("#document .card-header").text(name);
             table.ajax.reload();
         })
+        $(document).on("change", ".filter", function() {
+            let filter = $(this).val();
+            localStorage.setItem('SEARCH_FILTER', filter);
+            table.ajax.reload();
+        });
+        $(document).on("change", ".search_type", function() {
+            let search_type = $(this).val();
+            localStorage.setItem('SEARCH_TYPE', search_type);
+            if (search_type == "status") {
+                $(".search_status").removeClass("d-none");
+                $(".dataTables_filter label input").addClass("d-none");
+            } else {
+                $(".search_status").addClass("d-none");
+                $(".dataTables_filter label input").removeClass("d-none");
+            }
+            table.ajax.reload();
+        });
+
+        $(document).on("change", ".search_status", function() {
+            let search_status = $(this).val();
+            localStorage.setItem('SEARCH_STATUS', search_status);
+            table.ajax.reload();
+        });
     });
 </script>
 <?= $this->endSection() ?>

@@ -460,22 +460,29 @@ class Document extends BaseController
         $search_type = $this->request->getPost('search_type');
         $search_status = $this->request->getPost('search_status');
         $filter = $this->request->getPost('filter');
+        $filter_home = $this->request->getPost('filter_home');
         $type_id = $this->request->getPost('type_id');
         $page = ($start / $limit) + 1;
         $where = $Document_model;
         if ($filter == "1")
             $where->where("is_active", 1);
-        elseif ($filter == "6") {
+
+        if ($filter_home == "6") {
             $where->where("is_active", 1)->where("date_review <", date("Y-m-d"));
-        } elseif ($filter == "5") {
+        } elseif ($filter_home == "5") {
             $mail_review = $option_model->get_options_group("mail_review");
             $before_send_review = $mail_review['before_send'];
             $where->where("is_active", 1)->where("date_review >=", date("Y-m-d"))->where("date_review <", date("Y-m-d", strtotime("+$before_send_review day")));
-        } elseif ($filter == "4") {
+        } elseif ($filter_home == "4") {
             $mail_expire = $option_model->get_options_group("mail_expire");
             $before_send_expire = $mail_expire['before_send'];
             $where->where("date_expire <", date("Y-m-d", strtotime("+$before_send_expire day")));
+        } elseif ($filter_home == "3") {
+            $where->where("status_id", 4);
+        } elseif ($filter_home == "2") {
+            $where->where("status_id", 2);
         }
+        
         if ($type_id > 0) {
             $where->where('type_id', $type_id);
         }
