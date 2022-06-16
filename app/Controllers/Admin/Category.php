@@ -449,7 +449,8 @@ class Category extends BaseController
 
         // print_r($array);
         // die();
-        $DocumentCategoryModel->insertBatch($array);
+        $DocumentCategoryModel->ignore(true)->insertBatch($array);
+        
         echo json_encode(1);
     }
 
@@ -485,7 +486,7 @@ class Category extends BaseController
 
         // print_r($array);
         // die();
-        $DocumentCategoryModel->insertBatch($array);
+        $DocumentCategoryModel->ignore(true)->insertBatch($array);
         echo json_encode(1);
     }
 
