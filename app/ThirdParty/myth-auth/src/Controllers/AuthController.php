@@ -88,7 +88,7 @@ class AuthController extends Controller
 		if (!$this->auth->attempt([$type => $login, 'password' => $password], $remember)) {
 
 			$UserModel = model("UserModel");
-			$description = "User " . user()->name . " login failed";
+			$description = "User " . htmlentities($login) . " login failed";
 			$UserModel->trail(1, 'login', null, null, $description);
 
 			return redirect()->back()->withInput()->with('error', $this->auth->error() ?? lang('Auth.badAttempt'));
