@@ -257,7 +257,11 @@
             } else {
                 $(this).closest("li").find("[name='category_list[]']").prop("checked", false);
             }
-        })
+        });
+        var category_id = <?= isset($_GET['category_id']) ? $_GET['category_id'] : 0 ?>;
+        if (category_id > 0) {
+            $(".custom-control-input[value='" + category_id + "']").prop("checked", true).trigger("change");
+        }
     });
 
     function add_file(item) {

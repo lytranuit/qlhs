@@ -239,7 +239,7 @@ class Document extends BaseController
             $this->data['category'] = $category_model
                 ->orderBy('parent_id', 'ASC')->orderBy('sort', 'ASC')->asArray()->findAll();
             $this->data['category'] = html_product_category_nestable($this->data['category'], 'parent_id', 0);
-
+            
             return view($this->data['content'], $this->data);
         }
     }

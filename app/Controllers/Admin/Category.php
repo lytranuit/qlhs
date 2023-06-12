@@ -88,7 +88,7 @@ class Category extends BaseController
     public function exportexcel()
     {
         $Document_model = model("DocumentModel", false);
-        $Category_model = model("CategoryModel", false);
+        // $Category_model = model("CategoryModel", false);
         $limit = $this->request->getVar('length');
         $start = $this->request->getVar('start');
         $orders = $this->request->getVar('order');
@@ -97,8 +97,11 @@ class Category extends BaseController
         $page = ($start / $limit) + 1;
         $where = $Document_model;
         $Document_category_model = model("DocumentCategoryModel");
+        // $category = $Category_model->where(array('id' => $category_id))->asObject()->first();
+        
+        // $child_ids = $Category_model->get_category_child($category_id);
+        
         $docs = $Document_category_model->document_by_category($category_id);
-        $category = $Category_model->where(array('id' => $category_id))->asObject()->first();
         $ids = array_map(function ($item) {
             return $item->id;
         }, (array)$docs);
@@ -156,7 +159,7 @@ class Category extends BaseController
                 $sheet->setCellValue('A' . $rows, $key + 1);
                 $sheet->setCellValue('B' . $rows, $post->name_vi);
                 $sheet->setCellValue('C' . $rows, isset($post->type) ? $post->type->name : "");
-                $sheet->setCellValue('D' . $rows, $category->name_vi);
+                $sheet->setCellValue('D' . $rows, isset($post->core_category) ? $post->core_category->name_vi : "");
                 $sheet->setCellValue('E' . $rows, $post->date_effect != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_effect) : "");
                 $sheet->setCellValue('F' . $rows, $post->date_review != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_review) : "");
                 $sheet->setCellValue('G' . $rows, '');

@@ -32,11 +32,25 @@ class CategoryModel extends BaseModel
         $builder = $this->db->table('category');
         $category = $builder->where('id', $category_id)->get()->getFirstRow();
         $parent_id = $category->parent_id;
-        
+
         if ($parent_id > 0) {
             $list = $this->get_category_parents($parent_id);
             $list[] = $parent_id;
         }
+        return $list;
+    }
+    function get_category_child($category_id)
+    {
+        $list = array();
+        $builder = $this->db->table('category');
+        $children = $builder->where('parent_id', $category_id)->get()->getResult();
+        foreach ($children as $child) {
+            $child_id = $child->id;
+            $list[] = $child_id;
+            $list_child = $this->get_category_child($child_id);
+            $list = array_merge($list, $list_child);
+        }
+
         return $list;
     }
     // protected $useTimestamps = true;

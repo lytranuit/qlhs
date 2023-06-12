@@ -289,7 +289,16 @@
             buttons: [
                 // 'excel',
                 {
+                    text: 'Thêm Tài liệu',
+                    className: "btn-success",
+                    action: async function(e, dt, node, config) {
+                        location.href = "/admin/document/add?category_id=" + tin.id;
+                    }
+                },
+                // 'excel',
+                {
                     text: 'Excel',
+                    className: "btn-info",
                     action: async function(e, dt, node, config) {
 
                         $(".page-loader-wrapper").show();
